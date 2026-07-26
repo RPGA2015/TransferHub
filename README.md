@@ -1,82 +1,44 @@
 # TransferHub
 
-**One App. Every Transfer.**
+TransferHub.info is an early-stage money-transfer comparison experience, initially focused on transfers to Haiti. The product is designed around the idea: **One App. Every Transfer.**
 
-TransferHub is a fintech platform in development that aims to help users compare money-transfer providers, fees, exchange rates, payout methods, and delivery times from one secure interface.
+Provider and comparison information displayed in this project is illustrative. The project does not claim provider partnerships, endorsements, live integrations, live rates, regulatory approval, or transfer-processing capability.
 
-The initial focus is transfers to Haiti, with room to expand to additional countries and transfer corridors over time.
+## Development
 
-## Current Status
-
-**Sprint 1A completed**
-
-The current release includes:
-
-- A responsive marketing homepage
-- Transfer comparison preview
-- Features section
-- How It Works section
-- Security and transparency messaging
-- Product roadmap
-- FAQ section
-- Waitlist call-to-action
-- Mobile-friendly design
-
-## Important Notice
-
-TransferHub does not currently process money transfers.
-
-Provider names, fees, exchange rates, delivery estimates, and comparison results shown in the application are illustrative unless clearly identified as verified data.
-
-No partnership, endorsement, or integration with any money-transfer provider is claimed unless formally established and disclosed.
-
-## Technology
-
-- Next.js
-- React
-- TypeScript
-- Tailwind CSS
-- ESLint
-- Git and GitHub
-
-## Run the Project Locally
-
-Install dependencies:
+Install dependencies and start the development server:
 
 ```bash
 npm install
-
-## Getting Started
-
-First, run the development server:
-
-```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000). The dedicated waitlist is available at [http://localhost:3000/waitlist](http://localhost:3000/waitlist).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Sprint status
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Sprint 1A: completed — responsive marketing homepage and illustrative comparison preview.
+- Sprint 1B: completed — accessible waitlist form, validation, duplicate detection, success states, and homepage integration.
 
-## Learn More
+## Sprint 1B storage
 
-To learn more about Next.js, take a look at the following resources:
+Waitlist entries currently use browser `localStorage` under the key `transferhub_waitlist_v1`. This is strictly temporary development/testing storage:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Data exists only in the browser and device where it was entered.
+- Clearing browser storage removes it.
+- It is not synchronized, backed up, encrypted as application data, or suitable for production collection.
+- Duplicate detection is limited to that browser’s stored entries.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Do not collect real public signups with this implementation.
 
-## Deploy on Vercel
+## Next production step
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Replace `localStorage` with a secure server-side API and database. Add server-side validation, consent/audit records, abuse protection, encryption and retention controls, privacy workflows, and an approved transactional email provider for confirmation and unsubscribe handling before public launch.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Validation
+
+```bash
+npm run lint
+npx tsc --noEmit
+npm run build
+```
