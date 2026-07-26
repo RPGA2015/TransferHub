@@ -33,6 +33,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, summary:focus-visibl
 .comparison-control:focus { border-color:#2563eb; box-shadow:0 0 0 4px rgba(37,99,235,.14); }
 .comparison-control[aria-invalid="true"] { border-color:#dc2626; }
 .comparison-amount { padding-left:2rem; }
+.comparison-amount-code { padding-left:3.5rem; }
 .waitlist-hero::before { content:"";position:absolute;inset:0;opacity:.06;background-image:linear-gradient(rgba(255,255,255,.4) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.4) 1px,transparent 1px);background-size:64px 64px; }
 .loading-spinner { animation:spin .7s linear infinite; }
 @keyframes spin { to { transform:rotate(360deg); } }

@@ -19,6 +19,21 @@ Open [http://localhost:3000](http://localhost:3000). The dedicated waitlist is a
 
 - Sprint 1A: completed — responsive marketing homepage and illustrative comparison preview.
 - Sprint 1B: completed — accessible waitlist form, validation, duplicate detection, success states, and homepage integration.
+- Sprint 2A: completed — responsive transfer search controls and client-side comparison updates.
+- Sprint 2B: completed — dynamic illustrative corridor results, fee calculations, sorting, validation, quick amounts, and responsive result cards.
+
+## Illustrative comparison data
+
+All rates and provider results are fictional sample data. They are not current market rates, quotes, endorsements, or evidence of provider integrations. Sprint 2B supports these sample corridors:
+
+- United States → Haiti
+- United States → Dominican Republic
+- Canada → Haiti
+- Canada → Dominican Republic
+- France → Haiti
+- France → Dominican Republic
+
+For each fictional provider, the displayed recipient amount is calculated locally as `max(send amount - fee, 0) × illustrative exchange rate`. No transfer is initiated.
 
 ## Sprint 1B storage
 
@@ -33,7 +48,7 @@ Do not collect real public signups with this implementation.
 
 ## Next production step
 
-Replace `localStorage` with a secure server-side API and database. Add server-side validation, consent/audit records, abuse protection, encryption and retention controls, privacy workflows, and an approved transactional email provider for confirmation and unsubscribe handling before public launch.
+Replace `localStorage` with a secure server-side API and database. Add server-side validation, consent/audit records, abuse protection, encryption and retention controls, privacy workflows, and an approved transactional email provider for confirmation and unsubscribe handling before public launch. Comparison functionality also requires authorized, secure server-side provider-data integrations, freshness labeling, and resilient error handling before it can display real provider information.
 
 ## Validation
 
