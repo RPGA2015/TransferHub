@@ -1,4 +1,5 @@
 import Link from "next/link";
+import TransferComparison from "@/components/TransferComparison";
 
 const features = [
   { icon: "fee", title: "Compare fees", text: "See illustrative transfer fees side by side before choosing an option." },
@@ -7,13 +8,6 @@ const features = [
   { icon: "wallet", title: "Explore payout methods", text: "Review potential bank, cash pickup, and mobile wallet delivery options." },
   { icon: "people", title: "Save recipients", text: "Keep recipient details organized for a smoother experience next time." },
   { icon: "track", title: "Track transfers", text: "Follow transfer progress in one clear, easy-to-understand view." },
-];
-
-const providers = [
-  { name: "Provider A", badge: "Best Value", fee: "$2.99", rate: "132.40 HTG", delivery: "Minutes", receives: "26,085 HTG", accent: "emerald" },
-  { name: "Provider B", badge: "Lowest Fee", fee: "$0.00", rate: "130.10 HTG", delivery: "1–2 days", receives: "26,020 HTG", accent: "blue" },
-  { name: "Provider C", badge: "Fastest", fee: "$4.99", rate: "131.25 HTG", delivery: "Minutes", receives: "25,595 HTG", accent: "amber" },
-  { name: "Provider D", badge: "Wallet Delivery", fee: "$3.50", rate: "130.80 HTG", delivery: "Same day", receives: "25,703 HTG", accent: "violet" },
 ];
 
 const faqs = [
@@ -79,7 +73,7 @@ export default function Home() {
             <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row lg:justify-start"><Link href="/waitlist" className="inline-flex min-h-13 items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-3.5 font-bold text-white shadow-xl shadow-blue-900/30 transition hover:bg-blue-500">Join the Waitlist <ButtonArrow /></Link><a href="#how-it-works" className="inline-flex min-h-13 items-center justify-center rounded-xl border border-white/20 bg-white/5 px-6 py-3.5 font-bold text-white transition hover:bg-white/10">See How It Works</a></div>
             <p className="mt-5 flex items-center justify-center gap-2 text-sm text-slate-400 lg:justify-start"><svg viewBox="0 0 20 20" className="h-4 w-4 text-emerald-400" fill="currentColor"><path d="M10 2 4 4.5V9c0 4.1 2.5 7.3 6 9 3.5-1.7 6-4.9 6-9V4.5L10 2Zm3 6-3.5 4L7 9.7l1.1-1.1 1.3 1.2 2.5-2.9L13 8Z"/></svg>No transfer required. Be first to know when we launch.</p>
           </div>
-          <ComparisonCard />
+          <TransferComparison />
         </div>
       </section>
 
@@ -121,18 +115,6 @@ export default function Home() {
 function SectionHeading({ eyebrow, title, text }: { eyebrow: string; title: string; text: string }) {
   return <div className="mx-auto max-w-2xl text-center"><p className="eyebrow text-blue-600">{eyebrow}</p><h2 className="mt-4 text-balance text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">{title}</h2><p className="mt-4 text-lg leading-8 text-slate-600">{text}</p></div>;
 }
-
-function ComparisonCard() {
-  return <div className="relative mx-auto w-full max-w-2xl"><div className="absolute -inset-5 rounded-[2rem] bg-blue-500/10 blur-2xl"/><div className="relative overflow-hidden rounded-3xl border border-white/15 bg-white shadow-2xl shadow-slate-950/30">
-    <div className="flex flex-col gap-4 border-b border-slate-100 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6"><div><div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] text-slate-400"><span className="h-2 w-2 rounded-full bg-emerald-500"/>Comparison preview</div><h2 className="mt-2 text-lg font-bold text-slate-900">United States <span className="mx-1 text-slate-300">→</span> Haiti</h2></div><div className="rounded-xl bg-slate-50 px-4 py-2.5 text-left sm:text-right"><p className="text-xs text-slate-500">You send</p><p className="text-xl font-bold text-slate-950">$200.00 <span className="text-xs font-semibold text-slate-400">USD</span></p></div></div>
-    <div className="border-b border-amber-100 bg-amber-50 px-5 py-2.5 text-center text-[11px] font-semibold leading-5 text-amber-800">ILLUSTRATIVE DATA ONLY · NOT LIVE QUOTES OR PROVIDER ENDORSEMENTS</div>
-    <div className="hidden grid-cols-[1.3fr_.65fr_.9fr_.8fr_1fr] gap-3 border-b border-slate-100 bg-slate-50/70 px-6 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 sm:grid"><span>Provider</span><span>Fee</span><span>Rate</span><span>Delivery</span><span className="text-right">Recipient gets</span></div>
-    <div className="divide-y divide-slate-100">{providers.map(p=><div key={p.name} className="grid gap-4 p-5 sm:grid-cols-[1.3fr_.65fr_.9fr_.8fr_1fr] sm:items-center sm:px-6 sm:py-4"><div className="flex items-center gap-3"><span className={`provider-dot provider-dot-${p.accent}`}>{p.name.at(-1)}</span><span><strong className="block text-sm text-slate-900">{p.name}</strong><span className={`badge badge-${p.accent}`}>{p.badge}</span></span></div><Data label="Fee" value={p.fee}/><Data label="Rate" value={p.rate}/><Data label="Delivery" value={p.delivery}/><div className="sm:text-right"><span className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-400 sm:hidden">Recipient gets</span><strong className="text-sm text-slate-950">{p.receives}</strong></div></div>)}</div>
-    <div className="flex items-center justify-between bg-slate-50 px-5 py-4 text-xs text-slate-500 sm:px-6"><span>Sample results for product preview</span><span className="font-semibold text-blue-600">Updated: illustrative</span></div>
-  </div></div>;
-}
-
-function Data({ label, value }: { label: string; value: string }) { return <div><span className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-400 sm:hidden">{label}</span><span className="text-sm font-semibold text-slate-700">{value}</span></div>; }
 
 function SecurityIcon({ name }: { name: string }) {
   const path: Record<string, React.ReactNode> = { shield:<path d="M12 3 5 6v5c0 4.5 2.8 8 7 10 4.2-2 7-5.5 7-10V6l-7-3Z"/>, eye:<><path d="M3 12s3-5 9-5 9 5 9 5-3 5-9 5-9-5-9-5Z"/><circle cx="12" cy="12" r="2"/></>, lock:<><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></>, check:<><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></> };

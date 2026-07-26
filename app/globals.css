@@ -28,6 +28,11 @@ a:focus-visible, button:focus-visible, input:focus-visible, summary:focus-visibl
 .form-control:focus { border-color:#2563eb; box-shadow:0 0 0 4px rgba(37,99,235,.14); }
 .form-control[aria-invalid="true"] { border-color:#dc2626; }
 .form-control[aria-invalid="true"]:focus { box-shadow:0 0 0 4px rgba(220,38,38,.12); }
+.comparison-control { width:100%; min-height:3rem; border:1px solid #cbd5e1; border-radius:.75rem; background-color:#fff; padding:.65rem .85rem; color:#0f172a; font-size:.875rem; font-weight:600; outline:none; transition:border-color .2s ease,box-shadow .2s ease; }
+.comparison-control:hover { border-color:#94a3b8; }
+.comparison-control:focus { border-color:#2563eb; box-shadow:0 0 0 4px rgba(37,99,235,.14); }
+.comparison-control[aria-invalid="true"] { border-color:#dc2626; }
+.comparison-amount { padding-left:2rem; }
 .waitlist-hero::before { content:"";position:absolute;inset:0;opacity:.06;background-image:linear-gradient(rgba(255,255,255,.4) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.4) 1px,transparent 1px);background-size:64px 64px; }
 .loading-spinner { animation:spin .7s linear infinite; }
 @keyframes spin { to { transform:rotate(360deg); } }
