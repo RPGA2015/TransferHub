@@ -1,0 +1,138 @@
+const features = [
+  { icon: "fee", title: "Compare fees", text: "See illustrative transfer fees side by side before choosing an option." },
+  { icon: "rate", title: "Check exchange rates", text: "Understand how the rate can affect what your recipient may receive." },
+  { icon: "speed", title: "Review delivery speed", text: "Compare estimated delivery windows, from minutes to multiple days." },
+  { icon: "wallet", title: "Explore payout methods", text: "Review potential bank, cash pickup, and mobile wallet delivery options." },
+  { icon: "people", title: "Save recipients", text: "Keep recipient details organized for a smoother experience next time." },
+  { icon: "track", title: "Track transfers", text: "Follow transfer progress in one clear, easy-to-understand view." },
+];
+
+const providers = [
+  { name: "Provider A", badge: "Best Value", fee: "$2.99", rate: "132.40 HTG", delivery: "Minutes", receives: "26,085 HTG", accent: "emerald" },
+  { name: "Provider B", badge: "Lowest Fee", fee: "$0.00", rate: "130.10 HTG", delivery: "1–2 days", receives: "26,020 HTG", accent: "blue" },
+  { name: "Provider C", badge: "Fastest", fee: "$4.99", rate: "131.25 HTG", delivery: "Minutes", receives: "25,595 HTG", accent: "amber" },
+  { name: "Provider D", badge: "Wallet Delivery", fee: "$3.50", rate: "130.80 HTG", delivery: "Same day", receives: "25,703 HTG", accent: "violet" },
+];
+
+const faqs = [
+  ["What is TransferHub?", "TransferHub is a comparison platform in development, designed to help people review money-transfer options in one place, initially focusing on transfers to Haiti."],
+  ["Can I send money through TransferHub today?", "Not yet. Sprint 1A is the website and waitlist. Sending or initiating transfers will only be introduced after the appropriate provider connections and safeguards are in place."],
+  ["Does TransferHub partner with the providers shown?", "No partnership or integration is being claimed. Provider names may describe the market TransferHub intends to compare, while all preview data on this website is illustrative until authorized data connections exist."],
+  ["How will comparisons work?", "The planned platform will organize available fees, exchange rates, payout methods, and delivery estimates so users can review relevant options side by side."],
+  ["Will TransferHub support countries beyond Haiti?", "Haiti is the initial focus. Additional transfer corridors may be considered as the platform grows and reliable data becomes available."],
+  ["How can I get early access?", "Join the waitlist to receive occasional product updates and learn when early access becomes available."],
+];
+
+function LogoMark({ light = false }: { light?: boolean }) {
+  return (
+    <span className={`grid h-9 w-9 place-items-center rounded-xl ${light ? "bg-white/10 text-emerald-300" : "bg-blue-600 text-white"}`} aria-hidden="true">
+      <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M5 8h13m-4-4 4 4-4 4M19 16H6m4 4-4-4 4-4" />
+      </svg>
+    </span>
+  );
+}
+
+function Icon({ name }: { name: string }) {
+  const paths: Record<string, React.ReactNode> = {
+    fee: <><path d="M4 7h16v11H4z"/><path d="M8 11h8M8 14h5M7 4v3m10-3v3"/></>,
+    rate: <><path d="m7 7 3-3 3 3M10 4v10M17 17l-3 3-3-3M14 20V10"/></>,
+    speed: <><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></>,
+    wallet: <><path d="M4 6h14a2 2 0 0 1 2 2v10H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h12"/><path d="M15 11h5v4h-5a2 2 0 0 1 0-4Z"/></>,
+    people: <><circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2M16 5a3 3 0 0 1 0 6M18 14a5 5 0 0 1 3 4.5V20"/></>,
+    track: <><path d="M5 4h14v16H5zM9 8h6M9 12h6M9 16h3"/><path d="m16 15 1.5 1.5L21 13"/></>,
+  };
+  return <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[name]}</svg>;
+}
+
+const ButtonArrow = () => <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M4 10h12m-4-4 4 4-4 4"/></svg>;
+
+export default function Home() {
+  return (
+    <main className="overflow-hidden bg-white text-slate-950">
+      <header className="absolute inset-x-0 top-0 z-50 border-b border-white/10">
+        <nav className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 sm:px-8" aria-label="Primary navigation">
+          <a href="#home" className="flex items-center gap-2.5 text-lg font-bold tracking-tight text-white"><LogoMark light />TransferHub</a>
+          <div className="hidden items-center gap-7 lg:flex">
+            {["Home", "Features", "How It Works", "About", "FAQ"].map((item) => <a key={item} href={`#${item.toLowerCase().replaceAll(" ", "-")}`} className="text-sm font-medium text-slate-300 transition hover:text-white">{item}</a>)}
+          </div>
+          <div className="hidden items-center gap-5 lg:flex"><a href="#waitlist" className="text-sm font-semibold text-white">Sign In</a><a href="#waitlist" className="rounded-xl bg-white px-5 py-3 text-sm font-bold text-blue-700 shadow-lg shadow-blue-950/10 transition hover:bg-blue-50">Join Waitlist</a></div>
+          <details className="group relative lg:hidden">
+            <summary className="grid h-11 w-11 cursor-pointer list-none place-items-center rounded-xl border border-white/15 text-white [&::-webkit-details-marker]:hidden" aria-label="Open navigation menu"><svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg></summary>
+            <div className="absolute right-0 top-14 w-64 rounded-2xl border border-slate-200 bg-white p-3 shadow-2xl">
+              {["Home", "Features", "How It Works", "About", "FAQ"].map((item) => <a key={item} href={`#${item.toLowerCase().replaceAll(" ", "-")}`} className="block rounded-lg px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">{item}</a>)}
+              <div className="mt-2 grid grid-cols-2 gap-2 border-t border-slate-100 pt-3"><a href="#waitlist" className="rounded-lg px-3 py-2 text-center text-sm font-semibold text-slate-700">Sign In</a><a href="#waitlist" className="rounded-lg bg-blue-600 px-3 py-2 text-center text-sm font-semibold text-white">Join</a></div>
+            </div>
+          </details>
+        </nav>
+      </header>
+
+      <section id="home" className="hero-grid relative bg-[#06152e] pb-24 pt-36 sm:pt-40 lg:pb-32 lg:pt-48">
+        <div className="hero-glow absolute inset-0" aria-hidden="true" />
+        <div className="relative mx-auto grid max-w-7xl items-center gap-16 px-5 sm:px-8 lg:grid-cols-[0.92fr_1.08fr]">
+          <div className="text-center lg:text-left">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-300/20 bg-blue-400/10 px-4 py-2 text-xs font-semibold tracking-wide text-blue-100"><span className="h-2 w-2 rounded-full bg-emerald-400" />BUILT FOR GLOBAL FAMILIES</div>
+            <h1 className="text-balance text-5xl font-bold tracking-[-0.04em] text-white sm:text-6xl lg:text-7xl">One App.<br/><span className="text-gradient">Every Transfer.</span></h1>
+            <p className="mx-auto mt-7 max-w-xl text-pretty text-lg leading-8 text-slate-300 lg:mx-0">Soon, you&apos;ll be able to compare trusted money-transfer options, fees, exchange rates, payout methods, and delivery times from one secure platform.</p>
+            <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row lg:justify-start"><a href="#waitlist" className="inline-flex min-h-13 items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-3.5 font-bold text-white shadow-xl shadow-blue-900/30 transition hover:bg-blue-500">Join the Waitlist <ButtonArrow /></a><a href="#how-it-works" className="inline-flex min-h-13 items-center justify-center rounded-xl border border-white/20 bg-white/5 px-6 py-3.5 font-bold text-white transition hover:bg-white/10">See How It Works</a></div>
+            <p className="mt-5 flex items-center justify-center gap-2 text-sm text-slate-400 lg:justify-start"><svg viewBox="0 0 20 20" className="h-4 w-4 text-emerald-400" fill="currentColor"><path d="M10 2 4 4.5V9c0 4.1 2.5 7.3 6 9 3.5-1.7 6-4.9 6-9V4.5L10 2Zm3 6-3.5 4L7 9.7l1.1-1.1 1.3 1.2 2.5-2.9L13 8Z"/></svg>No transfer required. Be first to know when we launch.</p>
+          </div>
+          <ComparisonCard />
+        </div>
+      </section>
+
+      <section id="features" className="bg-slate-50 py-24 sm:py-32">
+        <div className="mx-auto max-w-7xl px-5 sm:px-8">
+          <SectionHeading eyebrow="EVERYTHING IN ONE PLACE" title="Clarity before you send" text="TransferHub is being built to make comparing transfer options simpler, faster, and easier to understand." />
+          <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{features.map((feature) => <article key={feature.title} className="feature-card rounded-2xl border border-slate-200/80 bg-white p-7"><span className="grid h-12 w-12 place-items-center rounded-xl bg-blue-50 text-blue-600"><Icon name={feature.icon}/></span><h3 className="mt-5 text-lg font-bold text-slate-950">{feature.title}</h3><p className="mt-2 leading-7 text-slate-600">{feature.text}</p></article>)}</div>
+        </div>
+      </section>
+
+      <section id="how-it-works" className="py-24 sm:py-32">
+        <div className="mx-auto max-w-7xl px-5 sm:px-8"><SectionHeading eyebrow="SIMPLE BY DESIGN" title="How TransferHub will work" text="A clearer path from deciding to delivering—without jumping between tabs." />
+          <div className="relative mt-16 grid gap-10 md:grid-cols-3"><div className="absolute left-[16.7%] right-[16.7%] top-7 hidden border-t border-dashed border-blue-200 md:block" />
+            {[["01", "Enter your transfer", "Choose where you’re sending from, your destination, and the amount."], ["02", "Compare your options", "Review illustrative provider details across the factors that matter to you."], ["03", "Choose with confidence", "Select your preferred option when authorized provider connections become available."]].map(([n,t,d]) => <article key={n} className="relative text-center"><span className="relative mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-blue-600 text-sm font-bold text-white shadow-lg shadow-blue-200">{n}</span><h3 className="mt-6 text-xl font-bold">{t}</h3><p className="mx-auto mt-3 max-w-sm leading-7 text-slate-600">{d}</p></article>)}
+          </div>
+        </div>
+      </section>
+
+      <section id="about" className="bg-[#071a35] py-24 text-white sm:py-28"><div className="mx-auto grid max-w-7xl gap-14 px-5 sm:px-8 lg:grid-cols-2 lg:items-center">
+        <div><p className="eyebrow text-emerald-300">THOUGHTFUL FROM THE START</p><h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">Designed for security.<br/>Built for transparency.</h2><p className="mt-6 max-w-xl text-lg leading-8 text-slate-300">TransferHub is being designed with security, privacy, and transparent data labeling in mind. We&apos;ll clearly distinguish illustrative information from verified provider data as the platform evolves.</p><a href="#faq" className="mt-8 inline-flex items-center gap-2 font-bold text-emerald-300 hover:text-emerald-200">Learn more about our approach <ButtonArrow /></a></div>
+        <div className="grid gap-4 sm:grid-cols-2">{[["shield", "Security-minded design", "Safeguards will be considered throughout product development."], ["eye", "Clear data labels", "Preview, illustrative, and authorized data will be clearly identified."], ["lock", "Privacy in mind", "We aim to collect only what is needed for the experience."], ["check", "No hidden endorsements", "Provider listings will not imply partnerships that do not exist."]].map(([icon,title,text]) => <article key={title} className="rounded-2xl border border-white/10 bg-white/[0.06] p-6"><span className="mb-4 grid h-10 w-10 place-items-center rounded-lg bg-emerald-400/10 text-emerald-300"><SecurityIcon name={icon}/></span><h3 className="font-bold">{title}</h3><p className="mt-2 text-sm leading-6 text-slate-400">{text}</p></article>)}</div>
+      </div></section>
+
+      <section className="py-24 sm:py-32"><div className="mx-auto max-w-7xl px-5 sm:px-8"><SectionHeading eyebrow="WHAT WE’RE BUILDING" title="The road ahead" text="A deliberate path toward a trusted transfer comparison experience." />
+        <ol className="mt-16 grid gap-5 md:grid-cols-4">{[["01", "Website & Waitlist", "Now", "Live"], ["02", "Comparison Platform", "Next", "In design"], ["03", "Authorized Provider Integrations", "Later", "Planned"], ["04", "Mobile Apps", "Future", "Planned"]].map(([n,title,time,status],i) => <li key={title} className={`relative rounded-2xl border p-6 ${i===0 ? "border-blue-200 bg-blue-50" : "border-slate-200 bg-white"}`}><div className="flex items-center justify-between"><span className={`text-sm font-bold ${i===0 ? "text-blue-600" : "text-slate-400"}`}>{n}</span><span className={`rounded-full px-2.5 py-1 text-xs font-bold ${i===0 ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-500"}`}>{status}</span></div><h3 className="mt-8 font-bold leading-6">{title}</h3><p className="mt-2 text-sm text-slate-500">{time}</p></li>)}</ol>
+      </div></section>
+
+      <section id="faq" className="bg-slate-50 py-24 sm:py-32"><div className="mx-auto max-w-3xl px-5 sm:px-8"><SectionHeading eyebrow="QUESTIONS, ANSWERED" title="Frequently asked questions" text="What to know as TransferHub takes shape." />
+        <div className="mt-12 space-y-3">{faqs.map(([q,a],i) => <details key={q} className="faq-item group rounded-2xl border border-slate-200 bg-white p-5" open={i===0}><summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-bold [&::-webkit-details-marker]:hidden">{q}<span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-slate-100 text-blue-600 transition group-open:rotate-45"><svg viewBox="0 0 20 20" className="h-4 w-4" stroke="currentColor" strokeWidth="2"><path d="M10 4v12M4 10h12"/></svg></span></summary><p className="pr-10 pt-4 leading-7 text-slate-600">{a}</p></details>)}</div>
+      </div></section>
+
+      <section id="waitlist" className="bg-white px-5 py-20 sm:px-8 sm:py-24"><div className="cta-glow relative mx-auto max-w-6xl overflow-hidden rounded-3xl bg-blue-600 px-6 py-14 text-center text-white sm:px-12 sm:py-16"><div className="relative"><p className="text-sm font-bold tracking-[0.16em] text-blue-100">BE FIRST IN LINE</p><h2 className="mx-auto mt-4 max-w-2xl text-3xl font-bold tracking-tight sm:text-5xl">A clearer way to compare transfers is coming.</h2><p className="mx-auto mt-5 max-w-xl text-lg leading-8 text-blue-100">Join the TransferHub waitlist for product updates and early-access news.</p><form className="mx-auto mt-8 flex max-w-lg flex-col gap-3 sm:flex-row" action="#"><label htmlFor="email" className="sr-only">Email address</label><input id="email" type="email" required placeholder="Enter your email address" className="min-h-13 flex-1 rounded-xl border border-white/20 bg-white px-4 text-slate-900 outline-none placeholder:text-slate-400 focus:ring-4 focus:ring-white/25"/><button type="submit" className="min-h-13 rounded-xl bg-[#06152e] px-6 font-bold text-white transition hover:bg-slate-900">Join the Waitlist</button></form><p className="mt-4 text-xs text-blue-100">Product updates only. Unsubscribe anytime.</p></div></div></section>
+
+      <footer className="bg-[#06152e] text-slate-300"><div className="mx-auto max-w-7xl px-5 py-14 sm:px-8"><div className="flex flex-col justify-between gap-10 md:flex-row"><div><a href="#home" className="flex items-center gap-2.5 text-lg font-bold text-white"><LogoMark light/>TransferHub</a><p className="mt-4 max-w-xs text-sm leading-6 text-slate-400">One App. Every Transfer.<br/>Transfer comparison, made clearer.</p></div><nav className="flex flex-wrap gap-x-7 gap-y-4 text-sm" aria-label="Footer navigation">{["Privacy", "Terms", "Security", "Contact", "About"].map(x=><a key={x} href={x === "About" ? "#about" : "#waitlist"} className="hover:text-white">{x}</a>)}</nav></div><div className="mt-12 flex flex-col justify-between gap-3 border-t border-white/10 pt-6 text-xs text-slate-500 sm:flex-row"><p>© 2026 TransferHub.info. All rights reserved.</p><p>Provider information shown is illustrative and does not imply partnership or endorsement.</p></div></div></footer>
+    </main>
+  );
+}
+
+function SectionHeading({ eyebrow, title, text }: { eyebrow: string; title: string; text: string }) {
+  return <div className="mx-auto max-w-2xl text-center"><p className="eyebrow text-blue-600">{eyebrow}</p><h2 className="mt-4 text-balance text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">{title}</h2><p className="mt-4 text-lg leading-8 text-slate-600">{text}</p></div>;
+}
+
+function ComparisonCard() {
+  return <div className="relative mx-auto w-full max-w-2xl"><div className="absolute -inset-5 rounded-[2rem] bg-blue-500/10 blur-2xl"/><div className="relative overflow-hidden rounded-3xl border border-white/15 bg-white shadow-2xl shadow-slate-950/30">
+    <div className="flex flex-col gap-4 border-b border-slate-100 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6"><div><div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] text-slate-400"><span className="h-2 w-2 rounded-full bg-emerald-500"/>Comparison preview</div><h2 className="mt-2 text-lg font-bold text-slate-900">United States <span className="mx-1 text-slate-300">→</span> Haiti</h2></div><div className="rounded-xl bg-slate-50 px-4 py-2.5 text-left sm:text-right"><p className="text-xs text-slate-500">You send</p><p className="text-xl font-bold text-slate-950">$200.00 <span className="text-xs font-semibold text-slate-400">USD</span></p></div></div>
+    <div className="border-b border-amber-100 bg-amber-50 px-5 py-2.5 text-center text-[11px] font-semibold leading-5 text-amber-800">ILLUSTRATIVE DATA ONLY · NOT LIVE QUOTES OR PROVIDER ENDORSEMENTS</div>
+    <div className="hidden grid-cols-[1.3fr_.65fr_.9fr_.8fr_1fr] gap-3 border-b border-slate-100 bg-slate-50/70 px-6 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 sm:grid"><span>Provider</span><span>Fee</span><span>Rate</span><span>Delivery</span><span className="text-right">Recipient gets</span></div>
+    <div className="divide-y divide-slate-100">{providers.map(p=><div key={p.name} className="grid gap-4 p-5 sm:grid-cols-[1.3fr_.65fr_.9fr_.8fr_1fr] sm:items-center sm:px-6 sm:py-4"><div className="flex items-center gap-3"><span className={`provider-dot provider-dot-${p.accent}`}>{p.name.at(-1)}</span><span><strong className="block text-sm text-slate-900">{p.name}</strong><span className={`badge badge-${p.accent}`}>{p.badge}</span></span></div><Data label="Fee" value={p.fee}/><Data label="Rate" value={p.rate}/><Data label="Delivery" value={p.delivery}/><div className="sm:text-right"><span className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-400 sm:hidden">Recipient gets</span><strong className="text-sm text-slate-950">{p.receives}</strong></div></div>)}</div>
+    <div className="flex items-center justify-between bg-slate-50 px-5 py-4 text-xs text-slate-500 sm:px-6"><span>Sample results for product preview</span><span className="font-semibold text-blue-600">Updated: illustrative</span></div>
+  </div></div>;
+}
+
+function Data({ label, value }: { label: string; value: string }) { return <div><span className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-400 sm:hidden">{label}</span><span className="text-sm font-semibold text-slate-700">{value}</span></div>; }
+
+function SecurityIcon({ name }: { name: string }) {
+  const path: Record<string, React.ReactNode> = { shield:<path d="M12 3 5 6v5c0 4.5 2.8 8 7 10 4.2-2 7-5.5 7-10V6l-7-3Z"/>, eye:<><path d="M3 12s3-5 9-5 9 5 9 5-3 5-9 5-9-5-9-5Z"/><circle cx="12" cy="12" r="2"/></>, lock:<><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></>, check:<><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></> };
+  return <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{path[name]}</svg>;
+}
