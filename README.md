@@ -1,4 +1,50 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# TransferHub
+
+**One App. Every Transfer.**
+
+TransferHub is a fintech platform in development that aims to help users compare money-transfer providers, fees, exchange rates, payout methods, and delivery times from one secure interface.
+
+The initial focus is transfers to Haiti, with room to expand to additional countries and transfer corridors over time.
+
+## Current Status
+
+**Sprint 1A completed**
+
+The current release includes:
+
+- A responsive marketing homepage
+- Transfer comparison preview
+- Features section
+- How It Works section
+- Security and transparency messaging
+- Product roadmap
+- FAQ section
+- Waitlist call-to-action
+- Mobile-friendly design
+
+## Important Notice
+
+TransferHub does not currently process money transfers.
+
+Provider names, fees, exchange rates, delivery estimates, and comparison results shown in the application are illustrative unless clearly identified as verified data.
+
+No partnership, endorsement, or integration with any money-transfer provider is claimed unless formally established and disclosed.
+
+## Technology
+
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
+- ESLint
+- Git and GitHub
+
+## Run the Project Locally
+
+Install dependencies:
+
+```bash
+npm install
 
 ## Getting Started
 
