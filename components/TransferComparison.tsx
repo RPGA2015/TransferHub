@@ -75,50 +75,15 @@ export default function TransferComparison() {
     setStatus(`Illustrative comparison ready for ${formatMoney(amount, selectedCurrency)} from ${fromCountry} to ${toCountry}.`);
   }
 
-  function handleSwap() {
-    const reversedFrom = toCountry;
-    const reversedTo = fromCountry;
-    const reversedCorridor = getIllustrativeCorridor(reversedFrom, reversedTo);
-
-    if (reversedCorridor) {
-      setFromCountry(reversedFrom);
-      setToCountry(reversedTo);
-      setStatus("Countries swapped. Click Compare Transfer Options to update the results.");
-      return;
-    }
-
-    const toggledToCountry = receivingCountries.find((country) => country !== toCountry) ?? toCountry;
-    setToCountry(toggledToCountry);
-    setStatus(`The exact reverse corridor is not available, so we selected ${fromCountry} to ${toggledToCountry}. Click Compare Transfer Options to update the results.`);
-  }
-
-  function handleFromCountry(nextCountry: Country) {
-    setFromCountry(nextCountry);
-    setAmountError("");
-    if (nextCountry === toCountry) {
-      const alternative = receivingCountries.find((country) => country !== nextCountry);
-      if (alternative) setToCountry(alternative);
-    }
-  }
-
-  function handleToCountry(nextCountry: Country) {
-    setToCountry(nextCountry);
-    if (nextCountry === fromCountry) {
-      const alternative = sendingCountries.find((country) => country !== nextCountry);
-      if (alternative) setFromCountry(alternative);
-    }
-  }
-
   return (
     <div className="relative mx-auto w-full max-w-2xl">
       <div className="absolute -inset-5 rounded-[2rem] bg-blue-500/10 blur-2xl" aria-hidden="true" />
       <div className="relative mb-4 rounded-3xl border border-white/15 bg-white p-5 shadow-2xl shadow-slate-950/25 sm:p-6">
         <div className="mb-5"><p className="text-xs font-extrabold uppercase tracking-[0.14em] text-blue-600">Find your options</p><h2 className="mt-1 text-xl font-bold tracking-tight text-slate-950">Compare a transfer</h2></div>
         <form onSubmit={handleCompare} noValidate>
-          <div className="grid items-end gap-3 sm:grid-cols-[1fr_auto_1fr]">
-            <div><label htmlFor="from-country" className="block text-xs font-bold text-slate-700">From Country</label><select id="from-country" value={fromCountry} onChange={(event) => handleFromCountry(event.target.value as Country)} className="comparison-control mt-2">{sendingCountries.map((country) => <option key={country}>{country}</option>)}</select></div>
-            <button type="button" onClick={handleSwap} className="mx-auto grid h-11 w-11 place-items-center rounded-xl border border-slate-200 bg-slate-50 text-blue-600 transition hover:border-blue-200 hover:bg-blue-50 focus-visible:ring-4 focus-visible:ring-emerald-300/40 sm:mb-0" aria-label="Swap or choose the alternate transfer corridor" title="Swap countries when supported, or select the alternate destination"><svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M7 7h11m-4-4 4 4-4 4M17 17H6m4 4-4-4 4-4"/></svg></button>
-            <div><label htmlFor="to-country" className="block text-xs font-bold text-slate-700">To Country</label><select id="to-country" value={toCountry} onChange={(event) => handleToCountry(event.target.value as Country)} className="comparison-control mt-2">{receivingCountries.map((country) => <option key={country}>{country}</option>)}</select></div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div><label htmlFor="from-country" className="block text-xs font-bold text-slate-700">From Country</label><select id="from-country" value={fromCountry} onChange={(event) => { setFromCountry(event.target.value as Country); setAmountError(""); }} className="comparison-control mt-2">{sendingCountries.map((country) => <option key={country}>{country}</option>)}</select></div>
+            <div><label htmlFor="to-country" className="block text-xs font-bold text-slate-700">To Country</label><select id="to-country" value={toCountry} onChange={(event) => setToCountry(event.target.value as Country)} className="comparison-control mt-2">{receivingCountries.map((country) => <option key={country}>{country}</option>)}</select></div>
           </div>
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
             <div><label htmlFor="transfer-amount" className="block text-xs font-bold text-slate-700">Amount to Send <span className="text-slate-400">({selectedCurrency})</span></label><div className="relative mt-2"><span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-xs font-bold text-slate-500" aria-hidden="true">{selectedCurrency}</span><input ref={amountRef} id="transfer-amount" type="text" inputMode="decimal" required value={amountInput} onChange={(event) => { setAmountInput(event.target.value); setAmountError(""); }} aria-invalid={Boolean(amountError)} aria-describedby={amountError ? "transfer-amount-error" : "transfer-amount-help"} className="comparison-control comparison-amount-code" /></div><p id="transfer-amount-help" className="sr-only">Enter between 10 and 10,000 {selectedCurrency}, with up to two decimal places.</p>{amountError && <p id="transfer-amount-error" className="mt-2 text-xs font-semibold text-red-700">{amountError}</p>}</div>
