@@ -2,6 +2,44 @@
 
 This document records meaningful product changes completed during each development sprint.
 
+## Sprint 3B — Comparison UX Refinement
+
+### Added
+
+- Typed payout-method filtering for bank deposit, cash pickup, mobile wallet, and cash-or-bank results
+- Visible-result counts and a clearable no-match state
+- Reusable comparison controls and provider badge components
+
+### Improved
+
+- Sorting now operates on filtered results without mutating corridor data
+- Mobile results use distinct stacked cards while desktop retains the comparison table
+- Selected-result, hover, and details-panel entrance styling
+- Sprint status and fictional-data documentation
+
+### Accessibility
+
+- Provider detail buttons expose `aria-expanded` and `aria-controls`
+- Details receive heading focus when opened and close with Escape
+- Closing returns focus to the originating View details button when it remains available
+- Live announcements explain detail opening, closing, and filter-driven dismissal
+- Existing focus visibility and reduced-motion support remain intact
+
+### Verified
+
+- All six illustrative corridors, four sorting modes, payout filters, calculations, validation, quick amounts, and loading state
+- Provider selection is preserved by sorting and cleared by incompatible filters or successful new comparisons
+- Homepage navigation and waitlist behavior remain unchanged
+- ESLint, TypeScript checking, and the Next.js production build pass
+
+### Limitations
+
+- Provider names, rates, fees, delivery estimates, payout methods, and rankings remain fictional sample data
+- Filtering reflects only the bundled sample and does not indicate current availability
+- TransferHub does not initiate transfers and claims no provider partnership, endorsement, or integration
+
+---
+
 ## Sprint 3A — Provider Details
 
 ### Added

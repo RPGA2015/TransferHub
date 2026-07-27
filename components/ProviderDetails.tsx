@@ -1,3 +1,7 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+import ProviderBadge from "@/components/ProviderBadge";
 import type {
   Country,
   ProviderResult,
@@ -28,9 +32,24 @@ export default function ProviderDetails({
   formattedRecipientAmount,
   onClose,
 }: ProviderDetailsProps) {
+  const headingRef = useRef<HTMLHeadingElement>(null);
+
+  useEffect(() => {
+    headingRef.current?.focus();
+  }, [provider.providerName]);
+
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") onClose();
+    }
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [onClose]);
+
   return (
     <section
-      className="mt-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-lg sm:p-8"
+      id="provider-details-panel"
+      className="details-panel border-t border-blue-100 bg-white p-5 shadow-inner sm:p-8"
       aria-labelledby="provider-details-heading"
     >
       <div className="flex items-start justify-between gap-4">
@@ -40,6 +59,7 @@ export default function ProviderDetails({
           </p>
 
           <h3
+            ref={headingRef}
             id="provider-details-heading"
             tabIndex={-1}
             className="mt-2 text-3xl font-bold text-slate-900 outline-none"
@@ -47,9 +67,7 @@ export default function ProviderDetails({
             {provider.providerName}
           </h3>
 
-          <span className="mt-3 inline-flex rounded-full bg-emerald-100 px-4 py-1 text-sm font-semibold text-emerald-700">
-            {provider.badge}
-          </span>
+          <div className="mt-3"><ProviderBadge provider={provider} /></div>
         </div>
 
         <button
