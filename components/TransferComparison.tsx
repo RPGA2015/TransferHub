@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useMemo, useRef, useState } from "react";
+import ProviderDetails from "@/components/ProviderDetails";
 import {
   Country,
   countryCurrencies,
@@ -32,6 +33,8 @@ export default function TransferComparison() {
   const [amountError, setAmountError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState("");
+  const [detailsStatus, setDetailsStatus] = useState("");
+  const [selectedProvider, setSelectedProvider] = useState<ProviderResult | null>(null);
   const amountRef = useRef<HTMLInputElement>(null);
 
   const corridor = getIllustrativeCorridor(comparison.fromCountry, comparison.toCountry);
@@ -42,9 +45,9 @@ export default function TransferComparison() {
     const providers = [...corridor.providers];
     return providers.sort((a, b) => {
       if (sortBy === "fee") return a.fee - b.fee;
-      if (sortBy === "recipient") return recipientAmount(comparison.amount, b) - recipientAmount(comparison.amount, a);
       if (sortBy === "fastest") return a.deliveryRank - b.deliveryRank;
-      return Number(b.badge === "Best Value") - Number(a.badge === "Best Value") || recipientAmount(comparison.amount, b) - recipientAmount(comparison.amount, a);
+      // Both value-oriented modes rank the net recipient amount after fees.
+      return recipientAmount(comparison.amount, b) - recipientAmount(comparison.amount, a);
     });
   }, [comparison.amount, corridor, sortBy]);
 
@@ -67,6 +70,8 @@ export default function TransferComparison() {
     }
 
     setAmountError("");
+    setSelectedProvider(null);
+    setDetailsStatus("");
     setIsLoading(true);
     setStatus("Comparing illustrative transfer options.");
     await new Promise((resolve) => window.setTimeout(resolve, 400));
@@ -97,15 +102,17 @@ export default function TransferComparison() {
       <div className="relative overflow-hidden rounded-3xl border border-white/15 bg-white shadow-2xl shadow-slate-950/30">
         <div className="flex flex-col gap-4 border-b border-slate-100 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6"><div><div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] text-slate-400"><span className="h-2 w-2 rounded-full bg-emerald-500"/>Comparison preview</div><h2 className="mt-2 text-lg font-bold text-slate-900">{comparison.fromCountry} <span className="mx-1 text-slate-300">→</span> {comparison.toCountry}</h2></div><div className="rounded-xl bg-slate-50 px-4 py-2.5 text-left sm:text-right"><p className="text-xs text-slate-500">You send</p><p className="text-xl font-bold text-slate-950">{corridor ? formatMoney(comparison.amount, corridor.sendingCurrency) : comparison.amount} <span className="text-xs font-semibold text-slate-400">{corridor?.sendingCurrency}</span></p></div></div>
         <div className="border-b border-amber-100 bg-amber-50 px-5 py-2.5 text-center text-[11px] font-bold leading-5 text-amber-900">ILLUSTRATIVE SAMPLE DATA — NOT LIVE QUOTES</div>
-        {isLoading ? <LoadingState /> : corridor ? <Results corridor={corridor} providers={sortedProviders} amount={comparison.amount} sortBy={sortBy} setSortBy={setSortBy} /> : <EmptyState />}
+        {isLoading ? <LoadingState /> : corridor ? <Results corridor={corridor} providers={sortedProviders} amount={comparison.amount} sortBy={sortBy} setSortBy={setSortBy} onSelect={(provider) => { setSelectedProvider(provider); setDetailsStatus(`${provider.providerName} details opened.`); }} selectedProvider={selectedProvider} /> : <EmptyState />}
+        {corridor && selectedProvider && <ProviderDetails provider={selectedProvider} fromCountry={comparison.fromCountry} toCountry={comparison.toCountry} sendAmount={comparison.amount} sendCurrency={corridor.sendingCurrency} receiveCurrency={corridor.receivingCurrency} formattedFee={formatMoney(selectedProvider.fee, corridor.sendingCurrency)} formattedRate={`1 ${corridor.sendingCurrency} = ${selectedProvider.exchangeRate.toLocaleString("en-US", { maximumFractionDigits: 2 })} ${corridor.receivingCurrency}`} formattedRecipientAmount={formatMoney(recipientAmount(comparison.amount, selectedProvider), corridor.receivingCurrency)} onClose={() => { setSelectedProvider(null); setDetailsStatus("Provider details closed."); }} />}
+        <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">{detailsStatus}</p>
         <div className="border-t border-slate-100 bg-slate-50 px-5 py-4 text-xs leading-5 text-slate-600 sm:px-6"><div className="flex items-center justify-between gap-4"><span>Sample scenario.</span><span className="font-semibold text-blue-700">Fictional providers and values</span></div><p className="mt-3 border-t border-slate-200 pt-3">Actual fees, rates, availability, payout methods, and delivery times may differ. TransferHub does not currently initiate transfers.</p></div>
       </div>
     </div>
   );
 }
 
-function Results({ corridor, providers, amount, sortBy, setSortBy }: { corridor: NonNullable<ReturnType<typeof getIllustrativeCorridor>>; providers: ProviderResult[]; amount: number; sortBy: SortOption; setSortBy: (value: SortOption) => void }) {
-  return <><div className="flex items-center justify-between gap-3 border-b border-slate-100 px-5 py-3 sm:px-6"><p className="text-xs font-semibold text-slate-500">4 illustrative options</p><label htmlFor="sort-results" className="flex items-center gap-2 text-xs font-bold text-slate-700">Sort by<select id="sort-results" value={sortBy} onChange={(event) => setSortBy(event.target.value as SortOption)} className="rounded-lg border border-slate-200 bg-white px-2 py-2 text-xs font-semibold outline-none focus:border-blue-600"><option value="best">Best value</option><option value="fee">Lowest fee</option><option value="recipient">Recipient gets most</option><option value="fastest">Fastest delivery</option></select></label></div><div className="hidden grid-cols-[1.2fr_.6fr_.85fr_.85fr_.9fr_1fr] gap-2 border-b border-slate-100 bg-slate-50/70 px-5 py-3 text-[9px] font-bold uppercase tracking-wider text-slate-400 sm:grid"><span>Provider</span><span>Fee</span><span>Rate</span><span>Delivery</span><span>Payout</span><span className="text-right">Recipient gets</span></div><div className="divide-y divide-slate-100">{providers.map((provider) => <div key={provider.providerName} className="grid gap-4 p-5 sm:grid-cols-[1.2fr_.6fr_.85fr_.85fr_.9fr_1fr] sm:items-center sm:px-5 sm:py-4"><div className="flex items-center gap-3"><span className={`provider-dot provider-dot-${provider.accent}`}>{provider.providerName.at(-1)}</span><span><strong className="block text-sm text-slate-900">{provider.providerName}</strong><span className={`badge badge-${provider.accent}`}>{provider.badge}</span></span></div><Data label="Fee" value={formatMoney(provider.fee, corridor.sendingCurrency)}/><Data label="Rate" value={`1 ${corridor.sendingCurrency} = ${provider.exchangeRate.toLocaleString("en-US", { maximumFractionDigits: 2 })} ${corridor.receivingCurrency}`}/><Data label="Delivery" value={provider.estimatedDelivery}/><Data label="Payout" value={provider.payoutMethod}/><div className="sm:text-right"><span className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-400 sm:hidden">Recipient gets</span><strong className="text-sm text-slate-950">{formatMoney(recipientAmount(amount, provider), corridor.receivingCurrency, 2)}</strong></div></div>)}</div></>;
+function Results({ corridor, providers, amount, sortBy, setSortBy, onSelect, selectedProvider }: { corridor: NonNullable<ReturnType<typeof getIllustrativeCorridor>>; providers: ProviderResult[]; amount: number; sortBy: SortOption; setSortBy: (value: SortOption) => void; onSelect: (provider: ProviderResult) => void; selectedProvider: ProviderResult | null }) {
+  return <><div className="flex items-center justify-between gap-3 border-b border-slate-100 px-5 py-3 sm:px-6"><p className="text-xs font-semibold text-slate-500">{providers.length} illustrative options</p><label htmlFor="sort-results" className="flex items-center gap-2 text-xs font-bold text-slate-700">Sort by<select id="sort-results" value={sortBy} onChange={(event) => setSortBy(event.target.value as SortOption)} className="rounded-lg border border-slate-200 bg-white px-2 py-2 text-xs font-semibold outline-none focus:border-blue-600"><option value="best">Best value</option><option value="fee">Lowest fee</option><option value="fastest">Fastest</option><option value="recipient">Highest recipient amount</option></select></label></div><div className="hidden grid-cols-[1.15fr_.55fr_.8fr_.75fr_.8fr_.9fr_auto] gap-2 border-b border-slate-100 bg-slate-50/70 px-5 py-3 text-[9px] font-bold uppercase tracking-wider text-slate-400 sm:grid"><span>Provider</span><span>Fee</span><span>Rate</span><span>Delivery</span><span>Payout</span><span className="text-right">Recipient gets</span><span className="sr-only">Actions</span></div><div className="divide-y divide-slate-100">{providers.map((provider) => <div key={provider.providerName} className={`grid gap-4 p-5 sm:grid-cols-[1.15fr_.55fr_.8fr_.75fr_.8fr_.9fr_auto] sm:items-center sm:px-5 sm:py-4 ${selectedProvider?.providerName === provider.providerName ? "bg-blue-50/60" : ""}`}><div className="flex items-center gap-3"><span className={`provider-dot provider-dot-${provider.accent}`}>{provider.providerName.at(-1)}</span><span><strong className="block text-sm text-slate-900">{provider.providerName}</strong><span className={`badge badge-${provider.accent}`}>{provider.badge}</span></span></div><Data label="Fee" value={formatMoney(provider.fee, corridor.sendingCurrency)}/><Data label="Rate" value={`1 ${corridor.sendingCurrency} = ${provider.exchangeRate.toLocaleString("en-US", { maximumFractionDigits: 2 })} ${corridor.receivingCurrency}`}/><Data label="Delivery" value={provider.estimatedDelivery}/><Data label="Payout" value={provider.payoutMethod}/><div className="sm:text-right"><span className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-400 sm:hidden">Recipient gets</span><strong className="text-sm text-slate-950">{formatMoney(recipientAmount(amount, provider), corridor.receivingCurrency, 2)}</strong></div><button type="button" onClick={() => onSelect(provider)} aria-label={`View details for fictional provider ${provider.providerName}`} aria-expanded={selectedProvider?.providerName === provider.providerName} className="rounded-lg border border-blue-200 bg-white px-3 py-2 text-xs font-bold text-blue-700 transition hover:border-blue-400 hover:bg-blue-50">View details</button></div>)}</div></>;
 }
 
 function Data({ label, value }: { label: string; value: string }) { return <div><span className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-400 sm:hidden">{label}</span><span className="text-xs font-semibold leading-5 text-slate-700">{value}</span></div>; }

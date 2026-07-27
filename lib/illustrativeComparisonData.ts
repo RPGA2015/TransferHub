@@ -15,6 +15,7 @@ export type ProviderResult = {
   fee: number;
   exchangeRate: number;
   estimatedDelivery: DeliveryMethod;
+  deliveryLabel: DeliveryMethod;
   deliveryRank: number;
   payoutMethod: PayoutMethod;
   badge: "Best Value" | "Lowest Fee" | "Fastest" | "Wallet Delivery";
@@ -42,10 +43,10 @@ export const sendingCountries = ["United States", "Canada", "France"] as const s
 export const receivingCountries = ["Haiti", "Dominican Republic"] as const satisfies readonly Country[];
 
 const common = {
-  A: { providerName: "Provider A", estimatedDelivery: "Same day", deliveryRank: 3, payoutMethod: "Cash or bank", badge: "Best Value", accent: "emerald" },
-  B: { providerName: "Provider B", estimatedDelivery: "1–2 business days", deliveryRank: 4, payoutMethod: "Bank deposit", badge: "Lowest Fee", accent: "blue" },
-  C: { providerName: "Provider C", estimatedDelivery: "Near instant", deliveryRank: 1, payoutMethod: "Cash pickup", badge: "Fastest", accent: "amber" },
-  D: { providerName: "Provider D", estimatedDelivery: "Within an hour", deliveryRank: 2, payoutMethod: "Mobile wallet", badge: "Wallet Delivery", accent: "violet" },
+  A: { providerName: "Provider A", estimatedDelivery: "Same day", deliveryLabel: "Same day", deliveryRank: 3, payoutMethod: "Cash or bank", badge: "Best Value", accent: "emerald" },
+  B: { providerName: "Provider B", estimatedDelivery: "1–2 business days", deliveryLabel: "1–2 business days", deliveryRank: 4, payoutMethod: "Bank deposit", badge: "Lowest Fee", accent: "blue" },
+  C: { providerName: "Provider C", estimatedDelivery: "Near instant", deliveryLabel: "Near instant", deliveryRank: 1, payoutMethod: "Cash pickup", badge: "Fastest", accent: "amber" },
+  D: { providerName: "Provider D", estimatedDelivery: "Within an hour", deliveryLabel: "Within an hour", deliveryRank: 2, payoutMethod: "Mobile wallet", badge: "Wallet Delivery", accent: "violet" },
 } as const;
 
 export const illustrativeCorridors: readonly Corridor[] = [
