@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useMemo, useRef, useState } from "react";
+import { FormEvent, useCallback, useMemo, useRef, useState } from "react";
 import ComparisonControls, { type PayoutFilter, type SortOption } from "@/components/ComparisonControls";
 import ProviderBadge from "@/components/ProviderBadge";
 import ProviderDetails from "@/components/ProviderDetails";
@@ -52,12 +52,12 @@ export default function TransferComparison() {
     });
   }, [comparison.amount, corridor, payoutFilter, sortBy]);
 
-  function closeDetails(returnFocus = true) {
+  const closeDetails = useCallback((returnFocus = true) => {
     const providerName = selectedProvider?.providerName;
     setSelectedProvider(null);
     setDetailsStatus("Provider details closed.");
     if (returnFocus && providerName) window.requestAnimationFrame(() => detailButtons.get(providerName)?.focus());
-  }
+  }, [detailButtons, selectedProvider]);
 
   function handleFilterChange(value: PayoutFilter) {
     setPayoutFilter(value);
@@ -116,7 +116,7 @@ export default function TransferComparison() {
         <div className="flex flex-col gap-4 border-b border-slate-100 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6"><div><div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] text-slate-400"><span className="h-2 w-2 rounded-full bg-emerald-500"/>Comparison preview</div><h2 className="mt-2 text-lg font-bold text-slate-900">{comparison.fromCountry} <span className="mx-1 text-slate-300">→</span> {comparison.toCountry}</h2></div><div className="rounded-xl bg-slate-50 px-4 py-2.5 text-left sm:text-right"><p className="text-xs text-slate-500">You send</p><p className="text-xl font-bold text-slate-950">{corridor ? formatMoney(comparison.amount, corridor.sendingCurrency) : comparison.amount} <span className="text-xs font-semibold text-slate-400">{corridor?.sendingCurrency}</span></p></div></div>
         <div className="border-b border-amber-100 bg-amber-50 px-5 py-2.5 text-center text-[11px] font-bold leading-5 text-amber-900">ILLUSTRATIVE SAMPLE DATA — NOT LIVE QUOTES</div>
         {isLoading ? <LoadingState /> : corridor ? <Results corridor={corridor} providers={visibleProviders} amount={comparison.amount} sortBy={sortBy} payoutFilter={payoutFilter} onSortChange={setSortBy} onFilterChange={handleFilterChange} onSelect={(provider) => { setSelectedProvider(provider); setDetailsStatus(`${provider.providerName} details opened.`); }} selectedProvider={selectedProvider} buttonRefs={detailButtons} /> : <EmptyState />}
-        {corridor && selectedProvider && <ProviderDetails provider={selectedProvider} fromCountry={comparison.fromCountry} toCountry={comparison.toCountry} sendAmount={comparison.amount} sendCurrency={corridor.sendingCurrency} receiveCurrency={corridor.receivingCurrency} formattedFee={formatMoney(selectedProvider.fee, corridor.sendingCurrency)} formattedRate={`1 ${corridor.sendingCurrency} = ${selectedProvider.exchangeRate.toLocaleString("en-US", { maximumFractionDigits: 2 })} ${corridor.receivingCurrency}`} formattedRecipientAmount={formatMoney(recipientAmount(comparison.amount, selectedProvider), corridor.receivingCurrency)} onClose={() => closeDetails()} />}
+        {corridor && selectedProvider && <ProviderDetails provider={selectedProvider} fromCountry={comparison.fromCountry} toCountry={comparison.toCountry} sendAmount={comparison.amount} sendCurrency={corridor.sendingCurrency} receiveCurrency={corridor.receivingCurrency} formattedFee={formatMoney(selectedProvider.fee, corridor.sendingCurrency)} formattedRate={`1 ${corridor.sendingCurrency} = ${selectedProvider.exchangeRate.toLocaleString("en-US", { maximumFractionDigits: 2 })} ${corridor.receivingCurrency}`} formattedRecipientAmount={formatMoney(recipientAmount(comparison.amount, selectedProvider), corridor.receivingCurrency)} onClose={closeDetails} />}
         <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">{detailsStatus}</p>
         <div className="border-t border-slate-100 bg-slate-50 px-5 py-4 text-xs leading-5 text-slate-600 sm:px-6"><div className="flex items-center justify-between gap-4"><span>Sample scenario.</span><span className="font-semibold text-blue-700">Fictional providers and values</span></div><p className="mt-3 border-t border-slate-200 pt-3">Actual fees, rates, availability, payout methods, and delivery times may differ. TransferHub does not currently initiate transfers.</p></div>
       </div>

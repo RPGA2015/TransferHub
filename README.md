@@ -1,33 +1,63 @@
 # TransferHub
 
-TransferHub.info is an early-stage money-transfer comparison experience, initially focused on transfers to Haiti. The product is designed around the idea: **One App. Every Transfer.**
+TransferHub is an early-stage money-transfer comparison prototype, initially focused on transfers to Haiti. Version 0.1.0 demonstrates how someone could compare fictional provider results and join a development-only waitlist. TransferHub does not currently initiate, process, or track transfers.
 
-Provider and comparison information displayed in this project is illustrative. The project does not claim provider partnerships, endorsements, live integrations, live rates, regulatory approval, or transfer-processing capability.
+All provider names, fees, rates, payout methods, delivery estimates, badges, and recipient amounts are fictional illustrative sample data. They are not live quotes, recommendations, endorsements, or evidence of provider relationships.
 
-## Development
+## v0.1.0 scope
 
-Install dependencies and start the development server:
+- Responsive marketing homepage and navigation
+- Six illustrative sending and receiving corridors
+- Amount validation, quick amounts, and fee-aware recipient calculations
+- Best value, lowest fee, fastest, and highest-recipient-amount sorting
+- Typed payout-method filtering and visible result counts
+- Accessible fictional-provider detail panels
+- Development-only waitlist with validation and browser-local duplicate detection
+- Responsive layouts for mobile, tablet, and desktop
+
+## Technology
+
+- Next.js 16 App Router
+- React 19
+- TypeScript in strict mode
+- Tailwind CSS 4
+- ESLint with Next.js Core Web Vitals and TypeScript rules
+
+No backend, live provider API, analytics service, authentication system, or external database is connected.
+
+## Local setup
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). The dedicated waitlist is available at [http://localhost:3000/waitlist](http://localhost:3000/waitlist).
+Open [http://localhost:3000](http://localhost:3000). The waitlist is at [http://localhost:3000/waitlist](http://localhost:3000/waitlist).
 
-## Sprint status
+Useful commands:
 
-- Sprint 1A: completed — responsive marketing homepage and illustrative comparison preview.
-- Sprint 1B: completed — accessible waitlist form, validation, duplicate detection, success states, and homepage integration.
-- Sprint 2A: completed — responsive transfer search controls and client-side comparison updates.
-- Sprint 2B: completed — dynamic illustrative corridor results, fee calculations, validation, quick amounts, and responsive result cards.
-- Sprint 2C: completed — sortable illustrative comparison results.
-- Sprint 3A: completed — accessible provider selection, contextual explanations, disclosures, and provider details.
-- Sprint 3B: implemented — payout-method filtering, refined focus and keyboard behavior, responsive result cards, and reusable comparison controls and badges.
+```bash
+npm run lint
+npx tsc --noEmit
+npm run build
+npm run start
+```
 
-## Illustrative comparison data
+## Project structure
 
-All rates and provider results are fictional sample data. They are not current market rates, quotes, endorsements, or evidence of provider integrations. Sprint 2B supports these sample corridors:
+```text
+app/          App Router pages, metadata, and global styles
+components/   Comparison, provider-detail, and waitlist UI
+lib/          Canonical illustrative data and shared domain types
+public/       Static prototype assets
+docs/         Project-health and release checklists
+```
+
+`Country`, `ProviderResult`, `PayoutMethod`, and the six corridors are defined in `lib/illustrativeComparisonData.ts`. Interactive state and calculations remain in client components; pages and layout remain server components where browser interactivity is unnecessary.
+
+## Illustrative comparison model
+
+Supported sample corridors:
 
 - United States → Haiti
 - United States → Dominican Republic
@@ -36,29 +66,55 @@ All rates and provider results are fictional sample data. They are not current m
 - France → Haiti
 - France → Dominican Republic
 
-For each fictional provider, the displayed recipient amount is calculated locally as `max(send amount - fee, 0) × illustrative exchange rate`. No transfer is initiated.
+Recipient amounts are calculated locally as:
 
-Filtering and sorting are performed locally against the same fictional provider data. They do not request live quotes or indicate real-world provider availability.
+```text
+max(send amount - numeric fee, 0) × numeric illustrative exchange rate
+```
 
-## Sprint 1B storage
+Numeric values remain numbers until display formatting. Filtering creates a filtered provider list, and sorting operates on a copied array, so the canonical corridor data is not mutated.
 
-Waitlist entries currently use browser `localStorage` under the key `transferhub_waitlist_v1`. This is strictly temporary development/testing storage:
+## Accessibility highlights
 
-- Data exists only in the browser and device where it was entered.
-- Clearing browser storage removes it.
-- It is not synchronized, backed up, encrypted as application data, or suitable for production collection.
-- Duplicate detection is limited to that browser’s stored entries.
+- Associated labels and accessible validation messages
+- Keyboard-operable comparison, filter, sorting, detail, and waitlist controls
+- Visible focus indicators
+- Provider detail state exposed with `aria-expanded` and `aria-controls`
+- Focus movement into provider details and return to the originating button
+- Escape-to-close behavior and polite status announcements
+- Semantic headings and decorative-icon hiding
+- Reduced-motion support
+
+## Waitlist storage
+
+Waitlist entries use browser `localStorage` under `transferhub_waitlist_v1`. This is temporary development behavior:
+
+- Data remains only in the browser and device where it was entered.
+- Clearing browser storage removes the entry.
+- Entries are not synchronized, backed up, or protected as production application data.
+- Duplicate detection is limited to that browser.
 
 Do not collect real public signups with this implementation.
 
-## Next production step
+## Sprint history
 
-Replace `localStorage` with a secure server-side API and database. Add server-side validation, consent/audit records, abuse protection, encryption and retention controls, privacy workflows, and an approved transactional email provider for confirmation and unsubscribe handling before public launch. Comparison functionality also requires authorized, secure server-side provider-data integrations, freshness labeling, and resilient error handling before it can display real provider information.
+- Sprint 1A: responsive marketing homepage and illustrative comparison preview
+- Sprint 1B: validated development-only waitlist and duplicate detection
+- Sprint 2A: interactive transfer search controls
+- Sprint 2B: six dynamic illustrative corridors and fee-aware calculations
+- Sprint 2C: four result-sorting modes
+- Sprint 3A: accessible contextual provider details
+- Sprint 3B: payout filtering, responsive result cards, refined focus behavior, and component cleanup
+- v0.1.0 stabilization: architecture, accessibility, language, documentation, and release-health review
 
-## Validation
+See [CHANGELOG.md](CHANGELOG.md) and [RELEASE_NOTES_v0.1.0.md](RELEASE_NOTES_v0.1.0.md) for release detail.
 
-```bash
-npm run lint
-npx tsc --noEmit
-npm run build
-```
+## Production limitations
+
+Before any public or transactional launch, TransferHub requires authorized and resilient provider-data integrations, quote freshness and attribution, server-side validation, a secure database, privacy and retention workflows, abuse protection, authentication and authorization where needed, monitoring, operational support, and appropriate legal and compliance review. Accessibility and cross-browser testing also require human verification on supported devices and assistive technologies.
+
+The current prototype makes no claim of production security, regulatory approval, provider endorsement, guaranteed availability, or guaranteed results.
+
+## Proposed next phase
+
+Prioritize product and compliance requirements before adding transactional functionality. Replace the waitlist storage with an approved server-side workflow, define a provider-data contract with freshness and failure states, add automated tests for calculations and interactions, and conduct structured accessibility, privacy, security, and legal reviews.

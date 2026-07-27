@@ -10,7 +10,7 @@ const geistSans = Geist({
 export const metadata: Metadata = {
   title: "TransferHub | One App. Every Transfer.",
   description:
-    "Compare money-transfer providers, fees, exchange rates, payout methods, and delivery times from one secure platform.",
+    "Explore fictional, illustrative money-transfer comparisons across fees, exchange rates, payout methods, and delivery estimates.",
 };
 
 export default function RootLayout({
