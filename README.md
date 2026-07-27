@@ -16,20 +16,14 @@ npm run dev
 Open [http://localhost:3000](http://localhost:3000). The dedicated waitlist is available at [http://localhost:3000/waitlist](http://localhost:3000/waitlist).
 
 ## Sprint status
-### Sprint 3A — Completed
 
-- Interactive provider-details panel
-- Fee and exchange-rate explanations
-- Delivery and payout summaries
-- Provider-ranking explanation
-- Accessible provider selection and close behavior
-- Responsive details experience
 - Sprint 1A: completed — responsive marketing homepage and illustrative comparison preview.
 - Sprint 1B: completed — accessible waitlist form, validation, duplicate detection, success states, and homepage integration.
 - Sprint 2A: completed — responsive transfer search controls and client-side comparison updates.
 - Sprint 2B: completed — dynamic illustrative corridor results, fee calculations, validation, quick amounts, and responsive result cards.
 - Sprint 2C: completed — sortable illustrative comparison results.
-- Sprint 3A: implemented — accessible provider selection and contextual provider details.
+- Sprint 3A: completed — accessible provider selection, contextual explanations, disclosures, and provider details.
+- Sprint 3B: implemented — payout-method filtering, refined focus and keyboard behavior, responsive result cards, and reusable comparison controls and badges.
 
 ## Illustrative comparison data
 
@@ -43,6 +37,8 @@ All rates and provider results are fictional sample data. They are not current m
 - France → Dominican Republic
 
 For each fictional provider, the displayed recipient amount is calculated locally as `max(send amount - fee, 0) × illustrative exchange rate`. No transfer is initiated.
+
+Filtering and sorting are performed locally against the same fictional provider data. They do not request live quotes or indicate real-world provider availability.
 
 ## Sprint 1B storage
 

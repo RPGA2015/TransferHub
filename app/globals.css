@@ -36,5 +36,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, summary:focus-visibl
 .comparison-amount-code { padding-left:3.5rem; }
 .waitlist-hero::before { content:"";position:absolute;inset:0;opacity:.06;background-image:linear-gradient(rgba(255,255,255,.4) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.4) 1px,transparent 1px);background-size:64px 64px; }
 .loading-spinner { animation:spin .7s linear infinite; }
+.details-panel { animation:details-enter .18s ease-out; }
 @keyframes spin { to { transform:rotate(360deg); } }
+@keyframes details-enter { from { opacity:0; transform:translateY(.35rem); } to { opacity:1; transform:translateY(0); } }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior:auto } *,*::before,*::after { transition-duration:.01ms!important; animation-duration:.01ms!important; animation-iteration-count:1!important } }
