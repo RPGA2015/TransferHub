@@ -12,6 +12,8 @@ type ProviderDetailsProps = {
   sendAmount: number;
   sendCurrency: CurrencyCode;
   receiveCurrency: CurrencyCode;
+  visibleResultCount: number;
+  firstVisibleRecipientAmount: number;
   onClose: () => void;
 };
 
@@ -22,9 +24,17 @@ export default function ProviderDetails({
   sendAmount,
   sendCurrency,
   receiveCurrency,
+  visibleResultCount,
+  firstVisibleRecipientAmount,
   onClose,
 }: ProviderDetailsProps) {
   const headingRef = useRef<HTMLHeadingElement>(null);
+  const recipientDifference = firstVisibleRecipientAmount - provider.recipientAmount;
+  const comparisonDifference = recipientDifference === 0
+    ? "The same recipient amount as the first visible option."
+    : recipientDifference > 0
+      ? `${formatRecipientAmount(recipientDifference, receiveCurrency)} less than the first visible option.`
+      : `${formatRecipientAmount(Math.abs(recipientDifference), receiveCurrency)} more than the first visible option.`;
 
   useEffect(() => {
     headingRef.current?.focus();
@@ -130,6 +140,17 @@ export default function ProviderDetails({
         </div>
       </div>
 
+      <div className="mt-8 rounded-2xl border border-blue-100 bg-blue-50/60 p-5">
+        <h4 className="font-semibold text-slate-900">How this option compares</h4>
+        <p className="mt-1 text-xs leading-5 text-slate-600">Current visible illustrative results only; position is not a recommendation.</p>
+        <dl className="mt-4 grid gap-4 text-sm sm:grid-cols-2">
+          <div><dt className="text-slate-500">Position</dt><dd className="mt-1 font-semibold text-slate-900">{visibleResultCount === 1 ? "1 of 1 visible illustrative options." : `${provider.rankPosition} of ${visibleResultCount} visible illustrative options.`}</dd></div>
+          <div><dt className="text-slate-500">Fee percentage</dt><dd className="mt-1 font-semibold text-slate-900">{provider.feePercentage.toLocaleString("en-US", { maximumFractionDigits: 2 })}% of the send amount</dd></div>
+          <div><dt className="text-slate-500">Recipient amount difference</dt><dd className="mt-1 font-semibold text-slate-900">{comparisonDifference}</dd></div>
+          <div><dt className="text-slate-500">Delivery and payout</dt><dd className="mt-1 font-semibold text-slate-900">{provider.deliveryLabel}; {provider.payoutMethod}</dd></div>
+        </dl>
+      </div>
+
       <div className="mt-8 grid gap-4 lg:grid-cols-2">
         <div className="rounded-2xl bg-slate-50 p-5">
           <h4 className="font-semibold text-slate-900">Fee breakdown</h4>
@@ -164,8 +185,8 @@ export default function ProviderDetails({
             Why this result appears here
           </h4>
           <p className="mt-2 text-sm leading-6 text-slate-600">
-            The “{provider.badge}” label is based only on this fictional
-            comparison scenario and its current sorting logic.
+            The “{provider.badge}” label is descriptive metadata for this
+            fictional scenario. It does not control the calculated result order.
           </p>
         </div>
       </div>

@@ -31,6 +31,11 @@ export type ProviderOffer = {
 
 export type ProviderResult = ProviderOffer & ProviderIdentity & {
   recipientAmount: number;
+  totalCost: number;
+  feePercentage: number;
+  deliveryScore: number;
+  valueScore: number;
+  rankPosition: number;
 };
 
 export type Corridor = {

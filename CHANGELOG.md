@@ -6,11 +6,27 @@
 
 - Added one fictional Provider E bank-deposit offer to the existing United States → Haiti corridor: 1.50 USD illustrative fee, 131.05 illustrative exchange rate, and same-day illustrative delivery
 - Added reusable en-US currency, recipient-amount, exchange-rate, and display-prefix utilities
+- Added numeric total-cost, fee-percentage, delivery-score, value-score, and visible-rank metrics to enriched provider results
+- Added live sort explanations, visible recipient-amount range summaries, and neutral “How this option compares” details
 
 ### Changed
 
 - Refactored comparison components to consume derived comparison results instead of calculating, filtering, sorting, or formatting corridor data locally
 - Kept interactive form, loading, sorting, payout filtering, empty states, result counts, provider-detail focus behavior, disclosures, and responsive layouts intact
+- Refined all four sort modes with explicit deterministic tie-break chains and stable provider-name ordering
+
+### Comparison logic
+
+- Defined value score as recipient amount without hidden weighting; fee and delivery are used only as documented tie-breakers
+- Assigned one-based rank positions after payout filtering and sorting so positions describe the current visible results
+- Normalized invalid, negative, overflowing, and boundary calculation inputs to prevent negative recipient amounts, `NaN`, or `Infinity`
+- Kept source corridor and provider arrays immutable during enrichment, filtering, ranking, and sorting
+
+### Accessibility
+
+- Added polite live updates for the factual explanation associated with each selected sort mode
+- Added a live visible-result count and recipient-range summary that updates after filtering and comparison changes
+- Kept provider detail focus entry, Escape-to-close, focus return, and filtered-provider closure behavior intact
 
 ### Architecture
 
@@ -23,12 +39,14 @@
 
 - ESLint and strict TypeScript checking pass after the architecture refactor
 - Production build and whitespace validation are included in the completion validation for this milestone
+- Smart comparison formulas, deterministic tie-breakers, visible ranks, and detail derivation are covered by strict static checks and production-build validation
 
 ### Limitations
 
 - Every provider identity, fee, rate, payout method, delivery estimate, badge, and recipient amount remains fictional and illustrative
 - No live quotes, provider APIs, database, analytics, authentication, payment service, endorsement, or recommendation is present
 - Automated engine and interaction tests remain planned for the next v0.2.0 milestone
+- Rankings describe only the currently visible fictional sample results and must not be interpreted as provider recommendations
 
 ---
 

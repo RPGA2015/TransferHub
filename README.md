@@ -17,7 +17,7 @@ All provider names, fees, rates, payout methods, delivery estimates, badges, and
 
 ## v0.2.0 development status
 
-Milestones 2 and 3 separate transfer types, country definitions, fictional provider identities, corridor offers, pure comparison behavior, and currency formatting. The homepage and comparison experience remain visually unchanged. As a small scalability demonstration, the United States → Haiti corridor now includes one additional fictional Provider E bank-deposit offer with a 1.50 USD fee, a 131.05 illustrative exchange rate, and same-day illustrative delivery.
+Milestones 2 and 3 separate transfer types, country definitions, fictional provider identities, corridor offers, pure comparison behavior, and currency formatting. Milestone 4 adds transparent derived metrics, deterministic tie-break rules, live sort explanations, visible-result ranges, and neutral comparison context in provider details. The visual design remains consistent. As a small scalability demonstration, the United States → Haiti corridor includes one additional fictional Provider E bank-deposit offer with a 1.50 USD fee, a 131.05 illustrative exchange rate, and same-day illustrative delivery.
 
 ## Technology
 
@@ -82,6 +82,30 @@ max(send amount - numeric fee, 0) × numeric illustrative exchange rate
 Numeric values remain numbers until display formatting. Filtering creates a filtered provider list, and sorting operates on a copied array, so the canonical corridor data is not mutated.
 
 The comparison flow is data-driven: a `ComparisonRequest` identifies a corridor, amount, sort mode, and payout filter; `compareTransfers` looks up the corridor, enriches its raw offers with fictional provider identity and calculated recipient amounts, filters, copies and sorts the results, and returns a `ComparisonResult` with a visible count. Unsupported corridors safely return an empty result.
+
+### Smart Comparison Engine
+
+Every visible `ProviderResult` contains numeric derived metrics. Formatting occurs only in the UI:
+
+```text
+recipientAmount = max(normalized amount - normalized fee, 0) × normalized exchange rate
+totalCost = normalized amount + normalized fee
+feePercentage = normalized amount > 0 ? normalized fee / normalized amount × 100 : 0
+deliveryScore = existing numeric delivery rank (lower is faster)
+valueScore = recipientAmount
+rankPosition = one-based position after filtering and deterministic sorting
+```
+
+`valueScore` deliberately contains no weighted blend or hidden preference. Recipient amount determines value order; fee and delivery are visible tie-breakers. Invalid, negative, or non-finite numeric inputs are normalized to safe non-negative metrics, and a fee that consumes the effective send amount produces a zero recipient amount.
+
+Sort rules are deterministic:
+
+- Best value: highest recipient amount, then lower fee, faster delivery, and provider name.
+- Lowest fee: lower fee, then highest recipient amount, faster delivery, and provider name.
+- Fastest: faster delivery rank, then highest recipient amount, lower fee, and provider name.
+- Highest recipient amount: highest recipient amount, then lower fee, faster delivery, and provider name.
+
+Provider names are used only as the final stable tie-break. Descriptive badges do not affect sorting. Rankings compare the currently visible fictional results under the selected sort mode; they are not recommendations, endorsements, live quotes, or claims about provider quality.
 
 ### Extending illustrative data
 
