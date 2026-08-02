@@ -119,11 +119,30 @@ Sort rules are deterministic:
 
 Provider names are used only as the final stable tie-break. Descriptive badges do not affect sorting. Rankings compare the currently visible fictional results under the selected sort mode; they are not recommendations, endorsements, live quotes, or claims about provider quality.
 
+### Rich Illustrative Provider Profiles
+
+Provider identity and profile metadata live once in `lib/data/providers.ts`; corridor offers reference stable `ProviderId` values and retain only corridor-specific fees, rates, delivery estimates, and payout methods. The comparison engine safely enriches each offer with its reusable profile and leaves source data unchanged.
+
+Each fictional `ProviderProfile` may contain:
+
+- Stable ID, fictional name, optional short name, initials, and neutral color accent
+- Concise description and service summary
+- Supported illustrative payout methods
+- Illustrative support-channel and digital-access labels
+- Neutral availability note
+- Required `profileStatus: "illustrative"` marker
+
+These fields are presentation metadata only. They do not contain or imply licensing, regulatory approval, security certification, longevity, customer ratings, review counts, reliability, partnership, endorsement, guaranteed availability, or real contact details.
+
+Badges are calculated from the current visible illustrative results after payout filtering. Best Value uses the documented recipient/fee/delivery tie-break order, Lowest Fee and Fastest use their deterministic comparison orders, and Wallet Delivery describes a visible mobile-wallet offer. Profiles never assign or override comparison badges, and badges do not change sorting.
+
+If a corridor offer has no matching profile, the engine keeps its numeric comparison usable and displays “Illustrative provider information unavailable” instead of crashing or rendering empty labels.
+
 ## Transfer Marketplace
 
 `/marketplace` is a responsive discovery page generated from canonical country, corridor, provider-offer, and marketplace metadata. It does not maintain a duplicate corridor list or calculate transfer values.
 
-- Search is immediate, case-insensitive, whitespace-normalized, and matches origin names, destination names, combined corridor text, and fictional provider names.
+- Search is immediate, case-insensitive, whitespace- and separator-normalized, and matches origin names, destination names, combined corridor text, and fictional provider names resolved from canonical profiles.
 - Region filters are generated from the regions represented by current corridor endpoints: Caribbean, Europe, and North America.
 - `featured`, `recentlyAdded`, and `displayPriority` are optional typed corridor metadata. Featured routes are explicitly selected rather than described as genuinely popular or trending. Recently added routes are never inferred from array order.
 - Result counts are announced politely, and empty results provide a neutral Clear filters action.
@@ -131,12 +150,27 @@ Provider names are used only as the final stable tie-break. Descriptive badges d
 
 “Compare this corridor” links use the stable corridor ID in `/?corridor=<id>#compare`. The homepage validates the ID against corridor data on the server, ignores malformed or unsupported values, and initializes both the editable form and its illustrative preview to the same valid direction. The amount remains editable and no comparison submission or loading sequence is triggered. With no valid query, the existing United States → Haiti default remains unchanged. Fragment scrolling follows the site’s reduced-motion CSS preference.
 
-Marketplace discovery is local prototype behavior: there are no saved favorites, recent-view history, accounts, synchronization, live availability, or external storage.
+Marketplace discovery remains local prototype behavior: there are no accounts, cross-device synchronization, live availability, or external storage.
+
+### Personal Workspace
+
+The marketplace now supports browser-local favorites, pinned favorites, and recently selected corridors. Workspace data stores only canonical corridor IDs under the versioned key `transferhub_marketplace_workspace_v1`; it never stores provider offers, fees, rates, amounts, recipients, names, emails, or payment information.
+
+- Favorite controls add or remove a corridor from the saved workspace. Removing a favorite also removes its pin.
+- Pinning is available only after a corridor is a favorite. Pins and favorites remain separate ordered ID lists, and pinned cards appear before other favorites.
+- Activating “Compare this corridor” records that valid corridor as recent without replacing semantic link navigation. Direct valid corridor-query visits are also recorded, while malformed IDs are ignored.
+- Recent corridors are deduplicated, most-recent-first, and limited to six. Selecting an existing recent route moves it to the front. Recents can be cleared with one browser-local action.
+- Personal workspace summaries remain visible when discovery search or region filters change; only Browse all corridors follows those filters.
+
+The storage service validates version and shape, removes obsolete corridor IDs, handles malformed JSON and unavailable storage without crashing, and never synchronizes data. Clearing this browser’s storage removes the workspace. Saved state is not backed up, encrypted by TransferHub, associated with an account, or available on another browser or device.
+
+To test locally, favorite and pin several marketplace cards, activate more than six distinct comparison links, return to `/marketplace`, and reload. Verify saved ordering, the six-item recent limit, favorite removal unpinning, and Clear recent corridors. Then remove `transferhub_marketplace_workspace_v1` in browser developer tools to verify the workspace returns to its empty state.
 
 ### Extending illustrative data
 
 - Add or update one canonical country definition in `lib/data/countries.ts`, including its code, label, currency, and directional capability flags.
-- Add a fictional provider identity to `lib/data/providers.ts` and extend the narrow provider unions in `lib/types/transfer.ts` when a new identity, badge, or accent is required.
+- Add one fictional provider profile to `lib/data/providers.ts`, extend `ProviderId` and other narrow unions only as needed, and keep every profile field neutral and explicitly illustrative.
+- Associate an offer by its stable `providerId` in `lib/data/corridors.ts`. Keep corridor-varying fee, rate, delivery, and payout values in the offer rather than the profile.
 - Add each supported direction as its own corridor in `lib/data/corridors.ts`, with `fromCountry`, `toCountry`, `sendCurrency`, `receiveCurrency`, and fictional offers. Add the reverse direction separately only when it is actually supported.
 - Add optional `featured`, `recentlyAdded`, or `displayPriority` metadata only when the route should appear in those marketplace sections. Add or reuse endpoint region metadata in `lib/data/countries.ts`.
 - Dropdowns and swap availability derive automatically from corridor data; UI logic does not need editing when a valid directional corridor is added.
@@ -185,4 +219,4 @@ The current prototype makes no claim of production security, regulatory approval
 
 ## Proposed next phase
 
-The next planned v0.2.0 milestone is local-only marketplace favorites and recent-corridor history, followed by automated unit and interaction coverage. Product and compliance requirements remain prerequisites to any transactional functionality. A future live-data design would also require an authorized provider-data contract with freshness and failure states; none is connected in this prototype.
+The next planned v0.2.0 milestone is provider-focused marketplace discovery and derived corridor categories, followed by automated profile, engine, and interaction coverage. Product and compliance requirements remain prerequisites to any transactional functionality. A future live-data design would also require an authorized provider-data contract with freshness and failure states; none is connected in this prototype.

@@ -1,12 +1,12 @@
-import type { Corridor, DeliveryMethod, PayoutMethod, ProviderName } from "@/lib/types/transfer";
+import type { Corridor, DeliveryMethod, PayoutMethod, ProviderId } from "@/lib/types/transfer";
 
 const offerDefaults = {
-  A: { providerName: "Provider A", deliveryLabel: "Same day", deliveryRank: 3, payoutMethod: "Cash or bank" },
-  B: { providerName: "Provider B", deliveryLabel: "1–2 business days", deliveryRank: 4, payoutMethod: "Bank deposit" },
-  C: { providerName: "Provider C", deliveryLabel: "Near instant", deliveryRank: 1, payoutMethod: "Cash pickup" },
-  D: { providerName: "Provider D", deliveryLabel: "Within an hour", deliveryRank: 2, payoutMethod: "Mobile wallet" },
-  E: { providerName: "Provider E", deliveryLabel: "Same day", deliveryRank: 3, payoutMethod: "Bank deposit" },
-} as const satisfies Record<string, { providerName: ProviderName; deliveryLabel: DeliveryMethod; deliveryRank: number; payoutMethod: PayoutMethod }>;
+  A: { providerId: "provider-a", deliveryLabel: "Same day", deliveryRank: 3, payoutMethod: "Cash or bank" },
+  B: { providerId: "provider-b", deliveryLabel: "1–2 business days", deliveryRank: 4, payoutMethod: "Bank deposit" },
+  C: { providerId: "provider-c", deliveryLabel: "Near instant", deliveryRank: 1, payoutMethod: "Cash pickup" },
+  D: { providerId: "provider-d", deliveryLabel: "Within an hour", deliveryRank: 2, payoutMethod: "Mobile wallet" },
+  E: { providerId: "provider-e", deliveryLabel: "Same day", deliveryRank: 3, payoutMethod: "Bank deposit" },
+} as const satisfies Record<string, { providerId: ProviderId; deliveryLabel: DeliveryMethod; deliveryRank: number; payoutMethod: PayoutMethod }>;
 
 export const illustrativeCorridors: readonly Corridor[] = [
   { id: "United States-Haiti", fromCountry: "United States", toCountry: "Haiti", sendCurrency: "USD", receiveCurrency: "HTG", featured: true, displayPriority: 1, offers: [

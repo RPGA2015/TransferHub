@@ -65,7 +65,7 @@ export default async function Home({ searchParams }: HomeProps) {
             <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row lg:justify-start"><Link href="/waitlist" className="inline-flex min-h-13 items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-3.5 font-bold text-white shadow-xl shadow-blue-900/30 transition hover:bg-blue-500">Join the Waitlist <ButtonArrow /></Link><Link href="/marketplace" className="inline-flex min-h-13 items-center justify-center rounded-xl border border-white/20 bg-white/5 px-6 py-3.5 font-bold text-white transition hover:bg-white/10">Explore corridors</Link></div>
             <p className="mt-5 flex items-center justify-center gap-2 text-sm text-slate-400 lg:justify-start"><svg viewBox="0 0 20 20" className="h-4 w-4 text-emerald-400" fill="currentColor" aria-hidden="true"><path d="M10 2 4 4.5V9c0 4.1 2.5 7.3 6 9 3.5-1.7 6-4.9 6-9V4.5L10 2Zm3 6-3.5 4L7 9.7l1.1-1.1 1.3 1.2 2.5-2.9L13 8Z"/></svg>No transfer required. Be first to know when we launch.</p>
           </div>
-          <TransferComparison initialCorridor={initialCorridor} />
+          <TransferComparison initialCorridor={initialCorridor} initialCorridorId={corridor?.id} />
         </div>
       </section>
 

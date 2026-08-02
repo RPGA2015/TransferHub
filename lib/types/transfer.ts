@@ -6,24 +6,38 @@ export type Country =
   | "Dominican Republic";
 export type CountryCode = "US" | "CA" | "FR" | "HT" | "DO";
 export type Region = "North America" | "Caribbean" | "Europe";
+export type CorridorId = `${Country}-${Country}`;
+export type WorkspaceStorageVersion = 1;
 
 export type CurrencyCode = "USD" | "CAD" | "EUR" | "HTG" | "DOP";
 export type PayoutMethod = "Cash pickup" | "Bank deposit" | "Mobile wallet" | "Cash or bank";
 export type DeliveryMethod = "Near instant" | "Within an hour" | "Same day" | "1–2 business days";
+export type ProviderId = "provider-a" | "provider-b" | "provider-c" | "provider-d" | "provider-e";
 export type ProviderName = "Provider A" | "Provider B" | "Provider C" | "Provider D" | "Provider E";
-export type ProviderBadge = "Best Value" | "Lowest Fee" | "Fastest" | "Wallet Delivery" | "Bank Deposit";
+export type ProviderBadge = "Best Value" | "Lowest Fee" | "Fastest" | "Wallet Delivery";
 export type ProviderAccent = "emerald" | "blue" | "amber" | "violet";
+export type SupportChannel = "Email" | "Phone" | "In-app help" | "Help center";
+export type DigitalAccess = "Web" | "Mobile app";
 export type SortOption = "best" | "fee" | "recipient" | "fastest";
 export type PayoutFilter = "all" | PayoutMethod;
 
-export type ProviderIdentity = {
+export type ProviderProfile = {
+  id: ProviderId;
   name: ProviderName;
-  badge: ProviderBadge;
+  shortName?: string;
+  initials: string;
+  description: string;
+  serviceSummary: string;
+  supportedPayoutMethods: readonly PayoutMethod[];
+  supportChannels: readonly SupportChannel[];
+  digitalAccess: readonly DigitalAccess[];
+  availabilityNote: string;
+  profileStatus: "illustrative";
   accent: ProviderAccent;
 };
 
 export type ProviderOffer = {
-  providerName: ProviderName;
+  providerId: ProviderId;
   fee: number;
   exchangeRate: number;
   deliveryLabel: DeliveryMethod;
@@ -31,7 +45,12 @@ export type ProviderOffer = {
   payoutMethod: PayoutMethod;
 };
 
-export type ProviderResult = ProviderOffer & ProviderIdentity & {
+export type ProviderResult = ProviderOffer & {
+  providerName: string;
+  initials: string;
+  serviceSummary?: string;
+  accent: ProviderAccent;
+  badge: ProviderBadge | null;
   recipientAmount: number;
   totalCost: number;
   feePercentage: number;
@@ -41,7 +60,7 @@ export type ProviderResult = ProviderOffer & ProviderIdentity & {
 };
 
 export type Corridor = {
-  id: `${Country}-${Country}`;
+  id: CorridorId;
   fromCountry: Country;
   toCountry: Country;
   sendCurrency: CurrencyCode;
@@ -50,6 +69,16 @@ export type Corridor = {
   featured?: boolean;
   recentlyAdded?: boolean;
   displayPriority?: number;
+};
+
+export type WorkspaceState = {
+  favoriteCorridorIds: CorridorId[];
+  pinnedCorridorIds: CorridorId[];
+  recentCorridorIds: CorridorId[];
+};
+
+export type StoredWorkspaceState = WorkspaceState & {
+  version: WorkspaceStorageVersion;
 };
 
 export type ComparisonRequest = {

@@ -1,5 +1,5 @@
 import { illustrativeCorridors } from "@/lib/data/corridors";
-import { getProviderIdentity } from "@/lib/data/providers";
+import { getProviderProfile } from "@/lib/data/providers";
 import type { ComparisonRequest, ComparisonResult, Corridor, Country, PayoutFilter, ProviderOffer, ProviderResult, SortOption } from "@/lib/types/transfer";
 
 export const unavailableCorridorMessage = "This illustrative transfer corridor is not available yet.";
@@ -52,10 +52,15 @@ export function enrichProviderResult(amount: number, offer: ProviderOffer): Prov
     ? offer.deliveryRank
     : Number.MAX_SAFE_INTEGER;
   const recipientAmount = calculateRecipientAmount(safeAmount, { fee, exchangeRate });
+  const profile = getProviderProfile(offer.providerId);
 
   return {
     ...offer,
-    ...getProviderIdentity(offer.providerName),
+    providerName: profile?.name ?? "Illustrative provider information unavailable",
+    initials: profile?.initials ?? "?",
+    serviceSummary: profile?.serviceSummary,
+    accent: profile?.accent ?? "blue",
+    badge: null,
     fee,
     exchangeRate,
     deliveryRank: deliveryScore,
@@ -73,11 +78,40 @@ export function filterProviderResults(providers: readonly ProviderResult[], payo
   return providers.filter((provider) => payoutFilter === "all" || provider.payoutMethod === payoutFilter);
 }
 
+const byRecipient = (a: ProviderResult, b: ProviderResult) => b.recipientAmount - a.recipientAmount;
+const byFee = (a: ProviderResult, b: ProviderResult) => a.fee - b.fee;
+const byDelivery = (a: ProviderResult, b: ProviderResult) => a.deliveryScore - b.deliveryScore;
+const byName = (a: ProviderResult, b: ProviderResult) => a.providerName.localeCompare(b.providerName, "en-US");
+
+function compareByChecks(a: ProviderResult, b: ProviderResult, checks: readonly ((left: ProviderResult, right: ProviderResult) => number)[]): number {
+  for (const check of checks) {
+    const result = check(a, b);
+    if (result !== 0) return result;
+  }
+  return 0;
+}
+
+export function applyComparisonBadges(providers: readonly ProviderResult[]): ProviderResult[] {
+  if (providers.length === 0) return [];
+  const bestValueId = [...providers].sort((a, b) => compareByChecks(a, b, [byRecipient, byFee, byDelivery, byName]))[0]?.providerId;
+  const lowestFeeId = [...providers].sort((a, b) => compareByChecks(a, b, [byFee, byRecipient, byDelivery, byName]))[0]?.providerId;
+  const fastestId = [...providers].sort((a, b) => compareByChecks(a, b, [byDelivery, byRecipient, byFee, byName]))[0]?.providerId;
+
+  return providers.map((provider) => ({
+    ...provider,
+    badge: provider.providerId === bestValueId
+      ? "Best Value"
+      : provider.providerId === lowestFeeId
+        ? "Lowest Fee"
+        : provider.providerId === fastestId
+          ? "Fastest"
+          : provider.payoutMethod === "Mobile wallet"
+            ? "Wallet Delivery"
+            : null,
+  }));
+}
+
 export function sortProviderResults(providers: readonly ProviderResult[], sortBy: SortOption): ProviderResult[] {
-  const byRecipient = (a: ProviderResult, b: ProviderResult) => b.recipientAmount - a.recipientAmount;
-  const byFee = (a: ProviderResult, b: ProviderResult) => a.fee - b.fee;
-  const byDelivery = (a: ProviderResult, b: ProviderResult) => a.deliveryScore - b.deliveryScore;
-  const byName = (a: ProviderResult, b: ProviderResult) => a.providerName.localeCompare(b.providerName, "en-US");
   const compare = (a: ProviderResult, b: ProviderResult) => {
     const checks = sortBy === "fee"
       ? [byFee, byRecipient, byDelivery, byName]
@@ -85,11 +119,7 @@ export function sortProviderResults(providers: readonly ProviderResult[], sortBy
         ? [byDelivery, byRecipient, byFee, byName]
         : [byRecipient, byFee, byDelivery, byName];
 
-    for (const check of checks) {
-      const result = check(a, b);
-      if (result !== 0) return result;
-    }
-    return 0;
+    return compareByChecks(a, b, checks);
   };
 
   return [...providers]
@@ -101,6 +131,7 @@ export function compareTransfers(request: ComparisonRequest): ComparisonResult {
   const corridor = getIllustrativeCorridor(request.fromCountry, request.toCountry) ?? null;
   if (!corridor) return { request, corridor, providers: [], visibleResultCount: 0 };
   const enriched = corridor.offers.map((offer) => enrichProviderResult(request.amount, offer));
-  const providers = sortProviderResults(filterProviderResults(enriched, request.payoutFilter), request.sortBy);
+  const visibleProviders = filterProviderResults(enriched, request.payoutFilter);
+  const providers = sortProviderResults(applyComparisonBadges(visibleProviders), request.sortBy);
   return { request, corridor, providers, visibleResultCount: providers.length };
 }

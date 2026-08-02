@@ -12,6 +12,10 @@
 - Added a guarded country-swap control that is available only when the explicit reverse corridor exists
 - Added the responsive `/marketplace` route, reusable corridor cards, corridor search, region filters, result counts, and empty-state clearing
 - Added typed region, featured, recently-added, and display-priority metadata to the canonical country and corridor models
+- Added browser-local favorite, pinned-favorite, and six-item recent-corridor workspace sections
+- Added the versioned `transferhub_marketplace_workspace_v1` storage service and focused marketplace workspace hook
+- Added canonical rich illustrative profiles for all five fictional providers, including neutral summaries, capabilities, access labels, support-channel labels, and availability notes
+- Added stable provider IDs and pure helpers for profile lookup, provider corridors, payout methods, and offer counts
 
 ### Changed
 
@@ -21,6 +25,25 @@
 - Changed origin and destination dropdowns to derive valid options from directional corridor data
 - Added Marketplace to shared desktop and mobile navigation plus a restrained homepage “Explore corridors” action
 - Added server-validated corridor-ID initialization for marketplace comparison links
+- Updated corridor cards with explicit Favorite and Pin controls while retaining semantic comparison links
+- Changed corridor offers to reference stable provider IDs while keeping all corridor-specific values unchanged
+- Changed comparison badges from static identity metadata to deterministic labels calculated from the current visible illustrative results
+
+### Provider profiles
+
+- Separated reusable fictional provider identity/profile metadata from corridor-specific fee, rate, delivery, and payout data
+- Added neutral missing-profile fallbacks that preserve numeric comparison results without undefined labels or page crashes
+- Added restrained service-summary previews to comparison rows and expanded details into overview, current offer, service capabilities, comparison context, and important notice sections
+- Kept profile metadata from influencing calculations, rankings, filters, sorting, and calculated badges
+- Preserved provider-name marketplace search by resolving offer IDs through canonical profiles without duplicating corridor results
+
+### Personal workspace
+
+- Stored only validated canonical corridor IDs in deduplicated, deterministic favorite, pin, and recent arrays
+- Required favorite status before pinning and automatically removed a pin when its favorite was removed
+- Preserved pin and favorite save order, displayed pinned favorites before other favorites, and kept personal summaries independent of discovery filters
+- Recorded valid comparison-link and direct query selections as most-recent-first history, capped at six, with one-click clearing
+- Sanitized malformed, outdated, incorrectly shaped, or unknown-corridor storage data without throwing
 
 ### Marketplace
 
@@ -53,6 +76,15 @@
 - Prevented impossible origin-destination choices from appearing in keyboard-accessible country selects
 - Added a labeled search landmark, keyboard-operable pressed-state region filters, live result counts, descriptive corridor links, and accessible clear actions
 - Added current-page navigation indication on the marketplace route and preserved global reduced-motion behavior
+- Added visible Favorite and Pin labels, `aria-pressed` states, disabled pin guidance, touch-sized controls, and polite saved-state announcements
+- Prevented saved-state hydration mismatches by withholding workspace controls and sections until browser storage is loaded
+- Added screen-reader context that badges apply only to the current illustrative comparison
+- Added semantic capability lists, logical provider-detail headings, decorative initials treatment, and responsive profile fallbacks
+
+### Privacy
+
+- Added clear browser-local disclosure stating that workspace data is removed with browser storage and is not synchronized across devices
+- Confirmed workspace storage contains no names, emails, recipients, amounts, provider values, payment information, or full corridor objects
 
 ### Architecture
 
@@ -68,6 +100,8 @@
 - Smart comparison formulas, deterministic tie-breakers, visible ranks, and detail derivation are covered by strict static checks and production-build validation
 - Directional lookup, dynamic country options, reverse-route checks, and all ten corridor builds pass strict static validation
 - Marketplace discovery helpers, homepage query validation, and the `/marketplace` route pass strict TypeScript and production-build checks
+- Workspace sanitization, storage guards, canonical ID resolution, hydration behavior, and updated marketplace UI pass static and production-build validation
+- Provider profile enrichment, visible-result badge calculation, provider-name marketplace search, missing-profile fallbacks, and rich details pass strict static validation
 
 ### Limitations
 
@@ -76,7 +110,8 @@
 - Automated engine and interaction tests remain planned for the next v0.2.0 milestone
 - Rankings describe only the currently visible fictional sample results and must not be interpreted as provider recommendations
 - Country capabilities and corridor availability describe only this fictional prototype data set, not provider, legal, or regulatory availability
-- Marketplace favorites and recent-view history are not implemented; all discovery state resets on reload and no external storage is connected
+- Workspace persistence is limited to the current browser, has no account backup or synchronization, and disappears when browser storage is cleared
+- Provider profiles and capabilities are entirely fictional; no partnership, integration, verification, licensing, rating, security certification, or endorsement is claimed
 
 ---
 

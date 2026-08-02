@@ -1,12 +1,13 @@
 "use client";
 
-import { FormEvent, useCallback, useMemo, useRef, useState } from "react";
+import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ComparisonControls from "@/components/ComparisonControls";
 import ProviderBadge from "@/components/ProviderBadge";
 import ProviderDetails from "@/components/ProviderDetails";
 import { countryCurrencies, getCountryDefinition } from "@/lib/data/countries";
 import { compareTransfers, getAvailableReceivingCountries, getAvailableSendingCountries, isCorridorAvailable, unavailableCorridorMessage } from "@/lib/services/comparisonEngine";
-import type { ComparisonRequest, Country, Corridor, PayoutFilter, ProviderResult, SortOption } from "@/lib/types/transfer";
+import { recordRecentCorridorInStorage } from "@/lib/storage/marketplaceWorkspace";
+import type { ComparisonRequest, CorridorId, Country, Corridor, PayoutFilter, ProviderResult, SortOption } from "@/lib/types/transfer";
 import { formatCurrency, formatExchangeRate, formatRecipientAmount, getCurrencyDisplayPrefix } from "@/lib/utils/currency";
 
 type Comparison = Pick<ComparisonRequest, "fromCountry" | "toCountry" | "amount">;
@@ -16,7 +17,7 @@ const sendingCountries = getAvailableSendingCountries();
 
 type InitialCorridor = Pick<Corridor, "fromCountry" | "toCountry">;
 
-export default function TransferComparison({ initialCorridor = { fromCountry: "United States", toCountry: "Haiti" } }: { initialCorridor?: InitialCorridor }) {
+export default function TransferComparison({ initialCorridor = { fromCountry: "United States", toCountry: "Haiti" }, initialCorridorId }: { initialCorridor?: InitialCorridor; initialCorridorId?: CorridorId }) {
   const [fromCountry, setFromCountry] = useState<Country>(initialCorridor.fromCountry);
   const [toCountry, setToCountry] = useState<Country>(initialCorridor.toCountry);
   const [amountInput, setAmountInput] = useState("200");
@@ -29,7 +30,14 @@ export default function TransferComparison({ initialCorridor = { fromCountry: "U
   const [detailsStatus, setDetailsStatus] = useState("");
   const [selectedProvider, setSelectedProvider] = useState<ProviderResult | null>(null);
   const amountRef = useRef<HTMLInputElement>(null);
-  const [detailButtons] = useState(() => new Map<ProviderResult["providerName"], HTMLButtonElement>());
+  const [detailButtons] = useState(() => new Map<ProviderResult["providerId"], HTMLButtonElement>());
+  const initialRecentRecorded = useRef(false);
+
+  useEffect(() => {
+    if (!initialCorridorId || initialRecentRecorded.current) return;
+    initialRecentRecorded.current = true;
+    recordRecentCorridorInStorage(initialCorridorId);
+  }, [initialCorridorId]);
 
   const selectedCurrency = countryCurrencies[fromCountry];
   const receivingCountries = getAvailableReceivingCountries(fromCountry);
@@ -37,14 +45,14 @@ export default function TransferComparison({ initialCorridor = { fromCountry: "U
   const comparisonResult = useMemo(() => compareTransfers({ ...comparison, sortBy, payoutFilter }), [comparison, payoutFilter, sortBy]);
   const { corridor, providers: visibleProviders, visibleResultCount } = comparisonResult;
   const currentSelectedProvider = selectedProvider
-    ? visibleProviders.find((provider) => provider.providerName === selectedProvider.providerName) ?? null
+    ? visibleProviders.find((provider) => provider.providerId === selectedProvider.providerId) ?? null
     : null;
 
   const closeDetails = useCallback((returnFocus = true) => {
-    const providerName = selectedProvider?.providerName;
+    const providerId = selectedProvider?.providerId;
     setSelectedProvider(null);
     setDetailsStatus("Provider details closed.");
-    if (returnFocus && providerName) window.requestAnimationFrame(() => detailButtons.get(providerName)?.focus());
+    if (returnFocus && providerId) window.requestAnimationFrame(() => detailButtons.get(providerId)?.focus());
   }, [detailButtons, selectedProvider]);
 
   function handleFilterChange(value: PayoutFilter) {
@@ -130,14 +138,14 @@ export default function TransferComparison({ initialCorridor = { fromCountry: "U
   );
 }
 
-type ResultsProps = { corridor: Corridor; providers: readonly ProviderResult[]; visibleResultCount: number; sortBy: SortOption; payoutFilter: PayoutFilter; onSortChange: (value: SortOption) => void; onFilterChange: (value: PayoutFilter) => void; onSelect: (provider: ProviderResult) => void; selectedProvider: ProviderResult | null; buttonRefs: Map<ProviderResult["providerName"], HTMLButtonElement> };
+type ResultsProps = { corridor: Corridor; providers: readonly ProviderResult[]; visibleResultCount: number; sortBy: SortOption; payoutFilter: PayoutFilter; onSortChange: (value: SortOption) => void; onFilterChange: (value: PayoutFilter) => void; onSelect: (provider: ProviderResult) => void; selectedProvider: ProviderResult | null; buttonRefs: Map<ProviderResult["providerId"], HTMLButtonElement> };
 
 function Results({ corridor, providers, visibleResultCount, sortBy, payoutFilter, onSortChange, onFilterChange, onSelect, selectedProvider, buttonRefs }: ResultsProps) {
   const recipientAmounts = providers.map((provider) => provider.recipientAmount);
   const summary = visibleResultCount > 0
     ? `Showing ${visibleResultCount} illustrative ${visibleResultCount === 1 ? "option" : "options"}. Recipient amounts range from ${formatRecipientAmount(Math.min(...recipientAmounts), corridor.receiveCurrency)} to ${formatRecipientAmount(Math.max(...recipientAmounts), corridor.receiveCurrency)}.`
     : "0 illustrative options";
-  return <><div className="flex flex-col gap-3 border-b border-slate-100 px-5 py-4 sm:flex-row sm:items-start sm:justify-between sm:px-6"><p className="text-xs font-semibold leading-5 text-slate-500" aria-live="polite">{summary}</p><ComparisonControls sortBy={sortBy} payoutFilter={payoutFilter} onSortChange={onSortChange} onFilterChange={onFilterChange} /></div>{providers.length === 0 ? <FilterEmptyState onClear={() => onFilterChange("all")} /> : <><div className="hidden grid-cols-[1.15fr_.55fr_.8fr_.75fr_.8fr_.9fr_auto] gap-2 border-b border-slate-100 bg-slate-50/70 px-5 py-3 text-[9px] font-bold uppercase tracking-wider text-slate-400 sm:grid"><span>Provider</span><span>Fee</span><span>Rate</span><span>Delivery</span><span>Payout</span><span className="text-right">Recipient gets</span><span className="sr-only">Actions</span></div><div className="grid gap-3 bg-slate-50/60 p-3 sm:block sm:divide-y sm:divide-slate-100 sm:bg-white sm:p-0">{providers.map((provider) => { const isSelected = selectedProvider?.providerName === provider.providerName; return <article key={provider.providerName} className={`grid gap-4 rounded-2xl border p-4 transition sm:grid-cols-[1.15fr_.55fr_.8fr_.75fr_.8fr_.9fr_auto] sm:items-center sm:rounded-none sm:border-x-0 sm:border-b-0 sm:px-5 sm:py-4 ${isSelected ? "border-blue-300 bg-blue-50 shadow-sm sm:border-l-4 sm:border-l-blue-600" : "border-slate-200 bg-white hover:border-blue-200 hover:shadow-sm sm:border-transparent sm:hover:bg-slate-50"}`} aria-label={`${provider.providerName}, fictional illustrative result${isSelected ? ", details open" : ""}`}><div className="flex items-center gap-3"><span className={`provider-dot provider-dot-${provider.accent}`} aria-hidden="true">{provider.providerName.at(-1)}</span><span><strong className="block text-sm text-slate-900">{provider.providerName}</strong><ProviderBadge provider={provider} /></span></div><ProviderStat label="Fee" value={formatCurrency(provider.fee, corridor.sendCurrency)} /><ProviderStat label="Rate" value={formatExchangeRate(provider.exchangeRate, corridor.sendCurrency, corridor.receiveCurrency)} /><ProviderStat label="Delivery" value={provider.deliveryLabel} /><ProviderStat label="Payout" value={provider.payoutMethod} /><div className="sm:text-right"><span className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-400 sm:hidden">Recipient gets</span><strong className="text-sm text-slate-950">{formatRecipientAmount(provider.recipientAmount, corridor.receiveCurrency)}</strong></div><button ref={(element) => { if (element) buttonRefs.set(provider.providerName, element); else buttonRefs.delete(provider.providerName); }} type="button" onClick={() => onSelect(provider)} aria-label={`View details for fictional provider ${provider.providerName}`} aria-expanded={isSelected} aria-controls={detailsPanelId} className="rounded-lg border border-blue-200 bg-white px-3 py-2 text-xs font-bold text-blue-700 transition hover:border-blue-400 hover:bg-blue-50">{isSelected ? "Details open" : "View details"}</button></article>; })}</div></>}</>;
+  return <><div className="flex flex-col gap-3 border-b border-slate-100 px-5 py-4 sm:flex-row sm:items-start sm:justify-between sm:px-6"><p className="text-xs font-semibold leading-5 text-slate-500" aria-live="polite">{summary}</p><ComparisonControls sortBy={sortBy} payoutFilter={payoutFilter} onSortChange={onSortChange} onFilterChange={onFilterChange} /></div>{providers.length === 0 ? <FilterEmptyState onClear={() => onFilterChange("all")} /> : <><div className="hidden grid-cols-[1.15fr_.55fr_.8fr_.75fr_.8fr_.9fr_auto] gap-2 border-b border-slate-100 bg-slate-50/70 px-5 py-3 text-[9px] font-bold uppercase tracking-wider text-slate-400 sm:grid"><span>Provider</span><span>Fee</span><span>Rate</span><span>Delivery</span><span>Payout</span><span className="text-right">Recipient gets</span><span className="sr-only">Actions</span></div><div className="grid gap-3 bg-slate-50/60 p-3 sm:block sm:divide-y sm:divide-slate-100 sm:bg-white sm:p-0">{providers.map((provider) => { const isSelected = selectedProvider?.providerId === provider.providerId; return <article key={provider.providerId} className={`grid gap-4 rounded-2xl border p-4 transition sm:grid-cols-[1.15fr_.55fr_.8fr_.75fr_.8fr_.9fr_auto] sm:items-center sm:rounded-none sm:border-x-0 sm:border-b-0 sm:px-5 sm:py-4 ${isSelected ? "border-blue-300 bg-blue-50 shadow-sm sm:border-l-4 sm:border-l-blue-600" : "border-slate-200 bg-white hover:border-blue-200 hover:shadow-sm sm:border-transparent sm:hover:bg-slate-50"}`} aria-label={`${provider.providerName}, fictional illustrative result${isSelected ? ", details open" : ""}`}><div className="flex min-w-0 items-center gap-3"><span className={`provider-dot provider-dot-${provider.accent}`} aria-hidden="true">{provider.initials}</span><span className="min-w-0"><strong className="block text-sm text-slate-900">{provider.providerName}</strong><span className="mt-0.5 hidden text-[10px] leading-4 text-slate-500 sm:block">{provider.serviceSummary ?? "Illustrative provider information unavailable"}</span><ProviderBadge provider={provider} /></span></div><ProviderStat label="Fee" value={formatCurrency(provider.fee, corridor.sendCurrency)} /><ProviderStat label="Rate" value={formatExchangeRate(provider.exchangeRate, corridor.sendCurrency, corridor.receiveCurrency)} /><ProviderStat label="Delivery" value={provider.deliveryLabel} /><ProviderStat label="Payout" value={provider.payoutMethod} /><div className="sm:text-right"><span className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-400 sm:hidden">Recipient gets</span><strong className="text-sm text-slate-950">{formatRecipientAmount(provider.recipientAmount, corridor.receiveCurrency)}</strong></div><button ref={(element) => { if (element) buttonRefs.set(provider.providerId, element); else buttonRefs.delete(provider.providerId); }} type="button" onClick={() => onSelect(provider)} aria-label={`View details for fictional provider ${provider.providerName}`} aria-expanded={isSelected} aria-controls={detailsPanelId} className="rounded-lg border border-blue-200 bg-white px-3 py-2 text-xs font-bold text-blue-700 transition hover:border-blue-400 hover:bg-blue-50">{isSelected ? "Details open" : "View details"}</button></article>; })}</div></>}</>;
 }
 
 function ProviderStat({ label, value }: { label: string; value: string }) { return <div><span className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-400 sm:hidden">{label}</span><span className="text-xs font-semibold leading-5 text-slate-700">{value}</span></div>; }

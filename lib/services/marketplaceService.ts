@@ -1,6 +1,7 @@
 import { getCountryDefinition } from "@/lib/data/countries";
 import { illustrativeCorridors } from "@/lib/data/corridors";
-import type { Corridor, PayoutMethod, Region } from "@/lib/types/transfer";
+import { getProviderProfile } from "@/lib/data/providers";
+import type { Corridor, CorridorId, PayoutMethod, Region } from "@/lib/types/transfer";
 
 function byMarketplaceOrder(a: Corridor, b: Corridor): number {
   return (a.displayPriority ?? Number.MAX_SAFE_INTEGER) - (b.displayPriority ?? Number.MAX_SAFE_INTEGER)
@@ -11,15 +12,23 @@ export function getMarketplaceCorridors(): Corridor[] {
   return [...illustrativeCorridors].sort(byMarketplaceOrder);
 }
 
+export function normalizeMarketplaceSearchText(value: string): string {
+  return value
+    .replace(/[-–—→/,]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLocaleLowerCase("en-US");
+}
+
 export function searchCorridors(corridors: readonly Corridor[], query: string): Corridor[] {
-  const normalizedQuery = query.trim().replace(/\s+/g, " ").toLocaleLowerCase("en-US");
+  const normalizedQuery = normalizeMarketplaceSearchText(query);
   if (!normalizedQuery) return [...corridors];
 
   return corridors.filter((corridor) => {
-    const providerNames = corridor.offers.map(({ providerName }) => providerName);
-    const searchableText = [corridor.fromCountry, corridor.toCountry, `${corridor.fromCountry} ${corridor.toCountry}`, ...providerNames]
-      .join(" ")
-      .toLocaleLowerCase("en-US");
+    const providerNames = corridor.offers.map(({ providerId }) => getProviderProfile(providerId)?.name ?? "");
+    const searchableText = normalizeMarketplaceSearchText(
+      [corridor.fromCountry, corridor.toCountry, `${corridor.fromCountry} ${corridor.toCountry}`, ...providerNames].join(" "),
+    );
     return searchableText.includes(normalizedQuery);
   });
 }
@@ -51,4 +60,12 @@ export function getMarketplaceRegions(corridors: readonly Corridor[] = illustrat
     regions.add(getCountryDefinition(corridor.toCountry).region);
   });
   return [...regions].sort((a, b) => a.localeCompare(b, "en-US"));
+}
+
+export function getCorridorsByIds(corridorIds: readonly CorridorId[], corridors: readonly Corridor[] = illustrativeCorridors): Corridor[] {
+  const corridorsById = new Map(corridors.map((corridor) => [corridor.id, corridor]));
+  return corridorIds.flatMap((id) => {
+    const corridor = corridorsById.get(id);
+    return corridor ? [corridor] : [];
+  });
 }
