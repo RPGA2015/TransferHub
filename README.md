@@ -1,6 +1,6 @@
 # TransferHub
 
-TransferHub is an early-stage money-transfer comparison prototype, initially focused on transfers to Haiti. Version 0.1.0 demonstrates how someone could compare fictional provider results and join a development-only waitlist. TransferHub does not currently initiate, process, or track transfers.
+TransferHub is an early-stage money-transfer comparison prototype, initially focused on transfers to Haiti. Version 0.2.0 is in development and refines the illustrative comparison architecture introduced in v0.1.0. TransferHub does not currently initiate, process, or track transfers.
 
 All provider names, fees, rates, payout methods, delivery estimates, badges, and recipient amounts are fictional illustrative sample data. They are not live quotes, recommendations, endorsements, or evidence of provider relationships.
 
@@ -14,6 +14,10 @@ All provider names, fees, rates, payout methods, delivery estimates, badges, and
 - Accessible fictional-provider detail panels
 - Development-only waitlist with validation and browser-local duplicate detection
 - Responsive layouts for mobile, tablet, and desktop
+
+## v0.2.0 development status
+
+Milestones 2 and 3 separate transfer types, country definitions, fictional provider identities, corridor offers, pure comparison behavior, and currency formatting. The homepage and comparison experience remain visually unchanged. As a small scalability demonstration, the United States → Haiti corridor now includes one additional fictional Provider E bank-deposit offer with a 1.50 USD fee, a 131.05 illustrative exchange rate, and same-day illustrative delivery.
 
 ## Technology
 
@@ -46,14 +50,17 @@ npm run start
 ## Project structure
 
 ```text
-app/          App Router pages, metadata, and global styles
-components/   Comparison, provider-detail, and waitlist UI
-lib/          Canonical illustrative data and shared domain types
-public/       Static prototype assets
-docs/         Project-health and release checklists
+app/                    App Router pages, metadata, and global styles
+components/             Comparison, provider-detail, and waitlist UI
+lib/types/transfer.ts   Canonical transfer-domain types
+lib/data/               Country, corridor, and fictional-provider data
+lib/services/           Pure comparison lookup, enrichment, filtering, and sorting
+lib/utils/              Shared en-US currency and exchange-rate formatting
+public/                 Static prototype assets
+docs/                   Project-health and release checklists
 ```
 
-`Country`, `ProviderResult`, `PayoutMethod`, and the six corridors are defined in `lib/illustrativeComparisonData.ts`. Interactive state and calculations remain in client components; pages and layout remain server components where browser interactivity is unnecessary.
+The former `lib/illustrativeComparisonData.ts` module was removed after all imports moved to responsibility-specific modules, leaving one active source for each kind of data. Interactive state remains in client components; pure derivation lives in the comparison service; pages and layout remain server components where browser interactivity is unnecessary.
 
 ## Illustrative comparison model
 
@@ -73,6 +80,15 @@ max(send amount - numeric fee, 0) × numeric illustrative exchange rate
 ```
 
 Numeric values remain numbers until display formatting. Filtering creates a filtered provider list, and sorting operates on a copied array, so the canonical corridor data is not mutated.
+
+The comparison flow is data-driven: a `ComparisonRequest` identifies a corridor, amount, sort mode, and payout filter; `compareTransfers` looks up the corridor, enriches its raw offers with fictional provider identity and calculated recipient amounts, filters, copies and sorts the results, and returns a `ComparisonResult` with a visible count. Unsupported corridors safely return an empty result.
+
+### Extending illustrative data
+
+- Add a country definition and currency to `lib/data/countries.ts`, then include its name in the appropriate sending or receiving list.
+- Add a fictional provider identity to `lib/data/providers.ts` and extend the narrow provider unions in `lib/types/transfer.ts` when a new identity, badge, or accent is required.
+- Add a corridor or provider offer in `lib/data/corridors.ts`. Corridor offers contain only corridor-specific numeric fee/rate data plus delivery and payout values; UI logic does not need editing.
+- Keep every identity and value explicitly fictional. Do not use real provider trademarks, imply a partnership or recommendation, or present values as live quotes.
 
 ## Accessibility highlights
 
@@ -117,4 +133,4 @@ The current prototype makes no claim of production security, regulatory approval
 
 ## Proposed next phase
 
-Prioritize product and compliance requirements before adding transactional functionality. Replace the waitlist storage with an approved server-side workflow, define a provider-data contract with freshness and failure states, add automated tests for calculations and interactions, and conduct structured accessibility, privacy, security, and legal reviews.
+The next planned v0.2.0 milestone is automated unit coverage for the pure comparison engine and focused interaction tests for validation, filtering, sorting, and provider-detail focus behavior. Product and compliance requirements remain prerequisites to any transactional functionality. A future live-data design would also require an authorized provider-data contract with freshness and failure states; none is connected in this prototype.

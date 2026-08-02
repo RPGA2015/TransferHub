@@ -1,5 +1,37 @@
 # TransferHub Changelog
 
+## Unreleased — v0.2.0
+
+### Added
+
+- Added one fictional Provider E bank-deposit offer to the existing United States → Haiti corridor: 1.50 USD illustrative fee, 131.05 illustrative exchange rate, and same-day illustrative delivery
+- Added reusable en-US currency, recipient-amount, exchange-rate, and display-prefix utilities
+
+### Changed
+
+- Refactored comparison components to consume derived comparison results instead of calculating, filtering, sorting, or formatting corridor data locally
+- Kept interactive form, loading, sorting, payout filtering, empty states, result counts, provider-detail focus behavior, disclosures, and responsive layouts intact
+
+### Architecture
+
+- Centralized transfer types in `lib/types/transfer.ts`
+- Split country definitions, corridor offers, and fictional provider identity metadata across `lib/data/`
+- Added a pure comparison service for corridor lookup, safe amount handling, recipient calculations, enrichment, filtering, immutable sorting, and visible-result counts
+- Removed `lib/illustrativeComparisonData.ts` after migrating all consumers, leaving no duplicate active data source or dead compatibility exports
+
+### Verified
+
+- ESLint and strict TypeScript checking pass after the architecture refactor
+- Production build and whitespace validation are included in the completion validation for this milestone
+
+### Limitations
+
+- Every provider identity, fee, rate, payout method, delivery estimate, badge, and recipient amount remains fictional and illustrative
+- No live quotes, provider APIs, database, analytics, authentication, payment service, endorsement, or recommendation is present
+- Automated engine and interaction tests remain planned for the next v0.2.0 milestone
+
+---
+
 ## v0.1.0 — Interactive Prototype
 
 ### Added

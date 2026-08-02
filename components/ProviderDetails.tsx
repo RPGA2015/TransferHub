@@ -2,21 +2,16 @@
 
 import { useEffect, useRef } from "react";
 import ProviderBadge from "@/components/ProviderBadge";
-import type {
-  Country,
-  ProviderResult,
-} from "@/lib/illustrativeComparisonData";
+import type { Country, CurrencyCode, ProviderResult } from "@/lib/types/transfer";
+import { formatCurrency, formatExchangeRate, formatRecipientAmount } from "@/lib/utils/currency";
 
 type ProviderDetailsProps = {
   provider: ProviderResult;
   fromCountry: Country;
   toCountry: Country;
   sendAmount: number;
-  sendCurrency: string;
-  receiveCurrency: string;
-  formattedFee: string;
-  formattedRate: string;
-  formattedRecipientAmount: string;
+  sendCurrency: CurrencyCode;
+  receiveCurrency: CurrencyCode;
   onClose: () => void;
 };
 
@@ -27,9 +22,6 @@ export default function ProviderDetails({
   sendAmount,
   sendCurrency,
   receiveCurrency,
-  formattedFee,
-  formattedRate,
-  formattedRecipientAmount,
   onClose,
 }: ProviderDetailsProps) {
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -100,7 +92,7 @@ export default function ProviderDetails({
         <div>
           <p className="text-sm text-slate-500">Transfer fee</p>
           <p className="text-xl font-semibold text-slate-900">
-            {formattedFee}
+            {formatCurrency(provider.fee, sendCurrency)}
           </p>
         </div>
 
@@ -109,7 +101,7 @@ export default function ProviderDetails({
             Illustrative exchange rate
           </p>
           <p className="text-xl font-semibold text-slate-900">
-            {formattedRate}
+            {formatExchangeRate(provider.exchangeRate, sendCurrency, receiveCurrency)}
           </p>
         </div>
 
@@ -130,7 +122,7 @@ export default function ProviderDetails({
         <div className="sm:col-span-2">
           <p className="text-sm text-slate-500">Recipient receives</p>
           <p className="text-2xl font-bold text-emerald-600">
-            {formattedRecipientAmount}
+            {formatRecipientAmount(provider.recipientAmount, receiveCurrency)}
           </p>
           <p className="mt-1 text-xs text-slate-500">
             Displayed in {receiveCurrency}.

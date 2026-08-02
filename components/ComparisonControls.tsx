@@ -1,7 +1,4 @@
-import type { PayoutMethod } from "@/lib/illustrativeComparisonData";
-
-export type SortOption = "best" | "fee" | "recipient" | "fastest";
-export type PayoutFilter = "all" | PayoutMethod;
+import type { PayoutFilter, SortOption } from "@/lib/types/transfer";
 
 type ComparisonControlsProps = {
   sortBy: SortOption;
