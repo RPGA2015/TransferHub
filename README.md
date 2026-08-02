@@ -17,7 +17,7 @@ All provider names, fees, rates, payout methods, delivery estimates, badges, and
 
 ## v0.2.0 development status
 
-Milestones 2 and 3 separate transfer types, country definitions, fictional provider identities, corridor offers, pure comparison behavior, and currency formatting. Milestone 4 adds transparent derived metrics, deterministic tie-break rules, live sort explanations, visible-result ranges, and neutral comparison context in provider details. The visual design remains consistent. As a small scalability demonstration, the United States → Haiti corridor includes one additional fictional Provider E bank-deposit offer with a 1.50 USD fee, a 131.05 illustrative exchange rate, and same-day illustrative delivery.
+Milestones 2 and 3 separate transfer types, country definitions, fictional provider identities, corridor offers, pure comparison behavior, and currency formatting. Milestone 4 adds transparent derived metrics and deterministic ranking. Milestone 5 adds directional corridor support. Milestone 6A adds a data-driven Transfer Marketplace for discovering the ten current illustrative corridors. The visual design remains consistent. Every route and value is fictional and illustrative.
 
 ## Technology
 
@@ -36,7 +36,7 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). The waitlist is at [http://localhost:3000/waitlist](http://localhost:3000/waitlist).
+Open [http://localhost:3000](http://localhost:3000). The marketplace is at [http://localhost:3000/marketplace](http://localhost:3000/marketplace), and the waitlist is at [http://localhost:3000/waitlist](http://localhost:3000/waitlist).
 
 Useful commands:
 
@@ -72,6 +72,18 @@ Supported sample corridors:
 - Canada → Dominican Republic
 - France → Haiti
 - France → Dominican Republic
+- Haiti → United States
+- Dominican Republic → United States
+- Haiti → Canada
+- Dominican Republic → Canada
+
+### Directional corridors and country capabilities
+
+Corridors are explicit one-way records with an origin, destination, send currency, receive currency, and fictional provider offers. A reverse corridor is never generated or assumed: Canada → Haiti and Haiti → Canada are separate data records. An unsupported direction returns a safe empty comparison with the neutral message “This illustrative transfer corridor is not available yet.”
+
+Country metadata has canonical `Country` and `CountryCode` types plus `canSend` and `canReceive` capability flags. United States, Canada, Haiti, and Dominican Republic currently support both capabilities; France currently supports sending only. Capabilities describe intended direction support, but the form uses actual corridor records as its source of truth.
+
+The From Country list contains only origins with at least one outgoing corridor. The To Country list contains only destinations explicitly available from the selected origin. Changing origins selects the first valid destination only when the prior destination is unavailable. This edits form selections without replacing the submitted comparison. Country swapping follows the same rule: it is enabled only when the exact reverse corridor exists and does not run a comparison automatically.
 
 Recipient amounts are calculated locally as:
 
@@ -107,11 +119,27 @@ Sort rules are deterministic:
 
 Provider names are used only as the final stable tie-break. Descriptive badges do not affect sorting. Rankings compare the currently visible fictional results under the selected sort mode; they are not recommendations, endorsements, live quotes, or claims about provider quality.
 
+## Transfer Marketplace
+
+`/marketplace` is a responsive discovery page generated from canonical country, corridor, provider-offer, and marketplace metadata. It does not maintain a duplicate corridor list or calculate transfer values.
+
+- Search is immediate, case-insensitive, whitespace-normalized, and matches origin names, destination names, combined corridor text, and fictional provider names.
+- Region filters are generated from the regions represented by current corridor endpoints: Caribbean, Europe, and North America.
+- `featured`, `recentlyAdded`, and `displayPriority` are optional typed corridor metadata. Featured routes are explicitly selected rather than described as genuinely popular or trending. Recently added routes are never inferred from array order.
+- Result counts are announced politely, and empty results provide a neutral Clear filters action.
+- Each semantic corridor card shows direction, currencies, fictional offer count, deduplicated payout methods, and explicit metadata labels.
+
+“Compare this corridor” links use the stable corridor ID in `/?corridor=<id>#compare`. The homepage validates the ID against corridor data on the server, ignores malformed or unsupported values, and initializes both the editable form and its illustrative preview to the same valid direction. The amount remains editable and no comparison submission or loading sequence is triggered. With no valid query, the existing United States → Haiti default remains unchanged. Fragment scrolling follows the site’s reduced-motion CSS preference.
+
+Marketplace discovery is local prototype behavior: there are no saved favorites, recent-view history, accounts, synchronization, live availability, or external storage.
+
 ### Extending illustrative data
 
-- Add a country definition and currency to `lib/data/countries.ts`, then include its name in the appropriate sending or receiving list.
+- Add or update one canonical country definition in `lib/data/countries.ts`, including its code, label, currency, and directional capability flags.
 - Add a fictional provider identity to `lib/data/providers.ts` and extend the narrow provider unions in `lib/types/transfer.ts` when a new identity, badge, or accent is required.
-- Add a corridor or provider offer in `lib/data/corridors.ts`. Corridor offers contain only corridor-specific numeric fee/rate data plus delivery and payout values; UI logic does not need editing.
+- Add each supported direction as its own corridor in `lib/data/corridors.ts`, with `fromCountry`, `toCountry`, `sendCurrency`, `receiveCurrency`, and fictional offers. Add the reverse direction separately only when it is actually supported.
+- Add optional `featured`, `recentlyAdded`, or `displayPriority` metadata only when the route should appear in those marketplace sections. Add or reuse endpoint region metadata in `lib/data/countries.ts`.
+- Dropdowns and swap availability derive automatically from corridor data; UI logic does not need editing when a valid directional corridor is added.
 - Keep every identity and value explicitly fictional. Do not use real provider trademarks, imply a partnership or recommendation, or present values as live quotes.
 
 ## Accessibility highlights
@@ -157,4 +185,4 @@ The current prototype makes no claim of production security, regulatory approval
 
 ## Proposed next phase
 
-The next planned v0.2.0 milestone is automated unit coverage for the pure comparison engine and focused interaction tests for validation, filtering, sorting, and provider-detail focus behavior. Product and compliance requirements remain prerequisites to any transactional functionality. A future live-data design would also require an authorized provider-data contract with freshness and failure states; none is connected in this prototype.
+The next planned v0.2.0 milestone is local-only marketplace favorites and recent-corridor history, followed by automated unit and interaction coverage. Product and compliance requirements remain prerequisites to any transactional functionality. A future live-data design would also require an authorized provider-data contract with freshness and failure states; none is connected in this prototype.

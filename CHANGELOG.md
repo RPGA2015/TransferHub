@@ -8,12 +8,34 @@
 - Added reusable en-US currency, recipient-amount, exchange-rate, and display-prefix utilities
 - Added numeric total-cost, fee-percentage, delivery-score, value-score, and visible-rank metrics to enriched provider results
 - Added live sort explanations, visible recipient-amount range summaries, and neutral “How this option compares” details
+- Added four explicit fictional corridors: Haiti → United States, Dominican Republic → United States, Haiti → Canada, and Dominican Republic → Canada
+- Added a guarded country-swap control that is available only when the explicit reverse corridor exists
+- Added the responsive `/marketplace` route, reusable corridor cards, corridor search, region filters, result counts, and empty-state clearing
+- Added typed region, featured, recently-added, and display-priority metadata to the canonical country and corridor models
 
 ### Changed
 
 - Refactored comparison components to consume derived comparison results instead of calculating, filtering, sorting, or formatting corridor data locally
 - Kept interactive form, loading, sorting, payout filtering, empty states, result counts, provider-detail focus behavior, disclosures, and responsive layouts intact
 - Refined all four sort modes with explicit deterministic tie-break chains and stable provider-name ordering
+- Changed origin and destination dropdowns to derive valid options from directional corridor data
+- Added Marketplace to shared desktop and mobile navigation plus a restrained homepage “Explore corridors” action
+- Added server-validated corridor-ID initialization for marketplace comparison links
+
+### Marketplace
+
+- Added pure deterministic helpers for marketplace ordering, search, region filtering, payout-method deduplication, featured routes, recently added routes, and represented regions
+- Marked three routes as featured illustrative corridors and the four reverse-direction routes as explicitly recently added
+- Kept marketplace discovery separate from smart comparison calculations and avoided duplicate hard-coded corridor lists
+- Added semantic cards with direction, currencies, fictional offer counts, payout methods, metadata labels, and real comparison links
+
+### Corridor support
+
+- Added canonical country codes and `canSend`/`canReceive` capability metadata without duplicating the country model
+- Renamed corridor currency fields to directional `sendCurrency` and `receiveCurrency` properties
+- Added pure helpers for available origins, valid destinations, reverse-route availability, and deterministic corridor lookup
+- Kept all six existing corridor records and values unchanged while expanding the data set to ten explicit directions
+- Added a reusable neutral unavailable-corridor message for safe service and UI fallback behavior
 
 ### Comparison logic
 
@@ -27,6 +49,10 @@
 - Added polite live updates for the factual explanation associated with each selected sort mode
 - Added a live visible-result count and recipient-range summary that updates after filtering and comparison changes
 - Kept provider detail focus entry, Escape-to-close, focus return, and filtered-provider closure behavior intact
+- Added an accessible swap label, disabled-state explanation, title text, and visible keyboard focus treatment
+- Prevented impossible origin-destination choices from appearing in keyboard-accessible country selects
+- Added a labeled search landmark, keyboard-operable pressed-state region filters, live result counts, descriptive corridor links, and accessible clear actions
+- Added current-page navigation indication on the marketplace route and preserved global reduced-motion behavior
 
 ### Architecture
 
@@ -40,6 +66,8 @@
 - ESLint and strict TypeScript checking pass after the architecture refactor
 - Production build and whitespace validation are included in the completion validation for this milestone
 - Smart comparison formulas, deterministic tie-breakers, visible ranks, and detail derivation are covered by strict static checks and production-build validation
+- Directional lookup, dynamic country options, reverse-route checks, and all ten corridor builds pass strict static validation
+- Marketplace discovery helpers, homepage query validation, and the `/marketplace` route pass strict TypeScript and production-build checks
 
 ### Limitations
 
@@ -47,6 +75,8 @@
 - No live quotes, provider APIs, database, analytics, authentication, payment service, endorsement, or recommendation is present
 - Automated engine and interaction tests remain planned for the next v0.2.0 milestone
 - Rankings describe only the currently visible fictional sample results and must not be interpreted as provider recommendations
+- Country capabilities and corridor availability describe only this fictional prototype data set, not provider, legal, or regulatory availability
+- Marketplace favorites and recent-view history are not implemented; all discovery state resets on reload and no external storage is connected
 
 ---
 

@@ -1,5 +1,7 @@
 import Link from "next/link";
+import SiteHeader from "@/components/SiteHeader";
 import TransferComparison from "@/components/TransferComparison";
+import { getCorridorById } from "@/lib/services/comparisonEngine";
 
 const features = [
   { icon: "fee", title: "Compare fees", text: "See illustrative transfer fees side by side before choosing an option." },
@@ -43,25 +45,15 @@ function Icon({ name }: { name: string }) {
 
 const ButtonArrow = () => <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M4 10h12m-4-4 4 4-4 4"/></svg>;
 
-export default function Home() {
+type HomeProps = { searchParams: Promise<{ corridor?: string | string[] }> };
+
+export default async function Home({ searchParams }: HomeProps) {
+  const corridorParam = (await searchParams).corridor;
+  const corridor = typeof corridorParam === "string" ? getCorridorById(corridorParam) : undefined;
+  const initialCorridor = corridor ? { fromCountry: corridor.fromCountry, toCountry: corridor.toCountry } : undefined;
   return (
     <main className="overflow-hidden bg-white text-slate-950">
-      <header className="absolute inset-x-0 top-0 z-50 border-b border-white/10">
-        <nav className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 sm:px-8" aria-label="Primary navigation">
-          <a href="#home" className="flex items-center gap-2.5 text-lg font-bold tracking-tight text-white"><LogoMark light />TransferHub</a>
-          <div className="hidden items-center gap-7 lg:flex">
-            {["Home", "Features", "How It Works", "About", "FAQ"].map((item) => <a key={item} href={`#${item.toLowerCase().replaceAll(" ", "-")}`} className="text-sm font-medium text-slate-300 transition hover:text-white">{item}</a>)}
-          </div>
-          <div className="hidden items-center gap-5 lg:flex"><span className="cursor-not-allowed text-sm font-semibold text-slate-400" aria-disabled="true">Sign In <span className="sr-only">coming soon</span></span><Link href="/waitlist" className="rounded-xl bg-white px-5 py-3 text-sm font-bold text-blue-700 shadow-lg shadow-blue-950/10 transition hover:bg-blue-50">Join Waitlist</Link></div>
-          <details className="group relative lg:hidden">
-            <summary className="grid h-11 w-11 cursor-pointer list-none place-items-center rounded-xl border border-white/15 text-white [&::-webkit-details-marker]:hidden" aria-label="Open navigation menu"><svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg></summary>
-            <div className="absolute right-0 top-14 w-64 rounded-2xl border border-slate-200 bg-white p-3 shadow-2xl">
-              {["Home", "Features", "How It Works", "About", "FAQ"].map((item) => <a key={item} href={`#${item.toLowerCase().replaceAll(" ", "-")}`} className="block rounded-lg px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">{item}</a>)}
-              <div className="mt-2 grid grid-cols-2 gap-2 border-t border-slate-100 pt-3"><span className="rounded-lg px-3 py-2 text-center text-sm font-semibold text-slate-400" aria-disabled="true">Sign In soon</span><Link href="/waitlist" className="rounded-lg bg-blue-600 px-3 py-2 text-center text-sm font-semibold text-white">Join Waitlist</Link></div>
-            </div>
-          </details>
-        </nav>
-      </header>
+      <SiteHeader />
 
       <section id="home" className="hero-grid relative bg-[#06152e] pb-24 pt-36 sm:pt-40 lg:pb-32 lg:pt-48">
         <div className="hero-glow absolute inset-0" aria-hidden="true" />
@@ -70,10 +62,10 @@ export default function Home() {
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-300/20 bg-blue-400/10 px-4 py-2 text-xs font-semibold tracking-wide text-blue-100"><span className="h-2 w-2 rounded-full bg-emerald-400" />BUILT FOR GLOBAL FAMILIES</div>
             <h1 className="text-balance text-5xl font-bold tracking-[-0.04em] text-white sm:text-6xl lg:text-7xl">One App.<br/><span className="text-gradient">Every Transfer.</span></h1>
             <p className="mx-auto mt-7 max-w-xl text-pretty text-lg leading-8 text-slate-300 lg:mx-0">Explore how money-transfer options could be compared across fees, exchange rates, payout methods, and delivery estimates. All current results are fictional and illustrative.</p>
-            <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row lg:justify-start"><Link href="/waitlist" className="inline-flex min-h-13 items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-3.5 font-bold text-white shadow-xl shadow-blue-900/30 transition hover:bg-blue-500">Join the Waitlist <ButtonArrow /></Link><a href="#how-it-works" className="inline-flex min-h-13 items-center justify-center rounded-xl border border-white/20 bg-white/5 px-6 py-3.5 font-bold text-white transition hover:bg-white/10">See How It Works</a></div>
+            <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row lg:justify-start"><Link href="/waitlist" className="inline-flex min-h-13 items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-3.5 font-bold text-white shadow-xl shadow-blue-900/30 transition hover:bg-blue-500">Join the Waitlist <ButtonArrow /></Link><Link href="/marketplace" className="inline-flex min-h-13 items-center justify-center rounded-xl border border-white/20 bg-white/5 px-6 py-3.5 font-bold text-white transition hover:bg-white/10">Explore corridors</Link></div>
             <p className="mt-5 flex items-center justify-center gap-2 text-sm text-slate-400 lg:justify-start"><svg viewBox="0 0 20 20" className="h-4 w-4 text-emerald-400" fill="currentColor" aria-hidden="true"><path d="M10 2 4 4.5V9c0 4.1 2.5 7.3 6 9 3.5-1.7 6-4.9 6-9V4.5L10 2Zm3 6-3.5 4L7 9.7l1.1-1.1 1.3 1.2 2.5-2.9L13 8Z"/></svg>No transfer required. Be first to know when we launch.</p>
           </div>
-          <TransferComparison />
+          <TransferComparison initialCorridor={initialCorridor} />
         </div>
       </section>
 

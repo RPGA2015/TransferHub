@@ -4,6 +4,8 @@ export type Country =
   | "France"
   | "Haiti"
   | "Dominican Republic";
+export type CountryCode = "US" | "CA" | "FR" | "HT" | "DO";
+export type Region = "North America" | "Caribbean" | "Europe";
 
 export type CurrencyCode = "USD" | "CAD" | "EUR" | "HTG" | "DOP";
 export type PayoutMethod = "Cash pickup" | "Bank deposit" | "Mobile wallet" | "Cash or bank";
@@ -42,9 +44,12 @@ export type Corridor = {
   id: `${Country}-${Country}`;
   fromCountry: Country;
   toCountry: Country;
-  sendingCurrency: CurrencyCode;
-  receivingCurrency: CurrencyCode;
+  sendCurrency: CurrencyCode;
+  receiveCurrency: CurrencyCode;
   offers: readonly ProviderOffer[];
+  featured?: boolean;
+  recentlyAdded?: boolean;
+  displayPriority?: number;
 };
 
 export type ComparisonRequest = {

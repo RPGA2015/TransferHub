@@ -2,8 +2,28 @@ import { illustrativeCorridors } from "@/lib/data/corridors";
 import { getProviderIdentity } from "@/lib/data/providers";
 import type { ComparisonRequest, ComparisonResult, Corridor, Country, PayoutFilter, ProviderOffer, ProviderResult, SortOption } from "@/lib/types/transfer";
 
+export const unavailableCorridorMessage = "This illustrative transfer corridor is not available yet.";
+
 export function getIllustrativeCorridor(fromCountry: Country, toCountry: Country): Corridor | undefined {
   return illustrativeCorridors.find((corridor) => corridor.fromCountry === fromCountry && corridor.toCountry === toCountry);
+}
+
+export function getCorridorById(corridorId: string): Corridor | undefined {
+  return illustrativeCorridors.find(({ id }) => id === corridorId);
+}
+
+export function getAvailableSendingCountries(): Country[] {
+  return [...new Set(illustrativeCorridors.map(({ fromCountry }) => fromCountry))];
+}
+
+export function getAvailableReceivingCountries(fromCountry: Country): Country[] {
+  return illustrativeCorridors
+    .filter((corridor) => corridor.fromCountry === fromCountry)
+    .map(({ toCountry }) => toCountry);
+}
+
+export function isCorridorAvailable(fromCountry: Country, toCountry: Country): boolean {
+  return getIllustrativeCorridor(fromCountry, toCountry) !== undefined;
 }
 
 export function normalizeAmount(amount: number): number {
