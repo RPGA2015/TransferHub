@@ -152,6 +152,20 @@ If a corridor offer has no matching profile, the engine keeps its numeric compar
 
 Marketplace discovery remains local prototype behavior: there are no accounts, cross-device synchronization, live availability, or external storage.
 
+## Multilingual foundation
+
+TransferHub supports English (`en`), Haitian Creole (`ht`), French (`fr`), and Spanish (`es`), with English as the default locale. Application pages use locale-prefixed App Router paths: `/<lang>`, `/<lang>/marketplace`, and `/<lang>/waitlist`. The legacy `/`, `/marketplace`, and `/waitlist` entry points redirect to their English equivalents and preserve query strings; comparison links include the active locale.
+
+Typed first-party dictionaries live under `lib/i18n/dictionaries/`, while `lib/i18n/types.ts` defines the shared shape and `lib/i18n/config.ts` owns locale validation, display names, and formatting-locale mappings. To add a translation key, add it to `Dictionary`, provide the English canonical copy, then supply reviewed copy for every locale. To add a locale, extend `locales`, `localeFormats`, and `localeNames`, create a matching dictionary, and register it in `lib/i18n/dictionaries.ts`.
+
+Country, region, and payout labels are localized presentation mappings. Canonical country names, corridor IDs, provider IDs, query keys, currency codes, and storage values never change. Marketplace search includes canonical and active-locale country labels while retaining case-insensitive separator normalization and provider-name matching.
+
+The language switcher uses language names rather than flags, marks the active language accessibly, keeps the equivalent route, and carries the current search string and hash fragment during activation. Favorites, pins, recent corridors, and waitlist entries retain their locale-independent `localStorage` keys, so switching languages neither duplicates nor erases stored data.
+
+Number and currency output uses `en-US`, `ht-HT`, `fr-FR`, or `es` conventions when supported. If `ht-HT` is unavailable, formatting safely falls back to `en-US`; currency codes remain visible and calculations are unchanged.
+
+Translations are maintained locally without an external service. Haitian Creole, French, and Spanish copy requires native-speaker and legal review before public use, particularly disclosures and remittance terminology. The next planned milestone is automated locale-route, dictionary-completeness, interaction, and visual-regression coverage.
+
 ### Personal Workspace
 
 The marketplace now supports browser-local favorites, pinned favorites, and recently selected corridors. Workspace data stores only canonical corridor IDs under the versioned key `transferhub_marketplace_workspace_v1`; it never stores provider offers, fees, rates, amounts, recipients, names, emails, or payment information.
@@ -219,4 +233,4 @@ The current prototype makes no claim of production security, regulatory approval
 
 ## Proposed next phase
 
-The next planned v0.2.0 milestone is provider-focused marketplace discovery and derived corridor categories, followed by automated profile, engine, and interaction coverage. Product and compliance requirements remain prerequisites to any transactional functionality. A future live-data design would also require an authorized provider-data contract with freshness and failure states; none is connected in this prototype.
+The next planned v0.2.0 milestone is automated locale, profile, comparison-engine, interaction, and visual-regression coverage. Product and compliance requirements remain prerequisites to any transactional functionality. A future live-data design would also require an authorized provider-data contract with freshness and failure states; none is connected in this prototype.

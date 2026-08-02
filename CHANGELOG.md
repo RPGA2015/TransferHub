@@ -4,6 +4,9 @@
 
 ### Added
 
+- Added typed first-party dictionaries for English, Haitian Creole, French, and Spanish with English as the canonical shape
+- Added accessible desktop, mobile, and waitlist language switching that preserves the equivalent route, query string, and hash
+
 - Added one fictional Provider E bank-deposit offer to the existing United States → Haiti corridor: 1.50 USD illustrative fee, 131.05 illustrative exchange rate, and same-day illustrative delivery
 - Added reusable en-US currency, recipient-amount, exchange-rate, and display-prefix utilities
 - Added numeric total-cost, fee-percentage, delivery-score, value-score, and visible-rank metrics to enriched provider results
@@ -18,6 +21,9 @@
 - Added stable provider IDs and pure helpers for profile lookup, provider corridors, payout methods, and offer counts
 
 ### Changed
+
+- Moved application pages under locale-prefixed App Router routes and made internal navigation locale-aware
+- Localized comparison controls, Marketplace discovery and workspace controls, provider-detail headings and fallbacks, waitlist validation, country labels, region labels, payout labels, metadata, and live announcements
 
 - Refactored comparison components to consume derived comparison results instead of calculating, filtering, sorting, or formatting corridor data locally
 - Kept interactive form, loading, sorting, payout filtering, empty states, result counts, provider-detail focus behavior, disclosures, and responsive layouts intact
@@ -69,6 +75,9 @@
 
 ### Accessibility
 
+- Set the server-rendered document language from the validated locale route and added explicit active-language semantics without flag-only controls
+- Preserved translated form associations, live regions, keyboard operation, provider-detail focus management, and touch-sized wrapping controls
+
 - Added polite live updates for the factual explanation associated with each selected sort mode
 - Added a live visible-result count and recipient-range summary that updates after filtering and comparison changes
 - Kept provider detail focus entry, Escape-to-close, focus return, and filtered-provider closure behavior intact
@@ -88,12 +97,28 @@
 
 ### Architecture
 
+- Added canonical locale configuration, deterministic typed dictionary lookup, localized-label helpers, and locale-aware formatting without external dependencies
+- Kept canonical country, corridor, provider, query, and browser-storage identifiers independent from translated presentation labels
+
+### Internationalization
+
+- Added `en`, `ht`, `fr`, and `es` locale routes for the homepage, Marketplace, and waitlist
+- Added localized country-label search while preserving canonical-name and fictional-provider matching plus punctuation normalization
+- Added safe `ht-HT` formatting with an `en-US` runtime fallback and kept currency codes visible
+
+### Routing
+
+- Added backward-compatible redirects from `/`, `/marketplace`, and `/waitlist` to their English locale routes
+- Added safe not-found handling for unsupported locale segments and generated static parameters for all supported locales
+
 - Centralized transfer types in `lib/types/transfer.ts`
 - Split country definitions, corridor offers, and fictional provider identity metadata across `lib/data/`
 - Added a pure comparison service for corridor lookup, safe amount handling, recipient calculations, enrichment, filtering, immutable sorting, and visible-result counts
 - Removed `lib/illustrativeComparisonData.ts` after migrating all consumers, leaving no duplicate active data source or dead compatibility exports
 
 ### Verified
+
+- Generated all requested locale/page combinations and verified locale routes, legacy redirects, strict types, lint, production compilation, and whitespace checks
 
 - ESLint and strict TypeScript checking pass after the architecture refactor
 - Production build and whitespace validation are included in the completion validation for this milestone
@@ -104,6 +129,9 @@
 - Provider profile enrichment, visible-result badge calculation, provider-name marketplace search, missing-profile fallbacks, and rich details pass strict static validation
 
 ### Limitations
+
+- Haitian Creole, French, and Spanish translations require native-speaker, accessibility, and legal review before public release
+- Automated cross-locale interaction and screenshot regression coverage remains planned; responsive layouts require final device testing with the longest translations
 
 - Every provider identity, fee, rate, payout method, delivery estimate, badge, and recipient amount remains fictional and illustrative
 - No live quotes, provider APIs, database, analytics, authentication, payment service, endorsement, or recommendation is present

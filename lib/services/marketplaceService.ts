@@ -1,6 +1,8 @@
 import { getCountryDefinition } from "@/lib/data/countries";
 import { illustrativeCorridors } from "@/lib/data/corridors";
 import { getProviderProfile } from "@/lib/data/providers";
+import type { Locale } from "@/lib/i18n/config";
+import { getCountryLabel } from "@/lib/i18n/labels";
 import type { Corridor, CorridorId, PayoutMethod, Region } from "@/lib/types/transfer";
 
 function byMarketplaceOrder(a: Corridor, b: Corridor): number {
@@ -14,20 +16,20 @@ export function getMarketplaceCorridors(): Corridor[] {
 
 export function normalizeMarketplaceSearchText(value: string): string {
   return value
-    .replace(/[-–—→/,]+/g, " ")
+    .replace(/[-\u2013\u2014\u2192/,]+/g, " ")
     .replace(/\s+/g, " ")
     .trim()
     .toLocaleLowerCase("en-US");
 }
 
-export function searchCorridors(corridors: readonly Corridor[], query: string): Corridor[] {
+export function searchCorridors(corridors: readonly Corridor[], query: string, locale: Locale = "en"): Corridor[] {
   const normalizedQuery = normalizeMarketplaceSearchText(query);
   if (!normalizedQuery) return [...corridors];
 
   return corridors.filter((corridor) => {
     const providerNames = corridor.offers.map(({ providerId }) => getProviderProfile(providerId)?.name ?? "");
     const searchableText = normalizeMarketplaceSearchText(
-      [corridor.fromCountry, corridor.toCountry, `${corridor.fromCountry} ${corridor.toCountry}`, ...providerNames].join(" "),
+      [corridor.fromCountry, corridor.toCountry, getCountryLabel(corridor.fromCountry, locale), getCountryLabel(corridor.toCountry, locale), ...providerNames].join(" "),
     );
     return searchableText.includes(normalizedQuery);
   });
