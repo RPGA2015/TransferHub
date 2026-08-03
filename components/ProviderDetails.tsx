@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import ProviderBadge from "@/components/ProviderBadge";
+import { useMarketplaceWorkspace } from "@/hooks/useMarketplaceWorkspace";
 import { getProviderProfile } from "@/lib/data/providers";
 import type { Locale } from "@/lib/i18n/config";
 import { translate } from "@/lib/i18n/dictionaries";
@@ -28,6 +29,8 @@ type ProviderDetailsProps = {
 export default function ProviderDetails({ locale, dictionary, provider, fromCountry, toCountry, sendAmount, sendCurrency, receiveCurrency, visibleResultCount, firstVisibleRecipientAmount, onClose }: ProviderDetailsProps) {
   const copy = dictionary.providerDetails;
   const headingRef = useRef<HTMLHeadingElement>(null);
+  const [favoriteStatus, setFavoriteStatus] = useState("");
+  const workspace = useMarketplaceWorkspace();
   const profile = getProviderProfile(provider.providerId);
   const localizedProfile = getLocalizedProviderContent(provider.providerId, locale);
   const recipientDifference = firstVisibleRecipientAmount - provider.recipientAmount;
@@ -37,7 +40,12 @@ export default function ProviderDetails({ locale, dictionary, provider, fromCoun
       ? translate(copy.lessAmount, { amount: formatRecipientAmount(recipientDifference, receiveCurrency, locale) })
       : translate(copy.moreAmount, { amount: formatRecipientAmount(Math.abs(recipientDifference), receiveCurrency, locale) });
 
-  useEffect(() => { headingRef.current?.focus(); }, [provider.providerId]);
+  useEffect(() => {
+    headingRef.current?.focus();
+    workspace.recordRecentProvider(provider.providerId);
+  // Opening a valid rendered panel is the single event that records provider history.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [provider.providerId]);
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) { if (event.key === "Escape") onClose(); }
@@ -60,6 +68,15 @@ export default function ProviderDetails({ locale, dictionary, provider, fromCoun
         <h4 className="font-semibold text-slate-900">{copy.overview}</h4>
         {profile ? <><p className="mt-2 text-sm leading-6 text-slate-600">{localizedProfile.description}</p><p className="mt-2 text-sm font-semibold leading-6 text-slate-800">{localizedProfile.serviceSummary}</p></> : <p className="mt-2 text-sm leading-6 text-slate-600">{dictionary.common.illustrativeUnavailable}</p>}
       </div>
+
+      {workspace.isHydrated && <div className="mt-5">
+        <button type="button" aria-pressed={workspace.isProviderFavorite(provider.providerId)} aria-label={translate(workspace.isProviderFavorite(provider.providerId) ? dictionary.workspaceCenter.removeProviderLabel : dictionary.workspaceCenter.addProviderLabel, { provider: provider.providerName })} onClick={() => {
+          const removing = workspace.isProviderFavorite(provider.providerId);
+          workspace.toggleProviderFavorite(provider.providerId);
+          setFavoriteStatus(translate(removing ? dictionary.workspaceCenter.providerRemovedStatus : dictionary.workspaceCenter.providerAddedStatus, { provider: provider.providerName }));
+        }} className={`min-h-11 rounded-xl border px-4 py-2 text-sm font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 ${workspace.isProviderFavorite(provider.providerId) ? "border-emerald-300 bg-emerald-50 text-emerald-800" : "border-slate-300 bg-white text-slate-700 hover:bg-slate-50"}`}>{workspace.isProviderFavorite(provider.providerId) ? dictionary.workspaceCenter.providerFavoritedText : dictionary.workspaceCenter.addProviderText}</button>
+        <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">{favoriteStatus}</p>
+      </div>}
 
       <div className="mt-8">
         <h4 className="text-lg font-bold text-slate-900">{copy.currentOffer}</h4>

@@ -21,8 +21,9 @@ export default function MarketplaceExplorer({ locale, dictionary }: { locale: Lo
   const visibleCorridors = useMemo(() => filterCorridorsByRegion(searchCorridors(corridors, query, locale), region), [locale, query, region]);
   const featuredCorridors = getFeaturedCorridors(corridors);
   const recentlyAddedCorridors = getRecentlyAddedCorridors(corridors);
-  const pinnedCorridors = getCorridorsByIds(workspace.pinnedCorridorIds, corridors);
+  const favoriteIds = new Set(workspace.favoriteCorridorIds);
   const pinnedIds = new Set(workspace.pinnedCorridorIds);
+  const pinnedCorridors = getCorridorsByIds(workspace.pinnedCorridorIds, corridors);
   const favoriteCorridors = getCorridorsByIds(workspace.favoriteCorridorIds.filter((id) => !pinnedIds.has(id)), corridors);
   const recentCorridors = getCorridorsByIds(workspace.recentCorridorIds, corridors);
 
@@ -53,10 +54,14 @@ export default function MarketplaceExplorer({ locale, dictionary }: { locale: Lo
   function workspaceProps(corridor: Corridor) {
     return {
       isHydrated: workspace.isHydrated,
-      isFavorite: workspace.isFavorite(corridor.id),
-      isPinned: workspace.isPinned(corridor.id),
-      onToggleFavorite: () => toggleFavorite(corridor),
-      onTogglePin: () => togglePin(corridor),
+      isFavorite: favoriteIds.has(corridor.id),
+      isPinned: pinnedIds.has(corridor.id),
+      onToggleFavorite: (corridorId: CorridorId) => {
+        if (corridorId === corridor.id) toggleFavorite(corridor);
+      },
+      onTogglePin: (corridorId: CorridorId) => {
+        if (corridorId === corridor.id) togglePin(corridor);
+      },
       onCompare: recordRecent,
     };
   }

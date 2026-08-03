@@ -4,6 +4,9 @@
 
 ### Added
 
+- Added the localized `/[lang]/workspace` Favorites Center with browser-local summary cards, pinned and favorite corridors, favorite fictional providers, and recent corridor/provider sections
+- Added reusable semantic favorite-provider cards with neutral profile information, illustrative payout capabilities, digital access, and explicit actions
+
 - Added typed first-party dictionaries for English, Haitian Creole, French, and Spanish with English as the canonical shape
 - Added accessible desktop, mobile, and waitlist language switching that preserves the equivalent route, query string, and hash
 
@@ -21,6 +24,8 @@
 - Added stable provider IDs and pure helpers for profile lookup, provider corridors, payout methods, and offer counts
 
 ### Changed
+
+- Changed the canonical workspace schema to v2 and safely migrated valid corridor arrays from `transferhub_marketplace_workspace_v1`
 
 - Moved application pages under locale-prefixed App Router routes and made internal navigation locale-aware
 - Localized comparison controls, Marketplace discovery and workspace controls, provider-detail headings and fallbacks, waitlist validation, country labels, region labels, payout labels, metadata, and live announcements
@@ -44,6 +49,9 @@
 - Preserved provider-name marketplace search by resolving offer IDs through canonical profiles without duplicating corridor results
 
 ### Personal workspace
+
+- Added canonical provider favorite and six-item most-recent-first provider history arrays while storing stable IDs only
+- Added immediate remove, unpin, and clear actions to the unified dashboard without duplicating pinned corridors under ordinary favorites
 
 - Stored only validated canonical corridor IDs in deduplicated, deterministic favorite, pin, and recent arrays
 - Required favorite status before pinning and automatically removed a pin when its favorite was removed
@@ -75,6 +83,8 @@
 
 ### Accessibility
 
+- Added translated pressed-state provider favorite controls, current-page workspace navigation, semantic dashboard regions, clear headings, focus-visible actions, and polite save/remove/unpin/clear announcements
+
 - Set the server-rendered document language from the validated locale route and added explicit active-language semantics without flag-only controls
 - Preserved translated form associations, live regions, keyboard operation, provider-detail focus management, and touch-sized wrapping controls
 
@@ -92,6 +102,8 @@
 
 ### Privacy
 
+- Confirmed favorite providers and provider history remain browser-local, contain no profiles, offers, amounts, recipients, or personal data, and are not synchronized across accounts or devices
+
 - Added clear browser-local disclosure stating that workspace data is removed with browser storage and is not synchronized across devices
 - Confirmed workspace storage contains no names, emails, recipients, amounts, provider values, payment information, or full corridor objects
 
@@ -101,6 +113,8 @@
 - Kept canonical country, corridor, provider, query, and browser-storage identifiers independent from translated presentation labels
 
 ### Internationalization
+
+- Added complete typed Favorites Center, provider-favorite, summary-count, empty-state, action, metadata, and status copy for English, Haitian Creole, French, and Spanish
 
 - Added `en`, `ht`, `fr`, and `es` locale routes for the homepage, Marketplace, and waitlist
 - Added localized country-label search while preserving canonical-name and fictional-provider matching plus punctuation normalization
@@ -118,6 +132,8 @@
 
 ### Verified
 
+- Added localized workspace routes to lint, strict TypeScript, production-build, whitespace, and manual interaction validation scope
+
 - Generated all requested locale/page combinations and verified locale routes, legacy redirects, strict types, lint, production compilation, and whitespace checks
 
 - ESLint and strict TypeScript checking pass after the architecture refactor
@@ -129,6 +145,8 @@
 - Provider profile enrichment, visible-result badge calculation, provider-name marketplace search, missing-profile fallbacks, and rich details pass strict static validation
 
 ### Limitations
+
+- Favorite-provider cards link to Marketplace without prefilled provider filtering because Marketplace does not currently initialize its search from query parameters
 
 - Haitian Creole, French, and Spanish translations require native-speaker, accessibility, and legal review before public release
 - Automated cross-locale interaction and screenshot regression coverage remains planned; responsive layouts require final device testing with the longest translations

@@ -168,7 +168,7 @@ Translations are maintained locally without an external service. Haitian Creole,
 
 ### Personal Workspace
 
-The marketplace now supports browser-local favorites, pinned favorites, and recently selected corridors. Workspace data stores only canonical corridor IDs under the versioned key `transferhub_marketplace_workspace_v1`; it never stores provider offers, fees, rates, amounts, recipients, names, emails, or payment information.
+The marketplace and Favorites Center support browser-local corridor and provider favorites, pinned corridors, and recent activity. Workspace data stores only canonical corridor and provider IDs under the versioned key `transferhub_marketplace_workspace_v2`; it never stores profiles, offers, fees, rates, amounts, recipients, names, emails, or payment information.
 
 - Favorite controls add or remove a corridor from the saved workspace. Removing a favorite also removes its pin.
 - Pinning is available only after a corridor is a favorite. Pins and favorites remain separate ordered ID lists, and pinned cards appear before other favorites.
@@ -178,7 +178,7 @@ The marketplace now supports browser-local favorites, pinned favorites, and rece
 
 The storage service validates version and shape, removes obsolete corridor IDs, handles malformed JSON and unavailable storage without crashing, and never synchronizes data. Clearing this browser’s storage removes the workspace. Saved state is not backed up, encrypted by TransferHub, associated with an account, or available on another browser or device.
 
-To test locally, favorite and pin several marketplace cards, activate more than six distinct comparison links, return to `/marketplace`, and reload. Verify saved ordering, the six-item recent limit, favorite removal unpinning, and Clear recent corridors. Then remove `transferhub_marketplace_workspace_v1` in browser developer tools to verify the workspace returns to its empty state.
+To test locally, favorite and pin several marketplace cards, activate comparison links, open and favorite provider details, then visit `/en/workspace` and reload. Verify saved ordering, both six-item recent limits, favorite removal unpinning, and both clear actions. Remove `transferhub_marketplace_workspace_v2` in browser developer tools to verify the workspace returns to its empty state; use a valid v1 payload to verify migration.
 
 ### Extending illustrative data
 
@@ -233,4 +233,12 @@ The current prototype makes no claim of production security, regulatory approval
 
 ## Proposed next phase
 
-The next planned v0.2.0 milestone is automated locale, profile, comparison-engine, interaction, and visual-regression coverage. Product and compliance requirements remain prerequisites to any transactional functionality. A future live-data design would also require an authorized provider-data contract with freshness and failure states; none is connected in this prototype.
+The next planned v0.2.0 milestone is transparent recommendation cards. Product and compliance requirements remain prerequisites to any transactional functionality. A future live-data design would also require an authorized provider-data contract with freshness and failure states; none is connected in this prototype.
+
+## Favorites Center
+
+The localized `/[lang]/workspace` route (for example, `/en/workspace`) is the unified browser-local dashboard for pinned corridors, favorite corridors, favorite fictional providers, recent corridors, and recently viewed providers. Provider details include an explicit pressed-state favorite control, and opening a valid provider-details panel moves that provider to the front of a six-item recent list.
+
+Workspace storage uses `transferhub_marketplace_workspace_v2`. On first use, valid corridor favorites, pins, and recents from `transferhub_marketplace_workspace_v1` are sanitized and migrated without storing full objects. Only canonical corridor and provider IDs are stored. The data is not tied to an account, synchronized, backed up, or shared between devices; clearing browser storage removes it. Provider cards currently link to Marketplace without applying a provider query because Marketplace does not safely initialize its search from query parameters.
+
+To test the workspace, favorite and pin corridors in Marketplace, compare a corridor, open a provider-details panel, favorite that provider, then visit the locale-matched My TransferHub navigation link. Verify removal, unpin, both clear-recent actions, live status announcements, language switching, and persistence after reload in English, Haitian Creole, French, and Spanish. Also test with storage disabled or malformed v1/v2 JSON; the comparison and details experiences must remain usable.

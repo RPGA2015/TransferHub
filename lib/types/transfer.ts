@@ -7,7 +7,7 @@ export type Country =
 export type CountryCode = "US" | "CA" | "FR" | "HT" | "DO";
 export type Region = "North America" | "Caribbean" | "Europe";
 export type CorridorId = `${Country}-${Country}`;
-export type WorkspaceStorageVersion = 1;
+export type WorkspaceStorageVersion = 2;
 
 export type CurrencyCode = "USD" | "CAD" | "EUR" | "HTG" | "DOP";
 export type PayoutMethod = "Cash pickup" | "Bank deposit" | "Mobile wallet" | "Cash or bank";
@@ -75,6 +75,8 @@ export type WorkspaceState = {
   favoriteCorridorIds: CorridorId[];
   pinnedCorridorIds: CorridorId[];
   recentCorridorIds: CorridorId[];
+  favoriteProviderIds: ProviderId[];
+  recentProviderIds: ProviderId[];
 };
 
 export type StoredWorkspaceState = WorkspaceState & {
