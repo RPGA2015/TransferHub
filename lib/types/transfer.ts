@@ -18,6 +18,8 @@ export type ProviderBadge = "Best Value" | "Lowest Fee" | "Fastest" | "Wallet De
 export type ProviderAccent = "emerald" | "blue" | "amber" | "violet";
 export type SupportChannel = "Email" | "Phone" | "In-app help" | "Help center";
 export type DigitalAccess = "Web" | "Mobile app";
+export type SupportAvailability = "Business hours" | "Extended hours" | "Always available";
+export type RegulatoryStatus = "Demo registration shown" | "Demo review pending" | "Not assessed in prototype";
 export type SortOption = "best" | "fee" | "recipient" | "fastest";
 export type PayoutFilter = "all" | PayoutMethod;
 
@@ -32,6 +34,12 @@ export type ProviderProfile = {
   supportChannels: readonly SupportChannel[];
   digitalAccess: readonly DigitalAccess[];
   availabilityNote: string;
+  verified: boolean;
+  yearsInOperation: number;
+  countriesServed: number;
+  supportAvailability: SupportAvailability;
+  regulatoryStatus: RegulatoryStatus;
+  lastProfileUpdate: string;
   profileStatus: "illustrative";
   accent: ProviderAccent;
 };

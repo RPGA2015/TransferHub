@@ -9,7 +9,7 @@ import { translate } from "@/lib/i18n/dictionaries";
 import { getCountryLabel, getPayoutMethodLabel } from "@/lib/i18n/labels";
 import type { Dictionary } from "@/lib/i18n/types";
 import { getLocalizedProviderContent } from "@/lib/i18n/providerContent";
-import type { Country, CurrencyCode, ProviderResult } from "@/lib/types/transfer";
+import type { Country, CurrencyCode, ProviderProfile, ProviderResult, RegulatoryStatus, SupportAvailability } from "@/lib/types/transfer";
 import { formatCurrency, formatExchangeRate, formatRecipientAmount } from "@/lib/utils/currency";
 
 type ProviderDetailsProps = {
@@ -101,6 +101,8 @@ export default function ProviderDetails({ locale, dictionary, provider, fromCoun
         </div> : <p className="mt-2 text-sm leading-6 text-slate-600">{dictionary.common.illustrativeUnavailable}</p>}
       </div>
 
+      {profile && <ProviderTrustIndicators locale={locale} dictionary={dictionary} profile={profile} />}
+
       <div className="mt-8 rounded-2xl border border-blue-100 bg-blue-50/60 p-5">
         <h4 className="text-lg font-bold text-slate-900">{copy.comparison}</h4>
         <p className="mt-1 text-xs leading-5 text-slate-600">{copy.rankingNote}</p>
@@ -119,6 +121,25 @@ export default function ProviderDetails({ locale, dictionary, provider, fromCoun
       </div>
     </section>
   );
+}
+
+function ProviderTrustIndicators({ locale, dictionary, profile }: { locale: Locale; dictionary: Dictionary; profile: ProviderProfile }) {
+  const copy = dictionary.providerTrust;
+  const supportLabels: Record<SupportAvailability, string> = { "Business hours": copy.businessHours, "Extended hours": copy.extendedHours, "Always available": copy.alwaysAvailable };
+  const regulatoryLabels: Record<RegulatoryStatus, string> = { "Demo registration shown": copy.demoRegistration, "Demo review pending": copy.demoPending, "Not assessed in prototype": copy.notAssessed };
+  const items = [
+    { label: copy.verified, value: profile.verified ? copy.verifiedYes : copy.verifiedNo },
+    { label: copy.yearsInOperation, value: translate(copy.yearsValue, { count: profile.yearsInOperation }) },
+    { label: copy.countriesServed, value: translate(copy.countriesValue, { count: profile.countriesServed }) },
+    { label: copy.supportAvailability, value: supportLabels[profile.supportAvailability] },
+    { label: copy.regulatoryStatus, value: regulatoryLabels[profile.regulatoryStatus] },
+    { label: copy.lastProfileUpdate, value: new Date(`${profile.lastProfileUpdate}T00:00:00Z`).toLocaleDateString(locale, { dateStyle: "medium", timeZone: "UTC" }) },
+  ];
+  return <section className="mt-8 rounded-2xl border border-amber-200 bg-amber-50/60 p-5" aria-labelledby="provider-trust-heading">
+    <h4 id="provider-trust-heading" className="text-lg font-bold text-slate-900">{copy.heading}</h4>
+    <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">{copy.intro}</p>
+    <dl className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{items.map((item) => <div key={item.label} className="rounded-xl border border-amber-200/80 bg-white p-4"><dt className="text-sm font-semibold text-slate-600">{item.label}</dt><dd className="mt-2 font-bold leading-6 text-slate-900">{item.value}<span className="mt-3 block border-t border-amber-100 pt-2 text-xs font-semibold text-amber-800">{copy.sampleLabel}</span></dd></div>)}</dl>
+  </section>;
 }
 
 function ProfileList({ title, items, fallback }: { title: string; items: readonly string[]; fallback: string }) {

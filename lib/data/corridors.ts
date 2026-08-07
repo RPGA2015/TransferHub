@@ -1,4 +1,4 @@
-import type { Corridor, DeliveryMethod, PayoutMethod, ProviderId } from "@/lib/types/transfer";
+import type{ Corridor, DeliveryMethod, PayoutMethod, ProviderId } from "@/lib/types/transfer";
 
 const offerDefaults = {
   A: { providerId: "provider-a", deliveryLabel: "Same day", deliveryRank: 3, payoutMethod: "Cash or bank" },
@@ -38,6 +38,19 @@ export const illustrativeCorridors: readonly Corridor[] = [
     { ...offerDefaults.A, fee: 395, exchangeRate: 0.00748 }, { ...offerDefaults.B, fee: 125, exchangeRate: 0.00739 },
     { ...offerDefaults.C, fee: 650, exchangeRate: 0.00744 }, { ...offerDefaults.D, fee: 475, exchangeRate: 0.00741 },
   ] },
+  {
+  id: "Haiti-France",
+  fromCountry: "Haiti",
+  toCountry: "France",
+  sendCurrency: "HTG",
+  receiveCurrency: "EUR",
+  offers: [
+    { ...offerDefaults.A, fee: 395, exchangeRate: 0.00696 },
+    { ...offerDefaults.B, fee: 125, exchangeRate: 0.00692 },
+    { ...offerDefaults.C, fee: 650, exchangeRate: 0.00694 },
+    { ...offerDefaults.D, fee: 475, exchangeRate: 0.00693 },
+  ],
+},
   { id: "Dominican Republic-United States", fromCountry: "Dominican Republic", toCountry: "United States", sendCurrency: "DOP", receiveCurrency: "USD", recentlyAdded: true, displayPriority: 5, offers: [
     { ...offerDefaults.A, fee: 185, exchangeRate: 0.01682 }, { ...offerDefaults.B, fee: 65, exchangeRate: 0.01658 },
     { ...offerDefaults.C, fee: 310, exchangeRate: 0.01674 }, { ...offerDefaults.D, fee: 240, exchangeRate: 0.01665 },
