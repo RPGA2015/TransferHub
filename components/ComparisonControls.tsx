@@ -1,37 +1,43 @@
-import type { PayoutMethod } from "@/lib/illustrativeComparisonData";
-
-export type SortOption = "best" | "fee" | "recipient" | "fastest";
-export type PayoutFilter = "all" | PayoutMethod;
+import type { PayoutFilter, SortOption } from "@/lib/types/transfer";
+import type { Dictionary } from "@/lib/i18n/types";
 
 type ComparisonControlsProps = {
   sortBy: SortOption;
   payoutFilter: PayoutFilter;
   onSortChange: (value: SortOption) => void;
   onFilterChange: (value: PayoutFilter) => void;
+  dictionary: Dictionary;
 };
 
-export default function ComparisonControls({ sortBy, payoutFilter, onSortChange, onFilterChange }: ComparisonControlsProps) {
+export default function ComparisonControls({ sortBy, payoutFilter, onSortChange, onFilterChange, dictionary }: ComparisonControlsProps) {
+  const copy = dictionary.comparison;
+  const sortExplanations: Record<SortOption, string> = { best: copy.sortBestExplanation, fee: copy.sortFeeExplanation, fastest: copy.sortFastestExplanation, recipient: copy.sortRecipientExplanation };
   return (
-    <div className="grid w-full gap-3 sm:w-auto sm:grid-cols-2">
-      <label htmlFor="payout-filter" className="grid gap-1 text-xs font-bold text-slate-700">
-        Payout method
+    <div className="w-full sm:w-auto">
+      <div className="grid gap-3 sm:grid-cols-2">
+        <label htmlFor="payout-filter" className="grid gap-1 text-xs font-bold text-slate-700">
+        {copy.payoutMethod}
         <select id="payout-filter" value={payoutFilter} onChange={(event) => onFilterChange(event.target.value as PayoutFilter)} className="comparison-control min-w-40 py-2 text-xs">
-          <option value="all">All payout methods</option>
-          <option value="Bank deposit">Bank deposit</option>
-          <option value="Cash pickup">Cash pickup</option>
-          <option value="Mobile wallet">Mobile wallet</option>
-          <option value="Cash or bank">Cash or bank</option>
+          <option value="all">{copy.allPayoutMethods}</option>
+          <option value="Bank deposit">{copy.bankDeposit}</option>
+          <option value="Cash pickup">{copy.cashPickup}</option>
+          <option value="Mobile wallet">{copy.mobileWallet}</option>
+          <option value="Cash or bank">{copy.cashOrBank}</option>
         </select>
-      </label>
-      <label htmlFor="sort-results" className="grid gap-1 text-xs font-bold text-slate-700">
-        Sort by
+        </label>
+        <label htmlFor="sort-results" className="grid gap-1 text-xs font-bold text-slate-700">
+        {copy.sortBy}
         <select id="sort-results" value={sortBy} onChange={(event) => onSortChange(event.target.value as SortOption)} className="comparison-control min-w-40 py-2 text-xs">
-          <option value="best">Best value</option>
-          <option value="fee">Lowest fee</option>
-          <option value="fastest">Fastest</option>
-          <option value="recipient">Highest recipient amount</option>
+          <option value="best">{copy.bestValue}</option>
+          <option value="fee">{copy.lowestFee}</option>
+          <option value="fastest">{copy.fastest}</option>
+          <option value="recipient">{copy.highestRecipient}</option>
         </select>
-      </label>
+        </label>
+      </div>
+      <p className="mt-2 max-w-sm text-xs leading-5 text-slate-500" aria-live="polite" aria-atomic="true">
+        {sortExplanations[sortBy]}
+      </p>
     </div>
   );
 }

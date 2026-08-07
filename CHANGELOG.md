@@ -1,5 +1,166 @@
 # TransferHub Changelog
 
+## Unreleased — v0.2.0
+
+### Added
+
+- Added the localized `/[lang]/workspace` Favorites Center with browser-local summary cards, pinned and favorite corridors, favorite fictional providers, and recent corridor/provider sections
+- Added reusable semantic favorite-provider cards with neutral profile information, illustrative payout capabilities, digital access, and explicit actions
+
+- Added typed first-party dictionaries for English, Haitian Creole, French, and Spanish with English as the canonical shape
+- Added accessible desktop, mobile, and waitlist language switching that preserves the equivalent route, query string, and hash
+
+- Added one fictional Provider E bank-deposit offer to the existing United States → Haiti corridor: 1.50 USD illustrative fee, 131.05 illustrative exchange rate, and same-day illustrative delivery
+- Added reusable en-US currency, recipient-amount, exchange-rate, and display-prefix utilities
+- Added numeric total-cost, fee-percentage, delivery-score, value-score, and visible-rank metrics to enriched provider results
+- Added live sort explanations, visible recipient-amount range summaries, and neutral “How this option compares” details
+- Added four explicit fictional corridors: Haiti → United States, Dominican Republic → United States, Haiti → Canada, and Dominican Republic → Canada
+- Added a guarded country-swap control that is available only when the explicit reverse corridor exists
+- Added the responsive `/marketplace` route, reusable corridor cards, corridor search, region filters, result counts, and empty-state clearing
+- Added typed region, featured, recently-added, and display-priority metadata to the canonical country and corridor models
+- Added browser-local favorite, pinned-favorite, and six-item recent-corridor workspace sections
+- Added the versioned `transferhub_marketplace_workspace_v1` storage service and focused marketplace workspace hook
+- Added canonical rich illustrative profiles for all five fictional providers, including neutral summaries, capabilities, access labels, support-channel labels, and availability notes
+- Added stable provider IDs and pure helpers for profile lookup, provider corridors, payout methods, and offer counts
+
+### Changed
+
+- Changed the canonical workspace schema to v2 and safely migrated valid corridor arrays from `transferhub_marketplace_workspace_v1`
+
+- Moved application pages under locale-prefixed App Router routes and made internal navigation locale-aware
+- Localized comparison controls, Marketplace discovery and workspace controls, provider-detail headings and fallbacks, waitlist validation, country labels, region labels, payout labels, metadata, and live announcements
+
+- Refactored comparison components to consume derived comparison results instead of calculating, filtering, sorting, or formatting corridor data locally
+- Kept interactive form, loading, sorting, payout filtering, empty states, result counts, provider-detail focus behavior, disclosures, and responsive layouts intact
+- Refined all four sort modes with explicit deterministic tie-break chains and stable provider-name ordering
+- Changed origin and destination dropdowns to derive valid options from directional corridor data
+- Added Marketplace to shared desktop and mobile navigation plus a restrained homepage “Explore corridors” action
+- Added server-validated corridor-ID initialization for marketplace comparison links
+- Updated corridor cards with explicit Favorite and Pin controls while retaining semantic comparison links
+- Changed corridor offers to reference stable provider IDs while keeping all corridor-specific values unchanged
+- Changed comparison badges from static identity metadata to deterministic labels calculated from the current visible illustrative results
+
+### Provider profiles
+
+- Separated reusable fictional provider identity/profile metadata from corridor-specific fee, rate, delivery, and payout data
+- Added neutral missing-profile fallbacks that preserve numeric comparison results without undefined labels or page crashes
+- Added restrained service-summary previews to comparison rows and expanded details into overview, current offer, service capabilities, comparison context, and important notice sections
+- Kept profile metadata from influencing calculations, rankings, filters, sorting, and calculated badges
+- Preserved provider-name marketplace search by resolving offer IDs through canonical profiles without duplicating corridor results
+
+### Personal workspace
+
+- Added canonical provider favorite and six-item most-recent-first provider history arrays while storing stable IDs only
+- Added immediate remove, unpin, and clear actions to the unified dashboard without duplicating pinned corridors under ordinary favorites
+
+- Stored only validated canonical corridor IDs in deduplicated, deterministic favorite, pin, and recent arrays
+- Required favorite status before pinning and automatically removed a pin when its favorite was removed
+- Preserved pin and favorite save order, displayed pinned favorites before other favorites, and kept personal summaries independent of discovery filters
+- Recorded valid comparison-link and direct query selections as most-recent-first history, capped at six, with one-click clearing
+- Sanitized malformed, outdated, incorrectly shaped, or unknown-corridor storage data without throwing
+
+### Marketplace
+
+- Added pure deterministic helpers for marketplace ordering, search, region filtering, payout-method deduplication, featured routes, recently added routes, and represented regions
+- Marked three routes as featured illustrative corridors and the four reverse-direction routes as explicitly recently added
+- Kept marketplace discovery separate from smart comparison calculations and avoided duplicate hard-coded corridor lists
+- Added semantic cards with direction, currencies, fictional offer counts, payout methods, metadata labels, and real comparison links
+
+### Corridor support
+
+- Added canonical country codes and `canSend`/`canReceive` capability metadata without duplicating the country model
+- Renamed corridor currency fields to directional `sendCurrency` and `receiveCurrency` properties
+- Added pure helpers for available origins, valid destinations, reverse-route availability, and deterministic corridor lookup
+- Kept all six existing corridor records and values unchanged while expanding the data set to ten explicit directions
+- Added a reusable neutral unavailable-corridor message for safe service and UI fallback behavior
+
+### Comparison logic
+
+- Defined value score as recipient amount without hidden weighting; fee and delivery are used only as documented tie-breakers
+- Assigned one-based rank positions after payout filtering and sorting so positions describe the current visible results
+- Normalized invalid, negative, overflowing, and boundary calculation inputs to prevent negative recipient amounts, `NaN`, or `Infinity`
+- Kept source corridor and provider arrays immutable during enrichment, filtering, ranking, and sorting
+
+### Accessibility
+
+- Added translated pressed-state provider favorite controls, current-page workspace navigation, semantic dashboard regions, clear headings, focus-visible actions, and polite save/remove/unpin/clear announcements
+
+- Set the server-rendered document language from the validated locale route and added explicit active-language semantics without flag-only controls
+- Preserved translated form associations, live regions, keyboard operation, provider-detail focus management, and touch-sized wrapping controls
+
+- Added polite live updates for the factual explanation associated with each selected sort mode
+- Added a live visible-result count and recipient-range summary that updates after filtering and comparison changes
+- Kept provider detail focus entry, Escape-to-close, focus return, and filtered-provider closure behavior intact
+- Added an accessible swap label, disabled-state explanation, title text, and visible keyboard focus treatment
+- Prevented impossible origin-destination choices from appearing in keyboard-accessible country selects
+- Added a labeled search landmark, keyboard-operable pressed-state region filters, live result counts, descriptive corridor links, and accessible clear actions
+- Added current-page navigation indication on the marketplace route and preserved global reduced-motion behavior
+- Added visible Favorite and Pin labels, `aria-pressed` states, disabled pin guidance, touch-sized controls, and polite saved-state announcements
+- Prevented saved-state hydration mismatches by withholding workspace controls and sections until browser storage is loaded
+- Added screen-reader context that badges apply only to the current illustrative comparison
+- Added semantic capability lists, logical provider-detail headings, decorative initials treatment, and responsive profile fallbacks
+
+### Privacy
+
+- Confirmed favorite providers and provider history remain browser-local, contain no profiles, offers, amounts, recipients, or personal data, and are not synchronized across accounts or devices
+
+- Added clear browser-local disclosure stating that workspace data is removed with browser storage and is not synchronized across devices
+- Confirmed workspace storage contains no names, emails, recipients, amounts, provider values, payment information, or full corridor objects
+
+### Architecture
+
+- Added canonical locale configuration, deterministic typed dictionary lookup, localized-label helpers, and locale-aware formatting without external dependencies
+- Kept canonical country, corridor, provider, query, and browser-storage identifiers independent from translated presentation labels
+
+### Internationalization
+
+- Added complete typed Favorites Center, provider-favorite, summary-count, empty-state, action, metadata, and status copy for English, Haitian Creole, French, and Spanish
+
+- Added `en`, `ht`, `fr`, and `es` locale routes for the homepage, Marketplace, and waitlist
+- Added localized country-label search while preserving canonical-name and fictional-provider matching plus punctuation normalization
+- Added safe `ht-HT` formatting with an `en-US` runtime fallback and kept currency codes visible
+
+### Routing
+
+- Added backward-compatible redirects from `/`, `/marketplace`, and `/waitlist` to their English locale routes
+- Added safe not-found handling for unsupported locale segments and generated static parameters for all supported locales
+
+- Centralized transfer types in `lib/types/transfer.ts`
+- Split country definitions, corridor offers, and fictional provider identity metadata across `lib/data/`
+- Added a pure comparison service for corridor lookup, safe amount handling, recipient calculations, enrichment, filtering, immutable sorting, and visible-result counts
+- Removed `lib/illustrativeComparisonData.ts` after migrating all consumers, leaving no duplicate active data source or dead compatibility exports
+
+### Verified
+
+- Added localized workspace routes to lint, strict TypeScript, production-build, whitespace, and manual interaction validation scope
+
+- Generated all requested locale/page combinations and verified locale routes, legacy redirects, strict types, lint, production compilation, and whitespace checks
+
+- ESLint and strict TypeScript checking pass after the architecture refactor
+- Production build and whitespace validation are included in the completion validation for this milestone
+- Smart comparison formulas, deterministic tie-breakers, visible ranks, and detail derivation are covered by strict static checks and production-build validation
+- Directional lookup, dynamic country options, reverse-route checks, and all ten corridor builds pass strict static validation
+- Marketplace discovery helpers, homepage query validation, and the `/marketplace` route pass strict TypeScript and production-build checks
+- Workspace sanitization, storage guards, canonical ID resolution, hydration behavior, and updated marketplace UI pass static and production-build validation
+- Provider profile enrichment, visible-result badge calculation, provider-name marketplace search, missing-profile fallbacks, and rich details pass strict static validation
+
+### Limitations
+
+- Favorite-provider cards link to Marketplace without prefilled provider filtering because Marketplace does not currently initialize its search from query parameters
+
+- Haitian Creole, French, and Spanish translations require native-speaker, accessibility, and legal review before public release
+- Automated cross-locale interaction and screenshot regression coverage remains planned; responsive layouts require final device testing with the longest translations
+
+- Every provider identity, fee, rate, payout method, delivery estimate, badge, and recipient amount remains fictional and illustrative
+- No live quotes, provider APIs, database, analytics, authentication, payment service, endorsement, or recommendation is present
+- Automated engine and interaction tests remain planned for the next v0.2.0 milestone
+- Rankings describe only the currently visible fictional sample results and must not be interpreted as provider recommendations
+- Country capabilities and corridor availability describe only this fictional prototype data set, not provider, legal, or regulatory availability
+- Workspace persistence is limited to the current browser, has no account backup or synchronization, and disappears when browser storage is cleared
+- Provider profiles and capabilities are entirely fictional; no partnership, integration, verification, licensing, rating, security certification, or endorsement is claimed
+
+---
+
 ## v0.1.0 — Interactive Prototype
 
 ### Added

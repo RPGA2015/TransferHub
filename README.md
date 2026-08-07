@@ -1,6 +1,6 @@
 # TransferHub
 
-TransferHub is an early-stage money-transfer comparison prototype, initially focused on transfers to Haiti. Version 0.1.0 demonstrates how someone could compare fictional provider results and join a development-only waitlist. TransferHub does not currently initiate, process, or track transfers.
+TransferHub is an early-stage money-transfer comparison prototype, initially focused on transfers to Haiti. Version 0.2.0 is in development and refines the illustrative comparison architecture introduced in v0.1.0. TransferHub does not currently initiate, process, or track transfers.
 
 All provider names, fees, rates, payout methods, delivery estimates, badges, and recipient amounts are fictional illustrative sample data. They are not live quotes, recommendations, endorsements, or evidence of provider relationships.
 
@@ -14,6 +14,10 @@ All provider names, fees, rates, payout methods, delivery estimates, badges, and
 - Accessible fictional-provider detail panels
 - Development-only waitlist with validation and browser-local duplicate detection
 - Responsive layouts for mobile, tablet, and desktop
+
+## v0.2.0 development status
+
+Milestones 2 and 3 separate transfer types, country definitions, fictional provider identities, corridor offers, pure comparison behavior, and currency formatting. Milestone 4 adds transparent derived metrics and deterministic ranking. Milestone 5 adds directional corridor support. Milestone 6A adds a data-driven Transfer Marketplace for discovering the ten current illustrative corridors. The visual design remains consistent. Every route and value is fictional and illustrative.
 
 ## Technology
 
@@ -32,7 +36,7 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). The waitlist is at [http://localhost:3000/waitlist](http://localhost:3000/waitlist).
+Open [http://localhost:3000](http://localhost:3000). The marketplace is at [http://localhost:3000/marketplace](http://localhost:3000/marketplace), and the waitlist is at [http://localhost:3000/waitlist](http://localhost:3000/waitlist).
 
 Useful commands:
 
@@ -46,14 +50,17 @@ npm run start
 ## Project structure
 
 ```text
-app/          App Router pages, metadata, and global styles
-components/   Comparison, provider-detail, and waitlist UI
-lib/          Canonical illustrative data and shared domain types
-public/       Static prototype assets
-docs/         Project-health and release checklists
+app/                    App Router pages, metadata, and global styles
+components/             Comparison, provider-detail, and waitlist UI
+lib/types/transfer.ts   Canonical transfer-domain types
+lib/data/               Country, corridor, and fictional-provider data
+lib/services/           Pure comparison lookup, enrichment, filtering, and sorting
+lib/utils/              Shared en-US currency and exchange-rate formatting
+public/                 Static prototype assets
+docs/                   Project-health and release checklists
 ```
 
-`Country`, `ProviderResult`, `PayoutMethod`, and the six corridors are defined in `lib/illustrativeComparisonData.ts`. Interactive state and calculations remain in client components; pages and layout remain server components where browser interactivity is unnecessary.
+The former `lib/illustrativeComparisonData.ts` module was removed after all imports moved to responsibility-specific modules, leaving one active source for each kind of data. Interactive state remains in client components; pure derivation lives in the comparison service; pages and layout remain server components where browser interactivity is unnecessary.
 
 ## Illustrative comparison model
 
@@ -65,6 +72,18 @@ Supported sample corridors:
 - Canada → Dominican Republic
 - France → Haiti
 - France → Dominican Republic
+- Haiti → United States
+- Dominican Republic → United States
+- Haiti → Canada
+- Dominican Republic → Canada
+
+### Directional corridors and country capabilities
+
+Corridors are explicit one-way records with an origin, destination, send currency, receive currency, and fictional provider offers. A reverse corridor is never generated or assumed: Canada → Haiti and Haiti → Canada are separate data records. An unsupported direction returns a safe empty comparison with the neutral message “This illustrative transfer corridor is not available yet.”
+
+Country metadata has canonical `Country` and `CountryCode` types plus `canSend` and `canReceive` capability flags. United States, Canada, Haiti, and Dominican Republic currently support both capabilities; France currently supports sending only. Capabilities describe intended direction support, but the form uses actual corridor records as its source of truth.
+
+The From Country list contains only origins with at least one outgoing corridor. The To Country list contains only destinations explicitly available from the selected origin. Changing origins selects the first valid destination only when the prior destination is unavailable. This edits form selections without replacing the submitted comparison. Country swapping follows the same rule: it is enabled only when the exact reverse corridor exists and does not run a comparison automatically.
 
 Recipient amounts are calculated locally as:
 
@@ -73,6 +92,103 @@ max(send amount - numeric fee, 0) × numeric illustrative exchange rate
 ```
 
 Numeric values remain numbers until display formatting. Filtering creates a filtered provider list, and sorting operates on a copied array, so the canonical corridor data is not mutated.
+
+The comparison flow is data-driven: a `ComparisonRequest` identifies a corridor, amount, sort mode, and payout filter; `compareTransfers` looks up the corridor, enriches its raw offers with fictional provider identity and calculated recipient amounts, filters, copies and sorts the results, and returns a `ComparisonResult` with a visible count. Unsupported corridors safely return an empty result.
+
+### Smart Comparison Engine
+
+Every visible `ProviderResult` contains numeric derived metrics. Formatting occurs only in the UI:
+
+```text
+recipientAmount = max(normalized amount - normalized fee, 0) × normalized exchange rate
+totalCost = normalized amount + normalized fee
+feePercentage = normalized amount > 0 ? normalized fee / normalized amount × 100 : 0
+deliveryScore = existing numeric delivery rank (lower is faster)
+valueScore = recipientAmount
+rankPosition = one-based position after filtering and deterministic sorting
+```
+
+`valueScore` deliberately contains no weighted blend or hidden preference. Recipient amount determines value order; fee and delivery are visible tie-breakers. Invalid, negative, or non-finite numeric inputs are normalized to safe non-negative metrics, and a fee that consumes the effective send amount produces a zero recipient amount.
+
+Sort rules are deterministic:
+
+- Best value: highest recipient amount, then lower fee, faster delivery, and provider name.
+- Lowest fee: lower fee, then highest recipient amount, faster delivery, and provider name.
+- Fastest: faster delivery rank, then highest recipient amount, lower fee, and provider name.
+- Highest recipient amount: highest recipient amount, then lower fee, faster delivery, and provider name.
+
+Provider names are used only as the final stable tie-break. Descriptive badges do not affect sorting. Rankings compare the currently visible fictional results under the selected sort mode; they are not recommendations, endorsements, live quotes, or claims about provider quality.
+
+### Rich Illustrative Provider Profiles
+
+Provider identity and profile metadata live once in `lib/data/providers.ts`; corridor offers reference stable `ProviderId` values and retain only corridor-specific fees, rates, delivery estimates, and payout methods. The comparison engine safely enriches each offer with its reusable profile and leaves source data unchanged.
+
+Each fictional `ProviderProfile` may contain:
+
+- Stable ID, fictional name, optional short name, initials, and neutral color accent
+- Concise description and service summary
+- Supported illustrative payout methods
+- Illustrative support-channel and digital-access labels
+- Neutral availability note
+- Required `profileStatus: "illustrative"` marker
+
+These fields are presentation metadata only. They do not contain or imply licensing, regulatory approval, security certification, longevity, customer ratings, review counts, reliability, partnership, endorsement, guaranteed availability, or real contact details.
+
+Badges are calculated from the current visible illustrative results after payout filtering. Best Value uses the documented recipient/fee/delivery tie-break order, Lowest Fee and Fastest use their deterministic comparison orders, and Wallet Delivery describes a visible mobile-wallet offer. Profiles never assign or override comparison badges, and badges do not change sorting.
+
+If a corridor offer has no matching profile, the engine keeps its numeric comparison usable and displays “Illustrative provider information unavailable” instead of crashing or rendering empty labels.
+
+## Transfer Marketplace
+
+`/marketplace` is a responsive discovery page generated from canonical country, corridor, provider-offer, and marketplace metadata. It does not maintain a duplicate corridor list or calculate transfer values.
+
+- Search is immediate, case-insensitive, whitespace- and separator-normalized, and matches origin names, destination names, combined corridor text, and fictional provider names resolved from canonical profiles.
+- Region filters are generated from the regions represented by current corridor endpoints: Caribbean, Europe, and North America.
+- `featured`, `recentlyAdded`, and `displayPriority` are optional typed corridor metadata. Featured routes are explicitly selected rather than described as genuinely popular or trending. Recently added routes are never inferred from array order.
+- Result counts are announced politely, and empty results provide a neutral Clear filters action.
+- Each semantic corridor card shows direction, currencies, fictional offer count, deduplicated payout methods, and explicit metadata labels.
+
+“Compare this corridor” links use the stable corridor ID in `/?corridor=<id>#compare`. The homepage validates the ID against corridor data on the server, ignores malformed or unsupported values, and initializes both the editable form and its illustrative preview to the same valid direction. The amount remains editable and no comparison submission or loading sequence is triggered. With no valid query, the existing United States → Haiti default remains unchanged. Fragment scrolling follows the site’s reduced-motion CSS preference.
+
+Marketplace discovery remains local prototype behavior: there are no accounts, cross-device synchronization, live availability, or external storage.
+
+## Multilingual foundation
+
+TransferHub supports English (`en`), Haitian Creole (`ht`), French (`fr`), and Spanish (`es`), with English as the default locale. Application pages use locale-prefixed App Router paths: `/<lang>`, `/<lang>/marketplace`, and `/<lang>/waitlist`. The legacy `/`, `/marketplace`, and `/waitlist` entry points redirect to their English equivalents and preserve query strings; comparison links include the active locale.
+
+Typed first-party dictionaries live under `lib/i18n/dictionaries/`, while `lib/i18n/types.ts` defines the shared shape and `lib/i18n/config.ts` owns locale validation, display names, and formatting-locale mappings. To add a translation key, add it to `Dictionary`, provide the English canonical copy, then supply reviewed copy for every locale. To add a locale, extend `locales`, `localeFormats`, and `localeNames`, create a matching dictionary, and register it in `lib/i18n/dictionaries.ts`.
+
+Country, region, and payout labels are localized presentation mappings. Canonical country names, corridor IDs, provider IDs, query keys, currency codes, and storage values never change. Marketplace search includes canonical and active-locale country labels while retaining case-insensitive separator normalization and provider-name matching.
+
+The language switcher uses language names rather than flags, marks the active language accessibly, keeps the equivalent route, and carries the current search string and hash fragment during activation. Favorites, pins, recent corridors, and waitlist entries retain their locale-independent `localStorage` keys, so switching languages neither duplicates nor erases stored data.
+
+Number and currency output uses `en-US`, `ht-HT`, `fr-FR`, or `es` conventions when supported. If `ht-HT` is unavailable, formatting safely falls back to `en-US`; currency codes remain visible and calculations are unchanged.
+
+Translations are maintained locally without an external service. Haitian Creole, French, and Spanish copy requires native-speaker and legal review before public use, particularly disclosures and remittance terminology. The next planned milestone is automated locale-route, dictionary-completeness, interaction, and visual-regression coverage.
+
+### Personal Workspace
+
+The marketplace and Favorites Center support browser-local corridor and provider favorites, pinned corridors, and recent activity. Workspace data stores only canonical corridor and provider IDs under the versioned key `transferhub_marketplace_workspace_v2`; it never stores profiles, offers, fees, rates, amounts, recipients, names, emails, or payment information.
+
+- Favorite controls add or remove a corridor from the saved workspace. Removing a favorite also removes its pin.
+- Pinning is available only after a corridor is a favorite. Pins and favorites remain separate ordered ID lists, and pinned cards appear before other favorites.
+- Activating “Compare this corridor” records that valid corridor as recent without replacing semantic link navigation. Direct valid corridor-query visits are also recorded, while malformed IDs are ignored.
+- Recent corridors are deduplicated, most-recent-first, and limited to six. Selecting an existing recent route moves it to the front. Recents can be cleared with one browser-local action.
+- Personal workspace summaries remain visible when discovery search or region filters change; only Browse all corridors follows those filters.
+
+The storage service validates version and shape, removes obsolete corridor IDs, handles malformed JSON and unavailable storage without crashing, and never synchronizes data. Clearing this browser’s storage removes the workspace. Saved state is not backed up, encrypted by TransferHub, associated with an account, or available on another browser or device.
+
+To test locally, favorite and pin several marketplace cards, activate comparison links, open and favorite provider details, then visit `/en/workspace` and reload. Verify saved ordering, both six-item recent limits, favorite removal unpinning, and both clear actions. Remove `transferhub_marketplace_workspace_v2` in browser developer tools to verify the workspace returns to its empty state; use a valid v1 payload to verify migration.
+
+### Extending illustrative data
+
+- Add or update one canonical country definition in `lib/data/countries.ts`, including its code, label, currency, and directional capability flags.
+- Add one fictional provider profile to `lib/data/providers.ts`, extend `ProviderId` and other narrow unions only as needed, and keep every profile field neutral and explicitly illustrative.
+- Associate an offer by its stable `providerId` in `lib/data/corridors.ts`. Keep corridor-varying fee, rate, delivery, and payout values in the offer rather than the profile.
+- Add each supported direction as its own corridor in `lib/data/corridors.ts`, with `fromCountry`, `toCountry`, `sendCurrency`, `receiveCurrency`, and fictional offers. Add the reverse direction separately only when it is actually supported.
+- Add optional `featured`, `recentlyAdded`, or `displayPriority` metadata only when the route should appear in those marketplace sections. Add or reuse endpoint region metadata in `lib/data/countries.ts`.
+- Dropdowns and swap availability derive automatically from corridor data; UI logic does not need editing when a valid directional corridor is added.
+- Keep every identity and value explicitly fictional. Do not use real provider trademarks, imply a partnership or recommendation, or present values as live quotes.
 
 ## Accessibility highlights
 
@@ -117,4 +233,12 @@ The current prototype makes no claim of production security, regulatory approval
 
 ## Proposed next phase
 
-Prioritize product and compliance requirements before adding transactional functionality. Replace the waitlist storage with an approved server-side workflow, define a provider-data contract with freshness and failure states, add automated tests for calculations and interactions, and conduct structured accessibility, privacy, security, and legal reviews.
+The next planned v0.2.0 milestone is transparent recommendation cards. Product and compliance requirements remain prerequisites to any transactional functionality. A future live-data design would also require an authorized provider-data contract with freshness and failure states; none is connected in this prototype.
+
+## Favorites Center
+
+The localized `/[lang]/workspace` route (for example, `/en/workspace`) is the unified browser-local dashboard for pinned corridors, favorite corridors, favorite fictional providers, recent corridors, and recently viewed providers. Provider details include an explicit pressed-state favorite control, and opening a valid provider-details panel moves that provider to the front of a six-item recent list.
+
+Workspace storage uses `transferhub_marketplace_workspace_v2`. On first use, valid corridor favorites, pins, and recents from `transferhub_marketplace_workspace_v1` are sanitized and migrated without storing full objects. Only canonical corridor and provider IDs are stored. The data is not tied to an account, synchronized, backed up, or shared between devices; clearing browser storage removes it. Provider cards currently link to Marketplace without applying a provider query because Marketplace does not safely initialize its search from query parameters.
+
+To test the workspace, favorite and pin corridors in Marketplace, compare a corridor, open a provider-details panel, favorite that provider, then visit the locale-matched My TransferHub navigation link. Verify removal, unpin, both clear-recent actions, live status announcements, language switching, and persistence after reload in English, Haitian Creole, French, and Spanish. Also test with storage disabled or malformed v1/v2 JSON; the comparison and details experiences must remain usable.
