@@ -97,7 +97,14 @@ export default function MarketplaceExplorer({ locale, dictionary }: { locale: Lo
       </section>
 
       <section aria-labelledby="browse-corridors-heading" className="mt-16 border-t border-slate-200 pt-12">
-        <div className="max-w-2xl"><h2 id="browse-corridors-heading" className="text-2xl font-bold text-slate-950">{dictionary.marketplace.browseAll}</h2><p className="mt-2 text-sm leading-6 text-slate-600">{dictionary.marketplace.browseDescription}</p></div>
+  <div className="max-w-2xl">
+  <h2 id="browse-corridors-heading" className="text-2xl font-bold text-slate-950">
+    {dictionary.marketplace.browseAll}{" "}
+    <span className="text-lg font-semibold text-slate-500">
+      ({visibleCorridors.length})
+    </span>
+  </h2>
+</div>
         <form role="search" className="mt-6 grid gap-4 rounded-2xl border border-slate-200 bg-white p-5 lg:grid-cols-[1fr_auto] lg:items-end" onSubmit={(event) => event.preventDefault()}>
           <label htmlFor="corridor-search" className="grid gap-2 text-sm font-bold text-slate-700">{dictionary.marketplace.search}
             <input id="corridor-search" type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={dictionary.marketplace.searchPlaceholder} className="comparison-control" />
