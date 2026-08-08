@@ -16,9 +16,33 @@ const regions = getMarketplaceRegions(corridors);
 export default function MarketplaceExplorer({ locale, dictionary }: { locale: Locale; dictionary: Dictionary }) {
   const [query, setQuery] = useState("");
   const [region, setRegion] = useState<Region | "all">("all");
+  const [sortBy, setSortBy] = useState<"default" | "from" | "to">("default");
   const [workspaceStatus, setWorkspaceStatus] = useState("");
   const workspace = useMarketplaceWorkspace();
-  const visibleCorridors = useMemo(() => filterCorridorsByRegion(searchCorridors(corridors, query, locale), region), [locale, query, region]);
+  const visibleCorridors = useMemo(() => {
+  const filtered = filterCorridorsByRegion(
+    searchCorridors(corridors, query, locale),
+    region,
+  );
+
+  if (sortBy === "from") {
+    return [...filtered].sort((a, b) =>
+      getCountryLabel(a.fromCountry, locale).localeCompare(
+        getCountryLabel(b.fromCountry, locale),
+      ),
+    );
+  }
+
+  if (sortBy === "to") {
+    return [...filtered].sort((a, b) =>
+      getCountryLabel(a.toCountry, locale).localeCompare(
+        getCountryLabel(b.toCountry, locale),
+      ),
+    );
+  }
+
+  return filtered;
+}, [locale, query, region, sortBy]);
   const featuredCorridors = getFeaturedCorridors(corridors);
   const recentlyAddedCorridors = getRecentlyAddedCorridors(corridors);
   const favoriteIds = new Set(workspace.favoriteCorridorIds);
@@ -30,8 +54,8 @@ export default function MarketplaceExplorer({ locale, dictionary }: { locale: Lo
   function clearFilters() {
     setQuery("");
     setRegion("all");
+    setSortBy("default");
   }
-
   function toggleFavorite(corridor: Corridor) {
     const removing = workspace.isFavorite(corridor.id);
     const wasPinned = workspace.isPinned(corridor.id);
@@ -97,13 +121,37 @@ export default function MarketplaceExplorer({ locale, dictionary }: { locale: Lo
       </section>
 
       <section aria-labelledby="browse-corridors-heading" className="mt-16 border-t border-slate-200 pt-12">
-        <div className="max-w-2xl"><h2 id="browse-corridors-heading" className="text-2xl font-bold text-slate-950">{dictionary.marketplace.browseAll}</h2><p className="mt-2 text-sm leading-6 text-slate-600">{dictionary.marketplace.browseDescription}</p></div>
+  <div className="max-w-2xl">
+  <h2 id="browse-corridors-heading" className="text-2xl font-bold text-slate-950">
+    {dictionary.marketplace.browseAll}{" "}
+    <span className="text-lg font-semibold text-slate-500">
+      ({visibleCorridors.length})
+    </span>
+  </h2>
+</div>
         <form role="search" className="mt-6 grid gap-4 rounded-2xl border border-slate-200 bg-white p-5 lg:grid-cols-[1fr_auto] lg:items-end" onSubmit={(event) => event.preventDefault()}>
           <label htmlFor="corridor-search" className="grid gap-2 text-sm font-bold text-slate-700">{dictionary.marketplace.search}
             <input id="corridor-search" type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={dictionary.marketplace.searchPlaceholder} className="comparison-control" />
           </label>
           {query && <button type="button" onClick={() => setQuery("")} className="min-h-11 rounded-xl border border-slate-300 px-4 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-50">{dictionary.marketplace.clearSearch}</button>}
         </form>
+
+<div className="mt-5 flex justify-end">
+  <label htmlFor="corridor-sort" className="grid gap-2 text-sm font-bold text-slate-700">{dictionary.marketplace.sortLabel}
+  <select
+    id="corridor-sort"
+    value={sortBy}
+    onChange={(event) =>
+      setSortBy(event.target.value as "default" | "from" | "to")
+    }
+    className="min-h-11 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900"
+  >
+    <option value="default">{dictionary.marketplace.sortDefault}</option>
+    <option value="from">{dictionary.marketplace.sortFrom}</option>
+    <option value="to">{dictionary.marketplace.sortTo}</option>
+  </select>
+</label>
+</div>
         <fieldset className="mt-5"><legend className="text-sm font-bold text-slate-700">{dictionary.marketplace.browseRegion}</legend><div className="mt-3 flex flex-wrap gap-2">
           <button type="button" onClick={() => setRegion("all")} aria-pressed={region === "all"} className={`min-h-11 rounded-xl px-4 py-2 text-sm font-bold transition ${region === "all" ? "bg-blue-600 text-white" : "border border-slate-300 bg-white text-slate-700 hover:bg-slate-50"}`}>{dictionary.marketplace.allRegions}</button>
           {regions.map((item) => <button key={item} type="button" onClick={() => setRegion(item)} aria-pressed={region === item} className={`min-h-11 rounded-xl px-4 py-2 text-sm font-bold transition ${region === item ? "bg-blue-600 text-white" : "border border-slate-300 bg-white text-slate-700 hover:bg-slate-50"}`}>{getRegionLabel(item, locale)}</button>)}
