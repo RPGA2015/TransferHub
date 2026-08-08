@@ -32,23 +32,6 @@ export default function MarketplaceExplorer({ locale, dictionary }: { locale: Lo
     setQuery("");
     setRegion("all");
   }
-<div className="mt-5 flex justify-end">
-  <label htmlFor="corridor-sort" className="grid gap-2 text-sm font-bold text-slate-700">
-    Sort corridors
-    <select
-      id="corridor-sort"
-      value={sortBy}
-      onChange={(event) =>
-        setSortBy(event.target.value as "default" | "from" | "to")
-      }
-      className="min-h-11 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900"
-    >
-      <option value="default">Default order</option>
-      <option value="from">From country</option>
-      <option value="to">To country</option>
-    </select>
-  </label>
-</div>
   function toggleFavorite(corridor: Corridor) {
     const removing = workspace.isFavorite(corridor.id);
     const wasPinned = workspace.isPinned(corridor.id);
@@ -128,6 +111,23 @@ export default function MarketplaceExplorer({ locale, dictionary }: { locale: Lo
           </label>
           {query && <button type="button" onClick={() => setQuery("")} className="min-h-11 rounded-xl border border-slate-300 px-4 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-50">{dictionary.marketplace.clearSearch}</button>}
         </form>
+
+<div className="mt-5 flex justify-end">
+  <label htmlFor="corridor-sort" className="grid gap-2 text-sm font-bold text-slate-700">{dictionary.marketplace.sortLabel}
+  <select
+    id="corridor-sort"
+    value={sortBy}
+    onChange={(event) =>
+      setSortBy(event.target.value as "default" | "from" | "to")
+    }
+    className="min-h-11 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900"
+  >
+    <option value="default">{dictionary.marketplace.sortDefault}</option>
+    <option value="from">{dictionary.marketplace.sortFrom}</option>
+    <option value="to">{dictionary.marketplace.sortTo}</option>
+  </select>
+</label>
+</div>
         <fieldset className="mt-5"><legend className="text-sm font-bold text-slate-700">{dictionary.marketplace.browseRegion}</legend><div className="mt-3 flex flex-wrap gap-2">
           <button type="button" onClick={() => setRegion("all")} aria-pressed={region === "all"} className={`min-h-11 rounded-xl px-4 py-2 text-sm font-bold transition ${region === "all" ? "bg-blue-600 text-white" : "border border-slate-300 bg-white text-slate-700 hover:bg-slate-50"}`}>{dictionary.marketplace.allRegions}</button>
           {regions.map((item) => <button key={item} type="button" onClick={() => setRegion(item)} aria-pressed={region === item} className={`min-h-11 rounded-xl px-4 py-2 text-sm font-bold transition ${region === item ? "bg-blue-600 text-white" : "border border-slate-300 bg-white text-slate-700 hover:bg-slate-50"}`}>{getRegionLabel(item, locale)}</button>)}
