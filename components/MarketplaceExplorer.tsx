@@ -19,7 +19,30 @@ export default function MarketplaceExplorer({ locale, dictionary }: { locale: Lo
   const [sortBy, setSortBy] = useState<"default" | "from" | "to">("default");
   const [workspaceStatus, setWorkspaceStatus] = useState("");
   const workspace = useMarketplaceWorkspace();
-  const visibleCorridors = useMemo(() => filterCorridorsByRegion(searchCorridors(corridors, query, locale), region), [locale, query, region]);
+  const visibleCorridors = useMemo(() => {
+  const filtered = filterCorridorsByRegion(
+    searchCorridors(corridors, query, locale),
+    region,
+  );
+
+  if (sortBy === "from") {
+    return [...filtered].sort((a, b) =>
+      getCountryLabel(a.fromCountry, locale).localeCompare(
+        getCountryLabel(b.fromCountry, locale),
+      ),
+    );
+  }
+
+  if (sortBy === "to") {
+    return [...filtered].sort((a, b) =>
+      getCountryLabel(a.toCountry, locale).localeCompare(
+        getCountryLabel(b.toCountry, locale),
+      ),
+    );
+  }
+
+  return filtered;
+}, [locale, query, region, sortBy]);
   const featuredCorridors = getFeaturedCorridors(corridors);
   const recentlyAddedCorridors = getRecentlyAddedCorridors(corridors);
   const favoriteIds = new Set(workspace.favoriteCorridorIds);
@@ -31,6 +54,7 @@ export default function MarketplaceExplorer({ locale, dictionary }: { locale: Lo
   function clearFilters() {
     setQuery("");
     setRegion("all");
+    setSortBy("default");
   }
   function toggleFavorite(corridor: Corridor) {
     const removing = workspace.isFavorite(corridor.id);
