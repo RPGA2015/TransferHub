@@ -16,6 +16,7 @@ const regions = getMarketplaceRegions(corridors);
 export default function MarketplaceExplorer({ locale, dictionary }: { locale: Locale; dictionary: Dictionary }) {
   const [query, setQuery] = useState("");
   const [region, setRegion] = useState<Region | "all">("all");
+  const [sortBy, setSortBy] = useState<"default" | "from" | "to">("default");
   const [workspaceStatus, setWorkspaceStatus] = useState("");
   const workspace = useMarketplaceWorkspace();
   const visibleCorridors = useMemo(() => filterCorridorsByRegion(searchCorridors(corridors, query, locale), region), [locale, query, region]);
@@ -31,7 +32,23 @@ export default function MarketplaceExplorer({ locale, dictionary }: { locale: Lo
     setQuery("");
     setRegion("all");
   }
-
+<div className="mt-5 flex justify-end">
+  <label htmlFor="corridor-sort" className="grid gap-2 text-sm font-bold text-slate-700">
+    Sort corridors
+    <select
+      id="corridor-sort"
+      value={sortBy}
+      onChange={(event) =>
+        setSortBy(event.target.value as "default" | "from" | "to")
+      }
+      className="min-h-11 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900"
+    >
+      <option value="default">Default order</option>
+      <option value="from">From country</option>
+      <option value="to">To country</option>
+    </select>
+  </label>
+</div>
   function toggleFavorite(corridor: Corridor) {
     const removing = workspace.isFavorite(corridor.id);
     const wasPinned = workspace.isPinned(corridor.id);
