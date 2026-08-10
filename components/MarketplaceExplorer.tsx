@@ -16,7 +16,7 @@ const regions = getMarketplaceRegions(corridors);
 export default function MarketplaceExplorer({ locale, dictionary }: { locale: Locale; dictionary: Dictionary }) {
   const [query, setQuery] = useState("");
   const [region, setRegion] = useState<Region | "all">("all");
-  const [sortBy, setSortBy] = useState<"default" | "from" | "to" | "pinned">("default");
+  const [sortBy, setSortBy] = useState<"default" | "from" | "to" | "pinned" | "recent">("default");
   const [favoritesOnly, setFavoritesOnly] = useState(false);
   const [workspaceStatus, setWorkspaceStatus] = useState("");
   const workspace = useMarketplaceWorkspace();
@@ -36,7 +36,23 @@ const filtered = favoritesOnly
     const bPinned = workspace.isPinned(b.id) ? 1 : 0;
     return bPinned - aPinned;
   });
-}if (sortBy === "from") {
+}if (sortBy === "recent") {
+  const recentIndex = new Map(
+    workspace.recentCorridorIds.map((id, index) => [id, index]),
+  );
+
+  return [...filtered].sort((a, b) => {
+    const aIndex = recentIndex.get(a.id);
+    const bIndex = recentIndex.get(b.id);
+
+    if (aIndex === undefined && bIndex === undefined) return 0;
+    if (aIndex === undefined) return 1;
+    if (bIndex === undefined) return -1;
+
+    return aIndex - bIndex;
+  });
+}
+if (sortBy === "from") {
     return [...filtered].sort((a, b) =>
       getCountryLabel(a.fromCountry, locale).localeCompare(
         getCountryLabel(b.fromCountry, locale),
@@ -154,7 +170,7 @@ const filtered = favoritesOnly
     id="corridor-sort"
     value={sortBy}
     onChange={(event) =>
-  setSortBy(event.target.value as "default" | "from" | "to" | "pinned")
+  setSortBy(event.target.value as "default" | "from" | "to" | "pinned" | "recent")
     }
     className="min-h-11 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900"
   >
@@ -162,6 +178,7 @@ const filtered = favoritesOnly
     <option value="from">{dictionary.marketplace.sortFrom}</option>
     <option value="to">{dictionary.marketplace.sortTo}</option>
 <option value="pinned">{dictionary.marketplace.sortPinned}</option>
+<option value="recent">{dictionary.marketplace.sortRecent}</option>
   </select>
 </label>
 </div>
