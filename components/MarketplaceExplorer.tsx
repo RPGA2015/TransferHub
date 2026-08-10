@@ -17,13 +17,18 @@ export default function MarketplaceExplorer({ locale, dictionary }: { locale: Lo
   const [query, setQuery] = useState("");
   const [region, setRegion] = useState<Region | "all">("all");
   const [sortBy, setSortBy] = useState<"default" | "from" | "to">("default");
+  const [favoritesOnly, setFavoritesOnly] = useState(false);
   const [workspaceStatus, setWorkspaceStatus] = useState("");
   const workspace = useMarketplaceWorkspace();
   const visibleCorridors = useMemo(() => {
-  const filtered = filterCorridorsByRegion(
-    searchCorridors(corridors, query, locale),
-    region,
-  );
+  const filteredByRegion = filterCorridorsByRegion(
+  searchCorridors(corridors, query, locale),
+  region,
+);
+
+const filtered = favoritesOnly
+  ? filteredByRegion.filter((corridor) => workspace.isFavorite(corridor.id))
+  : filteredByRegion;
 
   if (sortBy === "from") {
     return [...filtered].sort((a, b) =>
@@ -42,7 +47,7 @@ export default function MarketplaceExplorer({ locale, dictionary }: { locale: Lo
   }
 
   return filtered;
-}, [locale, query, region, sortBy]);
+}, [locale, query, region, sortBy, favoritesOnly, workspace]);
   const featuredCorridors = getFeaturedCorridors(corridors);
   const recentlyAddedCorridors = getRecentlyAddedCorridors(corridors);
   const favoriteIds = new Set(workspace.favoriteCorridorIds);
@@ -55,6 +60,7 @@ export default function MarketplaceExplorer({ locale, dictionary }: { locale: Lo
     setQuery("");
     setRegion("all");
     setSortBy("default");
+  setFavoritesOnly(false);
   }
   function toggleFavorite(corridor: Corridor) {
     const removing = workspace.isFavorite(corridor.id);
@@ -152,6 +158,15 @@ export default function MarketplaceExplorer({ locale, dictionary }: { locale: Lo
   </select>
 </label>
 </div>
+     <label className="mt-5 flex items-center gap-3 text-sm font-bold text-slate-700">
+  <input
+    type="checkbox"
+    checked={favoritesOnly}
+    onChange={(event) => setFavoritesOnly(event.target.checked)}
+    className="h-4 w-4 rounded border-slate-300"
+  />
+  {dictionary.marketplace.favoritesOnly}
+</label>   
         <fieldset className="mt-5"><legend className="text-sm font-bold text-slate-700">{dictionary.marketplace.browseRegion}</legend><div className="mt-3 flex flex-wrap gap-2">
           <button type="button" onClick={() => setRegion("all")} aria-pressed={region === "all"} className={`min-h-11 rounded-xl px-4 py-2 text-sm font-bold transition ${region === "all" ? "bg-blue-600 text-white" : "border border-slate-300 bg-white text-slate-700 hover:bg-slate-50"}`}>{dictionary.marketplace.allRegions}</button>
           {regions.map((item) => <button key={item} type="button" onClick={() => setRegion(item)} aria-pressed={region === item} className={`min-h-11 rounded-xl px-4 py-2 text-sm font-bold transition ${region === item ? "bg-blue-600 text-white" : "border border-slate-300 bg-white text-slate-700 hover:bg-slate-50"}`}>{getRegionLabel(item, locale)}</button>)}
