@@ -16,7 +16,7 @@ const regions = getMarketplaceRegions(corridors);
 export default function MarketplaceExplorer({ locale, dictionary }: { locale: Locale; dictionary: Dictionary }) {
   const [query, setQuery] = useState("");
   const [region, setRegion] = useState<Region | "all">("all");
-  const [sortBy, setSortBy] = useState<"default" | "from" | "to" | "pinned" | "recent">("default");
+ const [sortBy, setSortBy] = useState<"default" | "from" | "to" | "pinned" | "recent" | "favorites">("default");
   const [favoritesOnly, setFavoritesOnly] = useState(false);
   const [workspaceStatus, setWorkspaceStatus] = useState("");
   const workspace = useMarketplaceWorkspace();
@@ -36,7 +36,15 @@ const filtered = favoritesOnly
     const bPinned = workspace.isPinned(b.id) ? 1 : 0;
     return bPinned - aPinned;
   });
-}if (sortBy === "recent") {
+}
+if (sortBy === "favorites") {
+  return [...filtered].sort((a, b) => {
+    const aFavorite = workspace.isFavorite(a.id) ? 1 : 0;
+    const bFavorite = workspace.isFavorite(b.id) ? 1 : 0;
+    return bFavorite - aFavorite;
+  });
+}
+if (sortBy === "recent") {
   const recentIndex = new Map(
     workspace.recentCorridorIds.map((id, index) => [id, index]),
   );
@@ -170,14 +178,15 @@ if (sortBy === "from") {
     id="corridor-sort"
     value={sortBy}
     onChange={(event) =>
-  setSortBy(event.target.value as "default" | "from" | "to" | "pinned" | "recent")
-    }
+  setSortBy(event.target.value as "default" | "from" | "to" | "pinned" | "recent" | "favorites")
+  }
     className="min-h-11 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900"
   >
     <option value="default">{dictionary.marketplace.sortDefault}</option>
     <option value="from">{dictionary.marketplace.sortFrom}</option>
     <option value="to">{dictionary.marketplace.sortTo}</option>
 <option value="pinned">{dictionary.marketplace.sortPinned}</option>
+<option value="favorites">{dictionary.marketplace.sortFavorites}</option>
 <option value="recent">{dictionary.marketplace.sortRecent}</option>
   </select>
 </label>
