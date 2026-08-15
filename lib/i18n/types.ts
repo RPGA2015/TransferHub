@@ -20,7 +20,11 @@ export type Dictionary = {
   };
   providerDetails: { profile: string; overview: string; currentOffer: string; amountSent: string; exchangeRate: string; deliveryEstimate: string; recipientReceives: string; displayedIn: string; ofSendAmount: string; capabilities: string; payoutMethods: string; digitalAccess: string; supportChannels: string; availabilityNote: string; comparison: string; rankingNote: string; position: string; feePercentage: string; recipientDifference: string; deliveryPayout: string; importantNotice: string; close: string; sameAmount: string; lessAmount: string; moreAmount: string; positionOf: string; noBadge: string; notice: string };
   providerTrust: { heading: string; intro: string; sampleLabel: string; verified: string; verifiedYes: string; verifiedNo: string; yearsInOperation: string; yearsValue: string; countriesServed: string; countriesValue: string; supportAvailability: string; regulatoryStatus: string; lastProfileUpdate: string; businessHours: string; extendedHours: string; alwaysAvailable: string; demoRegistration: string; demoPending: string; notAssessed: string };
-  marketplace: { eyebrow: string; title: string; intro: string; disclosure: string; footer: string; featured: string; recentlyAdded: string; browseAll: string;sortLabel: string;
+  marketplace: { eyebrow: string; activeLabel: string;
+activeSearch: string;
+activeRegion: string;
+activeSort: string;
+activeFavoritesOnly: string; title: string; intro: string; disclosure: string; footer: string; featured: string; recentlyAdded: string; browseAll: string;sortLabel: string;
 sortDefault: string;
 sortFrom: string;
 sortTo: string; sortPinned: string; sortRecent: string; sortFavorites: string; sortNewest: string; favoritesOnly: string; featuredDescription: string; recentDescription: string; browseDescription: string; search: string; searchPlaceholder: string; clearSearch: string; browseRegion: string; allRegions: string; resultSingle: string; resultPlural: string; empty: string; clearFilters: string; providerOffers: string; payoutMethods: string; compare: string };

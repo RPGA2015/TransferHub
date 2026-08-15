@@ -207,7 +207,54 @@ if (sortBy === "from") {
     className="h-4 w-4 rounded border-slate-300"
   />
   {dictionary.marketplace.favoritesOnly}
-</label>   
+</label>
+  {(query.trim() || region !== "all" || sortBy !== "default" || favoritesOnly) && (
+  <div
+    className="mt-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3"
+    role="status"
+    aria-live="polite"
+  >
+    <div className="flex flex-wrap items-center gap-2 text-sm text-slate-700">
+  <span className="font-semibold">{dictionary.marketplace.activeLabel}:</span>
+
+  {query.trim() && (
+    <span className="rounded-full bg-white px-3 py-1">
+     {dictionary.marketplace.activeSearch}: : {query.trim()}
+    </span>
+  )}
+
+  {region !== "all" && (
+    <span className="rounded-full bg-white px-3 py-1">
+     {dictionary.marketplace.activeRegion} : {region}
+    </span>
+  )}
+
+  {sortBy !== "default" && (
+    <span className="rounded-full bg-white px-3 py-1">
+      {dictionary.marketplace.activeSort}: {
+  sortBy === "from"
+    ? dictionary.marketplace.sortFrom
+    : sortBy === "to"
+      ? dictionary.marketplace.sortTo
+      : sortBy === "pinned"
+        ? dictionary.marketplace.sortPinned
+        : sortBy === "favorites"
+          ? dictionary.marketplace.sortFavorites
+          : sortBy === "newest"
+            ? dictionary.marketplace.sortNewest
+            : dictionary.marketplace.sortRecent
+}
+    </span>
+  )}
+
+  {favoritesOnly && (
+    <span className="rounded-full bg-white px-3 py-1">
+      {dictionary.marketplace.activeFavoritesOnly}
+    </span>
+  )}
+</div>
+  </div>
+)} 
         <fieldset className="mt-5"><legend className="text-sm font-bold text-slate-700">{dictionary.marketplace.browseRegion}</legend><div className="mt-3 flex flex-wrap gap-2">
           <button type="button" onClick={() => setRegion("all")} aria-pressed={region === "all"} className={`min-h-11 rounded-xl px-4 py-2 text-sm font-bold transition ${region === "all" ? "bg-blue-600 text-white" : "border border-slate-300 bg-white text-slate-700 hover:bg-slate-50"}`}>{dictionary.marketplace.allRegions}</button>
           {regions.map((item) => <button key={item} type="button" onClick={() => setRegion(item)} aria-pressed={region === item} className={`min-h-11 rounded-xl px-4 py-2 text-sm font-bold transition ${region === item ? "bg-blue-600 text-white" : "border border-slate-300 bg-white text-slate-700 hover:bg-slate-50"}`}>{getRegionLabel(item, locale)}</button>)}
