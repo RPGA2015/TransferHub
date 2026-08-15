@@ -16,7 +16,7 @@ const regions = getMarketplaceRegions(corridors);
 export default function MarketplaceExplorer({ locale, dictionary }: { locale: Locale; dictionary: Dictionary }) {
   const [query, setQuery] = useState("");
   const [region, setRegion] = useState<Region | "all">("all");
- const [sortBy, setSortBy] = useState<"default" | "from" | "to" | "pinned" | "recent" | "favorites">("default");
+ const [sortBy, setSortBy] = useState<"default" | "from" | "to" | "pinned" | "recent" | "favorites" | "newest">("default");
   const [favoritesOnly, setFavoritesOnly] = useState(false);
   const [workspaceStatus, setWorkspaceStatus] = useState("");
   const workspace = useMarketplaceWorkspace();
@@ -42,6 +42,13 @@ if (sortBy === "favorites") {
     const aFavorite = workspace.isFavorite(a.id) ? 1 : 0;
     const bFavorite = workspace.isFavorite(b.id) ? 1 : 0;
     return bFavorite - aFavorite;
+  });
+}
+if (sortBy === "newest") {
+  return [...filtered].sort((a, b) => {
+    const aNewest = a.recentlyAdded ? 1 : 0;
+    const bNewest = b.recentlyAdded ? 1 : 0;
+    return bNewest - aNewest;
   });
 }
 if (sortBy === "recent") {
@@ -178,7 +185,7 @@ if (sortBy === "from") {
     id="corridor-sort"
     value={sortBy}
     onChange={(event) =>
-  setSortBy(event.target.value as "default" | "from" | "to" | "pinned" | "recent" | "favorites")
+  setSortBy(event.target.value as "default" | "from" | "to" | "pinned" | "recent" | "favorites" | "newest")
   }
     className="min-h-11 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900"
   >
@@ -187,6 +194,7 @@ if (sortBy === "from") {
     <option value="to">{dictionary.marketplace.sortTo}</option>
 <option value="pinned">{dictionary.marketplace.sortPinned}</option>
 <option value="favorites">{dictionary.marketplace.sortFavorites}</option>
+<option value="newest">{dictionary.marketplace.sortNewest}</option>
 <option value="recent">{dictionary.marketplace.sortRecent}</option>
   </select>
 </label>
