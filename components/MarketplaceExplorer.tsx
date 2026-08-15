@@ -252,6 +252,18 @@ if (sortBy === "from") {
       {dictionary.marketplace.activeFavoritesOnly}
     </span>
   )}
+<button
+  type="button"
+  onClick={() => {
+    setQuery("");
+    setRegion("all");
+    setSortBy("default");
+    setFavoritesOnly(false);
+  }}
+  className="rounded-full border border-slate-300 bg-white px-3 py-1 font-semibold text-slate-700"
+>
+  {dictionary.marketplace.clearActiveControls}
+</button>
 </div>
   </div>
 )} 
