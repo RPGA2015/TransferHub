@@ -63,4 +63,17 @@ export const illustrativeCorridors: readonly Corridor[] = [
     { ...offerDefaults.A, fee: 205, exchangeRate: 0.02305 }, { ...offerDefaults.B, fee: 80, exchangeRate: 0.02272 },
     { ...offerDefaults.C, fee: 330, exchangeRate: 0.02294 }, { ...offerDefaults.D, fee: 255, exchangeRate: 0.02281 },
   ] },
+{
+  id: "Dominican Republic-France",
+  fromCountry: "Dominican Republic",
+  toCountry: "France",
+  sendCurrency: "DOP",
+  receiveCurrency: "EUR",
+  offers: [
+    { ...offerDefaults.A, fee: 185, exchangeRate: 0.0156 },
+    { ...offerDefaults.B, fee: 65, exchangeRate: 0.0154 },
+    { ...offerDefaults.C, fee: 310, exchangeRate: 0.0155 },
+    { ...offerDefaults.D, fee: 240, exchangeRate: 0.0153 },
+  ],
+},
 ];
