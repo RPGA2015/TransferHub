@@ -1,4 +1,11 @@
-import type{ Corridor, DeliveryMethod, PayoutMethod, ProviderId } from "@/lib/types/transfer";
+import type {
+  Corridor,
+  Country,
+  CurrencyCode,
+  DeliveryMethod,
+  PayoutMethod,
+  ProviderId,
+} from "@/lib/types/transfer";
 
 const offerDefaults = {
   A: { providerId: "provider-a", deliveryLabel: "Same day", deliveryRank: 3, payoutMethod: "Cash or bank" },
@@ -7,7 +14,16 @@ const offerDefaults = {
   D: { providerId: "provider-d", deliveryLabel: "Within an hour", deliveryRank: 2, payoutMethod: "Mobile wallet" },
   E: { providerId: "provider-e", deliveryLabel: "Same day", deliveryRank: 3, payoutMethod: "Bank deposit" },
 } as const satisfies Record<string, { providerId: ProviderId; deliveryLabel: DeliveryMethod; deliveryRank: number; payoutMethod: PayoutMethod }>;
-
+const countryCurrencies = {
+  "United States": "USD",
+  Canada: "CAD",
+  France: "EUR",
+  Haiti: "HTG",
+  "Dominican Republic": "DOP",
+} as const satisfies Record<Country, CurrencyCode>;
+export function getCountryCurrency(country: Country): CurrencyCode {
+  return countryCurrencies[country];
+}
 export const illustrativeCorridors: readonly Corridor[] = [
   { id: "United States-Haiti", fromCountry: "United States", toCountry: "Haiti", sendCurrency: "USD", receiveCurrency: "HTG", featured: true, displayPriority: 1, offers: [
     { ...offerDefaults.A, fee: 2.99, exchangeRate: 132.4 }, { ...offerDefaults.B, fee: 0, exchangeRate: 130.1 },
