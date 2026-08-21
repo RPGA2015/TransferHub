@@ -25,7 +25,8 @@ export function getCountryCurrency(country: Country): CurrencyCode {
   return countryCurrencies[country];
 }
 export const illustrativeCorridors: readonly Corridor[] = [
-  { id: "United States-Haiti", fromCountry: "United States", toCountry: "Haiti", sendCurrency: "USD", receiveCurrency: "HTG", featured: true, displayPriority: 1, offers: [
+  { id: "United States-Haiti", fromCountry: "United States", toCountry: "Haiti", sendCurrency: getCountryCurrency("United States"),
+receiveCurrency: getCountryCurrency("Haiti"), featured: true, displayPriority: 1, offers: [
     { ...offerDefaults.A, fee: 2.99, exchangeRate: 132.4 }, { ...offerDefaults.B, fee: 0, exchangeRate: 130.1 },
     { ...offerDefaults.C, fee: 4.99, exchangeRate: 131.25 }, { ...offerDefaults.D, fee: 3.5, exchangeRate: 130.8 },
     { ...offerDefaults.E, fee: 1.5, exchangeRate: 131.05 },
