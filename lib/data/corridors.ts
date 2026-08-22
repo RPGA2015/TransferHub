@@ -24,6 +24,12 @@ const countryCurrencies = {
 export function getCountryCurrency(country: Country): CurrencyCode {
   return countryCurrencies[country];
 }
+export function hasMatchingCorridorCurrencies(corridor: Corridor): boolean {
+  return (
+    corridor.sendCurrency === getCountryCurrency(corridor.fromCountry) &&
+    corridor.receiveCurrency === getCountryCurrency(corridor.toCountry)
+  );
+}
 export const illustrativeCorridors: readonly Corridor[] = [
   { id: "United States-Haiti", fromCountry: "United States", toCountry: "Haiti", sendCurrency: getCountryCurrency("United States"),
 receiveCurrency: getCountryCurrency("Haiti"), featured: true, displayPriority: 1, offers: [
@@ -104,3 +110,6 @@ receiveCurrency: getCountryCurrency("France"),
   ],
 },
 ];
+export function allCorridorCurrenciesMatch(): boolean {
+  return illustrativeCorridors.every(hasMatchingCorridorCurrencies);
+}
