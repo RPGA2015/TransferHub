@@ -9,9 +9,10 @@ import { getCountryLabel, getRegionLabel } from "@/lib/i18n/labels";
 import type { Dictionary } from "@/lib/i18n/types";
 import { filterCorridorsByRegion, getCorridorsByIds, getFeaturedCorridors, getMarketplaceCorridors, getMarketplaceRegions, getRecentlyAddedCorridors, searchCorridors } from "@/lib/services/marketplaceService";
 import type { Corridor, CorridorId, Region } from "@/lib/types/transfer";
-
+import { getAllCorridorCurrencyValidationStatus } from "@/lib/data/corridors";
 const corridors = getMarketplaceCorridors();
 const regions = getMarketplaceRegions(corridors);
+const corridorValidationStatus = getAllCorridorCurrencyValidationStatus();
 
 export default function MarketplaceExplorer({ locale, dictionary }: { locale: Locale; dictionary: Dictionary }) {
   const [query, setQuery] = useState("");
@@ -142,7 +143,10 @@ if (sortBy === "from") {
       <section aria-labelledby="workspace-heading" className="rounded-3xl border border-blue-100 bg-blue-50/50 p-5 sm:p-7">
         <h2 id="workspace-heading" className="text-2xl font-bold text-slate-950">{dictionary.workspace.title}</h2>
         <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">{dictionary.workspace.disclosure}</p>
-        {!workspace.isHydrated ? <p className="mt-5 text-sm text-slate-500">{dictionary.workspace.loading}</p> : <>
+        <p className="mt-2 text-xs font-semibold text-slate-500">
+  Corridor currency validation: {corridorValidationStatus}
+</p>
+{!workspace.isHydrated ? <p className="mt-5 text-sm text-slate-500">{dictionary.workspace.loading}</p> : <>
           {workspace.favoriteCorridorIds.length === 0 && <p className="mt-5 rounded-xl bg-white px-4 py-3 text-sm text-slate-600">{dictionary.workspace.empty}</p>}
           {pinnedCorridors.length > 0 && <div className="mt-7"><h3 className="text-lg font-bold text-slate-950">{dictionary.workspace.pinned}</h3><p className="mt-1 text-xs text-slate-500">{dictionary.workspace.pinnedDescription}</p>{renderCards(pinnedCorridors, "mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3")}</div>}
           {favoriteCorridors.length > 0 && <div className="mt-7"><h3 className="text-lg font-bold text-slate-950">{dictionary.workspace.favorites}</h3><p className="mt-1 text-xs text-slate-500">{dictionary.workspace.favoritesDescription}</p>{renderCards(favoriteCorridors, "mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3")}</div>}
