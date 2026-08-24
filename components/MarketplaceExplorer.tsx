@@ -143,17 +143,30 @@ if (sortBy === "from") {
       <section aria-labelledby="workspace-heading" className="rounded-3xl border border-blue-100 bg-blue-50/50 p-5 sm:p-7">
         <h2 id="workspace-heading" className="text-2xl font-bold text-slate-950">{dictionary.workspace.title}</h2>
         <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">{dictionary.workspace.disclosure}</p>
-       <div
-  className={`mt-2 inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${
+<div
+  role="status"
+  aria-live="polite"
+  aria-atomic="true"
+  className={`mt-2 inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold ${
     corridorValidationStatus === "valid"
       ? "bg-emerald-50 text-emerald-700"
       : "bg-amber-50 text-amber-700"
   }`}
 >
-  {dictionary.marketplace.currencyStatusLabel}:{" "}
-  {corridorValidationStatus === "valid"
-    ? dictionary.marketplace.currencyStatusVerified
-    : dictionary.marketplace.currencyStatusNeedsReview}
+  <span
+    aria-hidden="true"
+    className={`h-2 w-2 rounded-full ${
+      corridorValidationStatus === "valid"
+        ? "bg-emerald-600"
+        : "bg-amber-600"
+    }`}
+  />
+  <span>
+    {dictionary.marketplace.currencyStatusLabel}:{" "}
+    {corridorValidationStatus === "valid"
+      ? dictionary.marketplace.currencyStatusVerified
+      : dictionary.marketplace.currencyStatusNeedsReview}
+  </span>
 </div>
 {!workspace.isHydrated ? <p className="mt-5 text-sm text-slate-500">{dictionary.workspace.loading}</p> : <>
           {workspace.favoriteCorridorIds.length === 0 && <p className="mt-5 rounded-xl bg-white px-4 py-3 text-sm text-slate-600">{dictionary.workspace.empty}</p>}
