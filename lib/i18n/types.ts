@@ -21,6 +21,9 @@ export type Dictionary = {
   providerDetails: { profile: string; overview: string; currentOffer: string; amountSent: string; exchangeRate: string; deliveryEstimate: string; recipientReceives: string; displayedIn: string; ofSendAmount: string; capabilities: string; payoutMethods: string; digitalAccess: string; supportChannels: string; availabilityNote: string; comparison: string; rankingNote: string; position: string; feePercentage: string; recipientDifference: string; deliveryPayout: string; importantNotice: string; close: string; sameAmount: string; lessAmount: string; moreAmount: string; positionOf: string; noBadge: string; notice: string };
   providerTrust: { heading: string; intro: string; sampleLabel: string; verified: string; verifiedYes: string; verifiedNo: string; yearsInOperation: string; yearsValue: string; countriesServed: string; countriesValue: string; supportAvailability: string; regulatoryStatus: string; lastProfileUpdate: string; businessHours: string; extendedHours: string; alwaysAvailable: string; demoRegistration: string; demoPending: string; notAssessed: string };
   marketplace: { eyebrow: string; activeLabel: string; clearActiveControls: string;
+currencyStatusLabel: string;
+currencyStatusVerified: string;
+currencyStatusNeedsReview: string;
 activeSearch: string;
 activeRegion: string;
 activeSort: string;
