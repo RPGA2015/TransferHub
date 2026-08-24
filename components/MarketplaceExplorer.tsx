@@ -143,12 +143,18 @@ if (sortBy === "from") {
       <section aria-labelledby="workspace-heading" className="rounded-3xl border border-blue-100 bg-blue-50/50 p-5 sm:p-7">
         <h2 id="workspace-heading" className="text-2xl font-bold text-slate-950">{dictionary.workspace.title}</h2>
         <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">{dictionary.workspace.disclosure}</p>
-        <p className="mt-2 text-xs font-semibold text-slate-500">
+       <div
+  className={`mt-2 inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${
+    corridorValidationStatus === "valid"
+      ? "bg-emerald-50 text-emerald-700"
+      : "bg-amber-50 text-amber-700"
+  }`}
+>
   {dictionary.marketplace.currencyStatusLabel}:{" "}
-{corridorValidationStatus === "valid"
-  ? dictionary.marketplace.currencyStatusVerified
-  : dictionary.marketplace.currencyStatusNeedsReview}
-</p>
+  {corridorValidationStatus === "valid"
+    ? dictionary.marketplace.currencyStatusVerified
+    : dictionary.marketplace.currencyStatusNeedsReview}
+</div>
 {!workspace.isHydrated ? <p className="mt-5 text-sm text-slate-500">{dictionary.workspace.loading}</p> : <>
           {workspace.favoriteCorridorIds.length === 0 && <p className="mt-5 rounded-xl bg-white px-4 py-3 text-sm text-slate-600">{dictionary.workspace.empty}</p>}
           {pinnedCorridors.length > 0 && <div className="mt-7"><h3 className="text-lg font-bold text-slate-950">{dictionary.workspace.pinned}</h3><p className="mt-1 text-xs text-slate-500">{dictionary.workspace.pinnedDescription}</p>{renderCards(pinnedCorridors, "mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3")}</div>}
