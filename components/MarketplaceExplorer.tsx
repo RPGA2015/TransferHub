@@ -144,7 +144,10 @@ if (sortBy === "from") {
         <h2 id="workspace-heading" className="text-2xl font-bold text-slate-950">{dictionary.workspace.title}</h2>
         <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">{dictionary.workspace.disclosure}</p>
         <p className="mt-2 text-xs font-semibold text-slate-500">
-  Currency data status: {corridorValidationStatus === "valid" ? "Verified" : "Needs review"}
+  {dictionary.marketplace.currencyStatusLabel}:{" "}
+{corridorValidationStatus === "valid"
+  ? dictionary.marketplace.currencyStatusVerified
+  : dictionary.marketplace.currencyStatusNeedsReview}
 </p>
 {!workspace.isHydrated ? <p className="mt-5 text-sm text-slate-500">{dictionary.workspace.loading}</p> : <>
           {workspace.favoriteCorridorIds.length === 0 && <p className="mt-5 rounded-xl bg-white px-4 py-3 text-sm text-slate-600">{dictionary.workspace.empty}</p>}
