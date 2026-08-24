@@ -149,8 +149,8 @@ if (sortBy === "from") {
   aria-atomic="true"
   className={`mt-2 inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold ${
     corridorValidationStatus === "valid"
-      ? "bg-emerald-50 text-emerald-700"
-      : "bg-amber-50 text-amber-700"
+  ? "bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-200"
+  : "bg-amber-50 text-amber-800 ring-1 ring-inset ring-amber-300"
   }`}
 >
   <span
