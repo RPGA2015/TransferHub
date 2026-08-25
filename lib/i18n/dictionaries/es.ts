@@ -37,7 +37,7 @@ export const es: Dictionary = {
   clearActiveControls: "Borrar controles activos",
   currencyStatusLabel: "Estado de los datos de moneda",
   currencyStatusVerified: "Verificado",
-  currencyStatusNeedsReview: "Necesita revisión",
+  currencyStatusNeedsReview: "Necesita revisión",featuredDataNote: "Las tarifas, tasas, estimaciones de entrega, métodos de pago, detalles de proveedores y valores de corredores que se muestran aquí son datos de muestra ilustrativos, no cotizaciones en vivo.",
 activeSearch: "Búsqueda",
 activeRegion: "Región",
 activeSort: "Orden",

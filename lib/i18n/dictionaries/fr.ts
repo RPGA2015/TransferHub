@@ -34,7 +34,7 @@ export const fr: Dictionary = {
   providerDetails: { ...en.providerDetails, profile: "Profil illustratif du prestataire", overview: "Présentation du prestataire", currentOffer: "Offre illustrative actuelle", capabilities: "Capacités du service", payoutMethods: "Modes de versement illustratifs", digitalAccess: "Accès numérique", supportChannels: "Canaux d’assistance", availabilityNote: "Note de disponibilité", comparison: "Comparaison de cette option", rankingNote: "Résultats illustratifs visibles uniquement ; la position et les badges ne sont pas des recommandations.", position: "Position", feePercentage: "Pourcentage de frais", recipientDifference: "Écart du montant reçu", deliveryPayout: "Délai et versement", importantNotice: "Avis important", close: "Fermer les détails", notice: "Ce profil et toutes les valeurs de l’offre sont des données fictives et illustratives, pas des informations en direct. Aucun partenariat, intégration, contrôle, agrément, classement ou soutien n’est revendiqué. TransferHub n’effectue actuellement aucun transfert." },
   marketplace: { ...en.marketplace, clearActiveControls: "Effacer les contrôles actifs",activeLabel: "Actif",currencyStatusLabel: "État des données de devise",
 currencyStatusVerified: "Vérifié",
-currencyStatusNeedsReview: "À vérifier",
+currencyStatusNeedsReview: "À vérifier",featuredDataNote: "Les frais, taux, estimations de livraison, modes de paiement, détails des fournisseurs et valeurs des corridors affichés ici sont des données d’exemple illustratives, et non des devis en direct.",
 activeSearch: "Recherche",
 activeRegion: "Région",
 activeSort: "Tri",

@@ -179,7 +179,9 @@ if (sortBy === "from") {
 
       <section aria-labelledby="featured-corridors-heading" className="mt-12">
         <h2 id="featured-corridors-heading" className="text-2xl font-bold text-slate-950">{dictionary.marketplace.featured}</h2>
-        <p className="mt-2 text-sm leading-6 text-slate-600">{dictionary.marketplace.featuredDescription}</p>
+        <p className="mt-2 text-sm leading-6 text-slate-600">{dictionary.marketplace.featuredDescription}</p><p className="mt-3 max-w-3xl rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-900">
+  {dictionary.marketplace.featuredDataNote}
+</p>
         {renderCards(featuredCorridors, "mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-3")}
       </section>
 
