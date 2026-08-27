@@ -115,7 +115,7 @@ export default function ProviderDetails({ locale, dictionary, provider, fromCoun
         <p className="mt-4 text-xs leading-5 text-slate-600">{provider.badge ? `The “${provider.badge}” badge is calculated from the current visible fictional results.` : "No comparison badge is assigned to this option in the current visible results."}</p>
       </div>
 
-      <div className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-5">
+      <div role="note" className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-5">
         <h4 className="font-semibold text-slate-900">{copy.importantNotice}</h4>
         <p className="mt-2 text-sm leading-6 text-slate-600">{copy.notice}</p>
       </div>
