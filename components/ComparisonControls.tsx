@@ -35,7 +35,7 @@ export default function ComparisonControls({ sortBy, payoutFilter, onSortChange,
         </select>
         </label>
       </div>
-      <p className="mt-2 max-w-sm text-xs leading-5 text-slate-500" aria-live="polite" aria-atomic="true">
+      <p className="mt-2 max-w-sm rounded-lg bg-slate-50 px-3 py-2 text-xs font-medium leading-5 text-slate-600" aria-live="polite" aria-atomic="true">
         {sortExplanations[sortBy]}
       </p>
     </div>
