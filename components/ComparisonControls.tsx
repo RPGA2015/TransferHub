@@ -17,7 +17,11 @@ export default function ComparisonControls({ sortBy, payoutFilter, onSortChange,
       <div className="grid gap-3 sm:grid-cols-2">
         <label htmlFor="payout-filter" className="grid gap-1 text-xs font-bold text-slate-700">
         {copy.payoutMethod}
-        <select id="payout-filter" value={payoutFilter} onChange={(event) => onFilterChange(event.target.value as PayoutFilter)} className="comparison-control min-w-40 py-2 text-xs">
+        <select id="payout-filter" value={payoutFilter} onChange={(event) => onFilterChange(event.target.value as PayoutFilter)} className={
+  payoutFilter === "all"
+    ? "comparison-control min-w-40 py-2 text-xs"
+    : "comparison-control min-w-40 border-blue-400 bg-blue-50 py-2 text-xs font-semibold text-blue-800"
+}>
           <option value="all">{copy.allPayoutMethods}</option>
           <option value="Bank deposit">{copy.bankDeposit}</option>
           <option value="Cash pickup">{copy.cashPickup}</option>
