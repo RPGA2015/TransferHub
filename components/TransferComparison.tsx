@@ -157,7 +157,16 @@ function Results({ locale, dictionary, corridor, providers, visibleResultCount, 
  <span className="mt-1 block sm:mt-0">
   <ProviderBadge provider={provider} />
 </span>
-</span></span></div><ProviderStat label={copy.fee} value={formatCurrency(provider.fee, corridor.sendCurrency, 2, locale)} /><div>
+</span></span></div>
+  <div>
+  <span className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-400 sm:hidden">
+    {copy.fee}
+  </span>
+  <span className="text-sm font-semibold text-slate-900 sm:text-xs sm:leading-5 sm:text-slate-700">
+    {formatCurrency(provider.fee, corridor.sendCurrency, 2, locale)}
+  </span>
+</div>
+<div>
   <span className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-400 sm:hidden">
     {copy.rate}
   </span>
@@ -187,7 +196,6 @@ function Results({ locale, dictionary, corridor, providers, visibleResultCount, 
 </div><div className="sm:text-right"><span className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-600 sm:hidden">{copy.recipientGets}</span><strong className="text-base font-bold text-slate-950 sm:text-sm">{formatRecipientAmount(provider.recipientAmount, corridor.receiveCurrency, locale)}</strong></div><button ref={(element) => { if (element) buttonRefs.set(provider.providerId, element); else buttonRefs.delete(provider.providerId); }} type="button" onClick={() => onSelect(provider)} aria-label={`${copy.viewDetails}: ${provider.providerName}`} aria-expanded={isSelected} data-selected={isSelected} aria-controls={detailsPanelId} className="w-full min-h-11 rounded-lg border border-blue-200 bg-white px-3 py-2 text-xs font-bold text-blue-700 transition sm:w-auto hover:border-blue-400 hover:bg-blue-50 data-[selected=true]:border-blue-500 data-[selected=true]:bg-blue-50 data-[selected=true]:text-blue-800">{isSelected ? copy.detailsOpen : copy.viewDetails}</button></article>; })}</div></>}</>;
 }
 
-function ProviderStat({ label, value }: { label: string; value: string }) { return <div><span className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-400 sm:hidden">{label}</span><span className="text-xs font-semibold leading-5 text-slate-700">{value}</span></div>; }
 function FilterEmptyState({ dictionary, onClear }: { dictionary: Dictionary; onClear: () => void }) { return <div className="grid min-h-64 place-items-center p-8 text-center"><div><span className="mx-auto grid h-12 w-12 place-items-center rounded-xl bg-blue-50 text-blue-600" aria-hidden="true">⌁</span><h3 className="mt-4 font-bold text-slate-900">{dictionary.comparison.noFilterResults}</h3><button type="button" onClick={onClear} className="mt-4 rounded-lg bg-blue-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-blue-700">{dictionary.comparison.clearFilter}</button></div></div>; }
 function LoadingState({ dictionary }: { dictionary: Dictionary }) { return <div className="grid min-h-64 place-items-center p-8" role="status"><div className="text-center"><span className="loading-spinner mx-auto block h-8 w-8 rounded-full border-2 border-blue-100 border-t-blue-600" aria-hidden="true"/><p className="mt-4 text-sm font-bold text-slate-700">{dictionary.comparison.loading}</p></div></div>; }
 function EmptyState({ dictionary }: { dictionary: Dictionary }) { return <div className="grid min-h-64 place-items-center p-8 text-center"><div><span className="mx-auto grid h-12 w-12 place-items-center rounded-xl bg-slate-100 text-slate-500" aria-hidden="true">—</span><h3 className="mt-4 font-bold text-slate-900">{dictionary.comparison.unavailable}</h3><p className="mt-2 max-w-sm text-sm leading-6 text-slate-600">{dictionary.comparison.unavailableMessage}</p></div></div>; }
