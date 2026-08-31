@@ -157,7 +157,14 @@ function Results({ locale, dictionary, corridor, providers, visibleResultCount, 
  <span className="mt-1 block sm:mt-0">
   <ProviderBadge provider={provider} />
 </span>
-</span></span></div><ProviderStat label={copy.fee} value={formatCurrency(provider.fee, corridor.sendCurrency, 2, locale)} /><ProviderStat label={copy.rate} value={formatExchangeRate(provider.exchangeRate, corridor.sendCurrency, corridor.receiveCurrency, locale)} /><ProviderStat label={copy.delivery} value={provider.deliveryLabel} /><div>
+</span></span></div><ProviderStat label={copy.fee} value={formatCurrency(provider.fee, corridor.sendCurrency, 2, locale)} /><ProviderStat label={copy.rate} value={formatExchangeRate(provider.exchangeRate, corridor.sendCurrency, corridor.receiveCurrency, locale)} /><div>
+  <span className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-400 sm:hidden">
+    {copy.delivery}
+  </span>
+  <span className="text-sm font-semibold text-slate-900 sm:text-xs sm:leading-5 sm:text-slate-700">
+    {provider.deliveryLabel}
+  </span>
+</div><div>
   <span className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-400 sm:hidden">
     {copy.payout}
   </span>
