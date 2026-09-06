@@ -166,7 +166,7 @@ Number and currency output uses `en-US`, `ht-HT`, `fr-FR`, or `es` conventions w
 
 Translations are maintained locally without an external service. Haitian Creole, French, and Spanish copy requires native-speaker and legal review before public use, particularly disclosures and remittance terminology. The next planned milestone is automated locale-route, dictionary-completeness, interaction, and visual-regression coverage.
 
-### Personal Workspace
+###  Workspace
 
 The marketplace and Favorites Center support browser-local corridor and provider favorites, pinned corridors, and recent activity. Workspace data stores only canonical corridor and provider IDs under the versioned key `transferhub_marketplace_workspace_v2`; it never stores profiles, offers, fees, rates, amounts, recipients, names, emails, or payment information.
 

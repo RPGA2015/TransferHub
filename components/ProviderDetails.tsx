@@ -6,7 +6,13 @@ import { useMarketplaceWorkspace } from "@/hooks/useMarketplaceWorkspace";
 import { getProviderProfile } from "@/lib/data/providers";
 import type { Locale } from "@/lib/i18n/config";
 import { translate } from "@/lib/i18n/dictionaries";
-import { getCountryLabel, getPayoutMethodLabel } from "@/lib/i18n/labels";
+import {
+  getCountryLabel,
+  getDeliveryMethodLabel,
+  getDigitalAccessLabel,
+  getPayoutMethodLabel,
+  getSupportChannelLabel,
+} from "@/lib/i18n/labels";
 import type { Dictionary } from "@/lib/i18n/types";
 import { getLocalizedProviderContent } from "@/lib/i18n/providerContent";
 import type { Country, CurrencyCode, ProviderProfile, ProviderResult, RegulatoryStatus, SupportAvailability } from "@/lib/types/transfer";
@@ -85,18 +91,19 @@ export default function ProviderDetails({ locale, dictionary, provider, fromCoun
           <div><dt className="text-sm text-slate-500">{copy.amountSent}</dt><dd className="mt-1 text-lg font-semibold text-slate-900">{sendAmount.toLocaleString(locale, { maximumFractionDigits: 2 })} {sendCurrency}</dd></div>
           <div><dt className="text-sm text-slate-500">{dictionary.comparison.fee}</dt><dd className="mt-1 text-xl font-semibold text-slate-900">{formatCurrency(provider.fee, sendCurrency, 2, locale)}</dd></div>
           <div><dt className="text-sm text-slate-500">{copy.exchangeRate}</dt><dd className="mt-1 text-xl font-semibold text-slate-900">{formatExchangeRate(provider.exchangeRate, sendCurrency, receiveCurrency, locale)}</dd></div>
-          <div><dt className="text-sm text-slate-500">{copy.deliveryEstimate}</dt><dd className="mt-1 text-xl font-semibold text-slate-900">{provider.deliveryLabel}</dd></div>
+          <div><dt className="text-sm text-slate-500">{copy.deliveryEstimate}</dt><dd className="mt-1 text-xl font-semibold text-slate-900">{getDeliveryMethodLabel(provider.deliveryLabel, locale)}</dd></div>
           <div><dt className="text-sm text-slate-500">{dictionary.comparison.payoutMethod}</dt><dd className="mt-1 text-xl font-semibold text-slate-900">{getPayoutMethodLabel(provider.payoutMethod, locale)}</dd></div>
-          <div className="sm:col-span-2"><dt className="text-sm text-slate-500">{copy.recipientReceives}</dt><dd className="mt-1 text-2xl font-bold text-emerald-600">{formatRecipientAmount(provider.recipientAmount, receiveCurrency, locale)}</dd><p className="mt-1 text-xs text-slate-500">{translate(copy.displayedIn, { currency: receiveCurrency })}</p></div>
+          <div className="sm:col-span-2"><dt className="text-sm text-slate-500">{copy.recipientReceives}</dt><dd className="mt-1 text-2xl font-bold text-emerald-600">{formatRecipientAmount(provider.recipientAmount, receiveCurrency, locale)}</dd>
+          <p className="mt-1 text-xs text-slate-500">{translate(copy.displayedIn, { currency: receiveCurrency })}</p></div>
         </dl>
       </div>
 
       <div className="mt-8 rounded-2xl border border-slate-200 p-5">
         <h4 className="text-lg font-bold text-slate-900">{copy.capabilities}</h4>
         {profile ? <div className="mt-4 grid gap-5 sm:grid-cols-3">
-          <ProfileList title={copy.payoutMethods} items={profile.supportedPayoutMethods} fallback={dictionary.common.illustrativeUnavailable} />
-          <ProfileList title={copy.digitalAccess} items={profile.digitalAccess} fallback={dictionary.common.illustrativeUnavailable} />
-          <ProfileList title={copy.supportChannels} items={profile.supportChannels} fallback={dictionary.common.illustrativeUnavailable} />
+          <ProfileList title={copy.payoutMethods} items={profile.supportedPayoutMethods.map((method) => getPayoutMethodLabel(method, locale))} fallback={dictionary.common.illustrativeUnavailable} />
+          <ProfileList title={copy.digitalAccess} items={profile.digitalAccess.map((item) => getDigitalAccessLabel(item, locale))} fallback={dictionary.common.illustrativeUnavailable} />
+          <ProfileList title={copy.supportChannels} items={profile.supportChannels.map((channel) => getSupportChannelLabel(channel, locale))} fallback={dictionary.common.illustrativeUnavailable} />
           <div className="sm:col-span-3"><p className="text-sm font-semibold text-slate-900">{copy.availabilityNote}</p><p className="mt-1 text-sm leading-6 text-slate-600">{profile.availabilityNote}</p></div>
         </div> : <p className="mt-2 text-sm leading-6 text-slate-600">{dictionary.common.illustrativeUnavailable}</p>}
       </div>
@@ -110,7 +117,7 @@ export default function ProviderDetails({ locale, dictionary, provider, fromCoun
           <div><dt className="text-slate-500">{copy.position}</dt><dd className="mt-1 font-semibold text-slate-900">{translate(copy.positionOf, { position: provider.rankPosition, count: visibleResultCount })}</dd></div>
           <div><dt className="text-slate-500">{copy.feePercentage}</dt><dd className="mt-1 font-semibold text-slate-900">{provider.feePercentage.toLocaleString(locale, { maximumFractionDigits: 2 })}% {copy.ofSendAmount}</dd></div>
           <div><dt className="text-slate-500">{copy.recipientDifference}</dt><dd className="mt-1 font-semibold text-slate-900">{comparisonDifference}</dd></div>
-          <div><dt className="text-slate-500">{copy.deliveryPayout}</dt><dd className="mt-1 font-semibold text-slate-900">{provider.deliveryLabel}; {getPayoutMethodLabel(provider.payoutMethod, locale)}</dd></div>
+          <div><dt className="text-slate-500">{copy.deliveryPayout}</dt><dd className="mt-1 font-semibold text-slate-900">{getDeliveryMethodLabel(provider.deliveryLabel, locale)}; {getPayoutMethodLabel(provider.payoutMethod, locale)}</dd></div>
         </dl>
         <p className="mt-4 text-xs leading-5 text-slate-600">{provider.badge ? `The “${provider.badge}” badge is calculated from the current visible fictional results.` : "No comparison badge is assigned to this option in the current visible results."}</p>
       </div>
