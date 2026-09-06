@@ -5,9 +5,10 @@ import ComparisonControls from "@/components/ComparisonControls";
 import ProviderBadge from "@/components/ProviderBadge";
 import ProviderDetails from "@/components/ProviderDetails";
 import { countryCurrencies } from "@/lib/data/countries";
+import { getLocalizedProviderContent } from "@/lib/i18n/providerContent";
 import type { Locale } from "@/lib/i18n/config";
 import { translate } from "@/lib/i18n/dictionaries";
-import { getCountryLabel } from "@/lib/i18n/labels";
+import { getCountryLabel, getDeliveryMethodLabel } from "@/lib/i18n/labels";
 import type { Dictionary } from "@/lib/i18n/types";
 import { compareTransfers, getAvailableReceivingCountries, getAvailableSendingCountries, isCorridorAvailable } from "@/lib/services/comparisonEngine";
 import { recordRecentCorridorInStorage } from "@/lib/storage/marketplaceWorkspace";
@@ -152,7 +153,13 @@ function Results({ locale, dictionary, corridor, providers, visibleResultCount, 
     : copy.zeroResults;
   return <><div className="flex flex-col gap-3 border-b border-slate-100 px-5 py-4 sm:flex-row sm:items-start sm:justify-between sm:px-6">
 <p className="rounded-lg bg-slate-50 px-3 py-2 text-xs font-semibold leading-5 text-slate-600" aria-live="polite">{summary}</p>
-    <ComparisonControls dictionary={dictionary} sortBy={sortBy} payoutFilter={payoutFilter} onSortChange={onSortChange} onFilterChange={onFilterChange} /></div>{providers.length === 0 ? <FilterEmptyState dictionary={dictionary} onClear={() => onFilterChange("all")} /> : <><div className="hidden grid-cols-[1.15fr_.55fr_.8fr_.75fr_.8fr_.9fr_auto] gap-2 border-b border-slate-100 bg-slate-50/70 px-5 py-3 text-[9px] font-bold uppercase tracking-wider text-slate-600 sm:grid"><span>{copy.provider}</span><span>{copy.fee}</span><span>{copy.rate}</span><span>{copy.delivery}</span><span>{copy.payout}</span><span className="text-right">{copy.recipientGets}</span><span className="sr-only">{copy.actions}</span></div><div className="grid gap-3 bg-slate-50/60 p-3 sm:block sm:divide-y sm:divide-slate-100 sm:bg-white sm:p-0">{providers.map((provider) => { const isSelected = selectedProvider?.providerId === provider.providerId; return <article key={provider.providerId} className={`grid gap-5 rounded-2xl border p-4 transition sm:grid-cols-[1.15fr_.55fr_.8fr_.75fr_.8fr_.9fr_auto] sm:items-center sm:rounded-none sm:border-x-0 sm:border-b-0 sm:px-5 sm:py-4 ${isSelected ? "border-blue-300 bg-blue-50 shadow-sm sm:border-l-4 sm:border-l-blue-600" : "border-slate-200 bg-white hover:border-blue-200 hover:shadow-sm sm:border-transparent sm:hover:bg-slate-50"}`}><div className="flex min-w-0 items-center gap-3"><span className={`provider-dot provider-dot-${provider.accent}`} aria-hidden="true">{provider.initials}</span><span className="min-w-0"><strong className="block text-base text-slate-900 sm:text-sm">{provider.providerName}</strong><span className="mt-0.5 hidden text-[10px] leading-4 text-slate-500 sm:block">{provider.serviceSummary ?? dictionary.common.illustrativeUnavailable}</span><span className="mt-1 block sm:mt-0">
+    <ComparisonControls dictionary={dictionary} sortBy={sortBy} payoutFilter={payoutFilter} onSortChange={onSortChange} onFilterChange={onFilterChange} />
+    </div>{providers.length === 0 ? <FilterEmptyState dictionary={dictionary} onClear={() => onFilterChange("all")} /> : <>
+    <div className="hidden grid-cols-[1.15fr_.55fr_.8fr_.75fr_.8fr_.9fr_auto] gap-2 border-b border-slate-100 bg-slate-50/70 px-5 py-3 text-[9px] font-bold uppercase tracking-wider text-slate-600 sm:grid">
+    <span>{copy.provider}</span><span>{copy.fee}</span><span>{copy.rate}</span><span>{copy.delivery}</span><span>{copy.payout}</span><span className="text-right">{copy.recipientGets}</span>
+    <span className="sr-only">{copy.actions}</span></div><div className="grid gap-3 bg-slate-50/60 p-3 sm:block sm:divide-y sm:divide-slate-100 sm:bg-white sm:p-0">{providers.map((provider) => { const isSelected = selectedProvider?.providerId === provider.providerId; return <article key={provider.providerId} className={`grid gap-5 rounded-2xl border p-4 transition sm:grid-cols-[1.15fr_.55fr_.8fr_.75fr_.8fr_.9fr_auto] sm:items-center sm:rounded-none sm:border-x-0 sm:border-b-0 sm:px-5 sm:py-4 ${isSelected ? "border-blue-300 bg-blue-50 shadow-sm sm:border-l-4 sm:border-l-blue-600" : "border-slate-200 bg-white hover:border-blue-200 hover:shadow-sm sm:border-transparent sm:hover:bg-slate-50"}`}><div className="flex min-w-0 items-center gap-3"><span className={`provider-dot provider-dot-${provider.accent}`} aria-hidden="true">{provider.initials}</span><span className="min-w-0"><strong className="block text-base text-slate-900 sm:text-sm">{provider.providerName}</strong>
+    <span className="mt-0.5 hidden text-[10px] leading-4 text-slate-500 sm:block">{getLocalizedProviderContent(provider.providerId, locale).serviceSummary ??
+  dictionary.common.illustrativeUnavailable}</span><span className="mt-1 block sm:mt-0">
  <span className="mt-1 block sm:mt-0">
   <ProviderBadge provider={provider} />
 </span>
@@ -183,7 +190,7 @@ function Results({ locale, dictionary, corridor, providers, visibleResultCount, 
     {copy.delivery}
   </span>
   <span className="text-sm font-semibold text-slate-900 sm:text-xs sm:leading-5 sm:text-slate-700">
-    {provider.deliveryLabel}
+    {getDeliveryMethodLabel(provider.deliveryLabel, locale)}
   </span>
 </div><div>
   <span className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-400 sm:hidden">
