@@ -104,7 +104,7 @@ export default function ProviderDetails({ locale, dictionary, provider, fromCoun
           <ProfileList title={copy.payoutMethods} items={profile.supportedPayoutMethods.map((method) => getPayoutMethodLabel(method, locale))} fallback={dictionary.common.illustrativeUnavailable} />
           <ProfileList title={copy.digitalAccess} items={profile.digitalAccess.map((item) => getDigitalAccessLabel(item, locale))} fallback={dictionary.common.illustrativeUnavailable} />
           <ProfileList title={copy.supportChannels} items={profile.supportChannels.map((channel) => getSupportChannelLabel(channel, locale))} fallback={dictionary.common.illustrativeUnavailable} />
-          <div className="sm:col-span-3"><p className="text-sm font-semibold text-slate-900">{copy.availabilityNote}</p><p className="mt-1 text-sm leading-6 text-slate-600">{profile.availabilityNote}</p></div>
+          <div className="sm:col-span-3"><p className="text-sm font-semibold text-slate-900">{copy.availabilityNote}</p><p className="mt-1 text-sm leading-6 text-slate-600">{localizedProfile.availabilityNote}</p></div>
         </div> : <p className="mt-2 text-sm leading-6 text-slate-600">{dictionary.common.illustrativeUnavailable}</p>}
       </div>
 
@@ -119,8 +119,11 @@ export default function ProviderDetails({ locale, dictionary, provider, fromCoun
           <div><dt className="text-slate-500">{copy.recipientDifference}</dt><dd className="mt-1 font-semibold text-slate-900">{comparisonDifference}</dd></div>
           <div><dt className="text-slate-500">{copy.deliveryPayout}</dt><dd className="mt-1 font-semibold text-slate-900">{getDeliveryMethodLabel(provider.deliveryLabel, locale)}; {getPayoutMethodLabel(provider.payoutMethod, locale)}</dd></div>
         </dl>
-        <p className="mt-4 text-xs leading-5 text-slate-600">{provider.badge ? `The “${provider.badge}” badge is calculated from the current visible fictional results.` : "No comparison badge is assigned to this option in the current visible results."}</p>
-      </div>
+        <p className="mt-4 text-xs leading-5 text-slate-600">
+  {provider.badge
+    ? translate(copy.badgeCalculated, { badge: provider.badge })
+    : copy.noBadge}
+</p> </div>
 
       <div role="note" className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-5">
         <h4 className="font-semibold text-slate-900">{copy.importantNotice}</h4>
