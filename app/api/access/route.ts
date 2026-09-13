@@ -48,13 +48,7 @@ export async function POST(request: Request) {
 export async function DELETE() {
   const response = NextResponse.json({ success: true });
 
-  response.cookies.set(COOKIE_NAME, "", {
-    httpOnly: true,
-    sameSite: "strict",
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    maxAge: 0,
-  });
+  response.cookies.delete(COOKIE_NAME);
 
   return response;
 }
