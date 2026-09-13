@@ -46,8 +46,9 @@ export default function AccessPage() {
         </h1>
 
         <p className="mt-3 text-sm leading-6 text-slate-600">
-          Enter the private access code to continue.
-        </p>
+  Enter the private access code to continue. Access remains unlocked for up to
+  8 hours, and you can lock TransferHub again anytime from the site header.
+</p>
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-5">
           <div>
