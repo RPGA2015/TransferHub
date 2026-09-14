@@ -8,7 +8,9 @@ function LogoMark() {
 }
 
 export default function SiteHeader({ locale, dictionary, currentPage = "home" }: { locale: Locale; dictionary: Dictionary; currentPage?: "home" | "marketplace" | "workspace" }) {
-  const sectionLinks = [[dictionary.navigation.home, "home"], [dictionary.navigation.features, "features"], [dictionary.navigation.howItWorks, "how-it-works"], [dictionary.navigation.about, "about"], [dictionary.navigation.faq, "faq"]] as const;
+ const privateAccessEnabled =
+  process.env.TRANSFERHUB_PRIVATE_ACCESS_ENABLED === "true";
+   const sectionLinks = [[dictionary.navigation.home, "home"], [dictionary.navigation.features, "features"], [dictionary.navigation.howItWorks, "how-it-works"], [dictionary.navigation.about, "about"], [dictionary.navigation.faq, "faq"]] as const;
   const sectionHref = (section: string) => currentPage === "home" ? `#${section}` : `/${locale}/#${section}`;
   return (
     <header className={`${currentPage === "home" ? "absolute" : "relative bg-[#06152e]"} inset-x-0 top-0 z-50 border-b border-white/10`}>
@@ -21,7 +23,7 @@ export default function SiteHeader({ locale, dictionary, currentPage = "home" }:
         </div>
         <div className="hidden items-center gap-3 xl:flex">
   <LanguageSwitcher locale={locale} label={dictionary.common.chooseLanguage} dark />
-  <LockTransferHubButton />
+  {privateAccessEnabled ? <LockTransferHubButton /> : null}
   <span className="cursor-not-allowed text-sm font-semibold text-slate-400" aria-disabled="true">{dictionary.navigation.signIn} <span className="sr-only">{dictionary.navigation.comingSoon}</span></span><Link href={`/${locale}/waitlist`} className="rounded-xl bg-white px-4 py-3 text-sm font-bold text-blue-700 shadow-lg shadow-blue-950/10 transition hover:bg-blue-50">{dictionary.navigation.joinWaitlist}</Link></div>
         <details className="group relative lg:hidden">
           <summary className="grid h-11 w-11 cursor-pointer list-none place-items-center rounded-xl border border-white/15 text-white [&::-webkit-details-marker]:hidden" aria-label={dictionary.navigation.menu}><svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></summary>
@@ -35,7 +37,7 @@ export default function SiteHeader({ locale, dictionary, currentPage = "home" }:
     label={dictionary.common.chooseLanguage}
   />
   <div className="mt-3">
-    <LockTransferHubButton />
+    {privateAccessEnabled ? <LockTransferHubButton /> : null}
   </div>
 </div>
 
