@@ -23,7 +23,6 @@ export async function proxy(request: NextRequest) {
   if (
     pathname.startsWith("/_next") ||
     pathname === "/favicon.ico" ||
-    pathname === "/access" ||
     pathname === "/api/access"
   ) {
     return NextResponse.next();
@@ -32,7 +31,21 @@ export async function proxy(request: NextRequest) {
   const accessCookie = request.cookies.get(COOKIE_NAME)?.value;
   const expectedToken = await getAccessToken();
 
-  if (expectedToken && accessCookie === expectedToken) {
+  const hasValidAccess =
+    expectedToken && accessCookie === expectedToken;
+
+  if (pathname === "/access") {
+    if (hasValidAccess) {
+      const homeUrl = request.nextUrl.clone();
+      homeUrl.pathname = "/";
+
+      return NextResponse.redirect(homeUrl);
+    }
+
+    return NextResponse.next();
+  }
+
+  if (hasValidAccess) {
     return NextResponse.next();
   }
 
@@ -41,7 +54,6 @@ export async function proxy(request: NextRequest) {
 
   return NextResponse.redirect(accessUrl);
 }
-
-export const config = {
+  export const config = {
   matcher: ["/((?!_next/static|_next/image).*)"],
 };
