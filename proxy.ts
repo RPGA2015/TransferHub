@@ -19,6 +19,12 @@ async function getAccessToken() {
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const privateAccessEnabled =
+  process.env.TRANSFERHUB_PRIVATE_ACCESS_ENABLED === "true";
+
+if (!privateAccessEnabled) {
+  return NextResponse.next();
+}
 
   if (
     pathname.startsWith("/_next") ||
