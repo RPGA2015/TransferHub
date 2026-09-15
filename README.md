@@ -212,6 +212,28 @@ Waitlist entries use browser `localStorage` under `transferhub_waitlist_v1`. Thi
 
 Do not collect real public signups with this implementation.
 
+## Private development access
+
+TransferHub includes an optional private development access gate.
+
+Environment variables:
+
+- `TRANSFERHUB_ACCESS_CODE` sets the private access code.
+- `TRANSFERHUB_PRIVATE_ACCESS_ENABLED=true` enables the private access gate.
+- `TRANSFERHUB_PRIVATE_ACCESS_ENABLED=false` disables the private access gate.
+- If `TRANSFERHUB_PRIVATE_ACCESS_ENABLED` is missing, the private access gate remains disabled.
+
+The private access code must be stored only in `.env.local` or an equivalent secure deployment environment and must not be committed to Git.
+
+
+For local development, the gate can be enabled with:
+
+```text
+TRANSFERHUB_PRIVATE_ACCESS_ENABLED=true
+```
+
+For a future public deployment, disable or omit the private-access switch so the application does not require the development access code.
+
 ## Sprint history
 
 - Sprint 1A: responsive marketing homepage and illustrative comparison preview
