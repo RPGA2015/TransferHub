@@ -161,7 +161,15 @@ function Results({ locale, dictionary, corridor, providers, visibleResultCount, 
     <span className="mt-0.5 hidden text-[10px] leading-4 text-slate-500 sm:block">{getLocalizedProviderContent(provider.providerId, locale).serviceSummary ??
   dictionary.common.illustrativeUnavailable}</span><span className="mt-1 block sm:mt-0">
  <span className="mt-1 block sm:mt-0">
-  <ProviderBadge provider={provider} />
+  <ProviderBadge
+  provider={provider}
+labels={{
+  bestValue: dictionary.comparison.bestValue,
+  lowestFee: dictionary.comparison.lowestFee,
+  walletDelivery: dictionary.comparison.walletDelivery,
+  fastest: dictionary.comparison.fastest,
+}}
+/>
 </span>
 </span></span></div>
   <div>

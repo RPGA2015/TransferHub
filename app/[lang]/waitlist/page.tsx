@@ -40,7 +40,12 @@ export default async function WaitlistPage({ params }: { params: Promise<{ lang:
           <h2 id="privacy-heading" className="mt-5 text-xl font-bold">{dictionary.waitlist.submit}</h2>
           <p className="mt-3 leading-7 text-slate-600">{dictionary.waitlist.noPayment}</p>
           <ul className="mt-6 space-y-4 text-sm leading-6 text-slate-600">
-            {['No payment information is required.', 'TransferHub will never ask for money to join.', 'Your signup is for product updates only.', 'You may unsubscribe from future emails.'].map((item) => <li key={item} className="flex gap-3"><span className="mt-1 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-emerald-100 text-emerald-700" aria-hidden="true">✓</span>{item}</li>)}
+            {[
+  dictionary.waitlist.noPaymentRequired,
+  dictionary.waitlist.neverAskForMoney,
+  dictionary.waitlist.productUpdatesOnly,
+  dictionary.waitlist.mayUnsubscribe,
+].map((item) => <li key={item} className="flex gap-3"><span className="mt-1 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-emerald-100 text-emerald-700" aria-hidden="true">✓</span>{item}</li>)}
           </ul>
           <div className="mt-7 border-t border-slate-100 pt-6 text-xs leading-5 text-slate-500">{dictionary.waitlist.localOnly}</div>
         </aside>
