@@ -65,7 +65,19 @@ export default function ProviderDetails({ locale, dictionary, provider, fromCoun
         <div className="min-w-0">
           <p className="text-sm font-semibold uppercase tracking-wider text-blue-600">{copy.profile}</p>
           <h3 ref={headingRef} id="provider-details-heading" tabIndex={-1} className="mt-2 text-3xl font-bold text-slate-900 outline-none">{provider.providerName}</h3>
-          {provider.badge && <div className="mt-3"><ProviderBadge provider={provider} /></div>}
+          {provider.badge && (
+  <div className="mt-3">
+    <ProviderBadge
+      provider={provider}
+      labels={{
+        bestValue: dictionary.comparison.bestValue,
+        lowestFee: dictionary.comparison.lowestFee,
+       walletDelivery: dictionary.comparison.walletDelivery, 
+       fastest: dictionary.comparison.fastest,
+      }}
+    />
+  </div>
+)}
         </div>
         <button type="button" onClick={onClose} className="shrink-0 rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2">{copy.close}</button>
       </div>
@@ -121,7 +133,16 @@ export default function ProviderDetails({ locale, dictionary, provider, fromCoun
         </dl>
         <p className="mt-4 text-xs leading-5 text-slate-600">
   {provider.badge
-    ? translate(copy.badgeCalculated, { badge: provider.badge })
+   ? translate(copy.badgeCalculated, {
+    badge:
+      provider.badge === "Best Value"
+        ? dictionary.comparison.bestValue
+        : provider.badge === "Lowest Fee"
+          ? dictionary.comparison.lowestFee
+          : provider.badge === "Fastest"
+            ? dictionary.comparison.fastest
+            : provider.badge,
+  })
     : copy.noBadge}
 </p> </div>
 

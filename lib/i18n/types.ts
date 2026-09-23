@@ -13,7 +13,7 @@ export type Dictionary = {
   };
   comparison: {
     findOptions: string; compareTransfer: string; fromCountry: string; toCountry: string; amountToSend: string; amountHelp: string; quickAmounts: string; compareOptions: string; comparing: string; swapCountries: string; swapLabel: string; swapTitle: string; reverseUnavailable: string; preview: string; youSend: string; sampleBanner: string;
-    payoutMethod: string; allPayoutMethods: string; bankDeposit: string; cashPickup: string; mobileWallet: string; cashOrBank: string; sortBy: string; bestValue: string; lowestFee: string; fastest: string; highestRecipient: string;
+    payoutMethod: string; allPayoutMethods: string; bankDeposit: string; cashPickup: string; mobileWallet: string; cashOrBank: string; sortBy: string; bestValue: string; lowestFee: string;  walletDelivery: string; fastest: string; highestRecipient: string;
     provider: string; fee: string; rate: string; delivery: string; payout: string; recipientGets: string; actions: string; viewDetails: string; detailsOpen: string; noFilterResults: string; clearFilter: string; loading: string; unavailable: string; unavailableMessage: string;
     enterAmount: string; invalidAmount: string; minimumAmount: string; maximumAmount: string; notUpdated: string; comparingStatus: string; readyStatus: string; resultSingle: string; resultPlural: string; zeroResults: string; rangeFrom: string; detailsOpened: string; detailsClosed: string; filteredDetailsClosed: string;
     sortBestExplanation: string; sortFeeExplanation: string; sortFastestExplanation: string; sortRecipientExplanation: string;
