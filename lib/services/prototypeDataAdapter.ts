@@ -4,6 +4,7 @@ import { fictionalProviderProfiles } from "@/lib/data/providers";
 import type {
   ProductionCorridor,
   ProductionProvider,
+  ProductionQuote,
 } from "@/lib/types/production";
 const productionCountryCodes = {
   "United States": "US",
@@ -33,3 +34,22 @@ export const productionCorridors: readonly ProductionCorridor[] =
     supportedPayoutMethods: provider.supportedPayoutMethods,
     active: true,
   }));
+
+  export const productionQuotes: readonly ProductionQuote[] =
+  illustrativeCorridors.flatMap((corridor) =>
+    corridor.offers.map((offer, offerIndex) => ({
+      id: `${corridor.id}-${offer.providerId}-${offerIndex + 1}`,
+      providerId: offer.providerId,
+      corridorId: corridor.id,
+      sendCurrency: corridor.sendCurrency,
+      receiveCurrency: corridor.receiveCurrency,
+      sendAmount: 100,
+      fee: offer.fee,
+      exchangeRate: offer.exchangeRate,
+      recipientAmount: (100 - offer.fee) * offer.exchangeRate,
+      payoutMethod: offer.payoutMethod,
+      deliveryEstimate: offer.deliveryLabel,
+      quotedAt: "illustrative",
+      expiresAt: null,
+    })),
+  );
