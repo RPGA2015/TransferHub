@@ -4,7 +4,7 @@ import { fictionalProviderProfiles } from "@/lib/data/providers";
 import type {
   ProductionCorridor,
   ProductionProvider,
-  ProductionQuote,
+  ProductionQuote,  ProductionDataStatus,
 } from "@/lib/types/production";
 const productionCountryCodes = {
   "United States": "US",
@@ -53,3 +53,11 @@ export const productionCorridors: readonly ProductionCorridor[] =
       expiresAt: null,
     })),
   );
+
+  export const productionDataStatus: ProductionDataStatus = {
+  sourceType: "illustrative",
+  freshness: "stale",
+  sourceName: "TransferHub prototype data",
+  lastUpdatedAt: "2026-09-26T00:00:00.000Z",
+  checkedAt: "2026-09-26T00:00:00.000Z",
+};
