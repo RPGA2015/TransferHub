@@ -1,3 +1,5 @@
+import { illustrativeCorridors } from "@/lib/data/corridors";
+
 import {
   productionCorridors,
   productionProviders,
@@ -26,4 +28,7 @@ export function getProductionDataSnapshot(): ProductionDataSnapshot {
     quotes: productionQuotes,
     status: productionDataStatus,
   };
+}
+export function getApplicationCorridors() {
+  return illustrativeCorridors;
 }
