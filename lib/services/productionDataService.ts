@@ -1,4 +1,4 @@
-import { illustrativeCorridors } from "@/lib/data/corridors";
+import { prototypeProductionDataSource } from "@/lib/services/productionDataSource";
 
 import {
   productionCorridors,
@@ -30,5 +30,5 @@ export function getProductionDataSnapshot(): ProductionDataSnapshot {
   };
 }
 export function getApplicationCorridors() {
-  return illustrativeCorridors;
+return prototypeProductionDataSource.getCorridors();
 }
