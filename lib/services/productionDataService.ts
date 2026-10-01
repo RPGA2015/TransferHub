@@ -34,11 +34,19 @@ export function getProductionDataSnapshot(): ProductionDataSnapshot {
 }
 let applicationDataSource: ProductionDataSource =
  prototypeProductionDataSource;
-
+export type ApplicationDataSourceMode = "prototype";
 export function setApplicationDataSource(
   dataSource: ProductionDataSource,
 ): void {
   applicationDataSource = dataSource;
+}
+
+export function configureApplicationDataSource(
+  mode: ApplicationDataSourceMode,
+): void {
+  if (mode === "prototype") {
+    setApplicationDataSource(prototypeProductionDataSource);
+  }
 }
 export function getApplicationCorridors() {
 return applicationDataSource.getCorridors();
