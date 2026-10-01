@@ -1,4 +1,7 @@
-import { prototypeProductionDataSource } from "@/lib/services/productionDataSource";
+import {
+  prototypeProductionDataSource,
+  type ProductionDataSource,
+} from "@/lib/services/productionDataSource";
 
 import {
   productionCorridors,
@@ -27,8 +30,16 @@ export function getProductionDataSnapshot(): ProductionDataSnapshot {
     providers: productionProviders,
     quotes: productionQuotes,
     status: productionDataStatus,
-  };
+    };
+}
+let applicationDataSource: ProductionDataSource =
+ prototypeProductionDataSource;
+
+export function setApplicationDataSource(
+  dataSource: ProductionDataSource,
+): void {
+  applicationDataSource = dataSource;
 }
 export function getApplicationCorridors() {
-return prototypeProductionDataSource.getCorridors();
+return applicationDataSource.getCorridors();
 }
