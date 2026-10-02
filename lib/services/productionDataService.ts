@@ -56,6 +56,11 @@ export function configureApplicationDataSource(
     setApplicationDataSource(prototypeProductionDataSource);
   }
 }
+export function initializeApplicationDataSource(): void {
+  const mode = getApplicationDataSourceModeFromEnvironment();
+  configureApplicationDataSource(mode);
+}
+
 export function getApplicationCorridors() {
 return applicationDataSource.getCorridors();
 }
