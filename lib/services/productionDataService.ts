@@ -40,7 +40,15 @@ export function setApplicationDataSource(
 ): void {
   applicationDataSource = dataSource;
 }
+export function getApplicationDataSourceModeFromEnvironment():
+  ApplicationDataSourceMode {
+  const mode = process.env.TRANSFERHUB_DATA_SOURCE;
 
+  if (mode === "prototype") {
+    return mode;
+  }
+  return "prototype";
+}
 export function configureApplicationDataSource(
   mode: ApplicationDataSourceMode,
 ): void {
