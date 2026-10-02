@@ -47,7 +47,6 @@ export function getApplicationDataSourceModeFromEnvironment():
   if (mode === "prototype") {
     return mode;
   }
-
   return "prototype";
 }
 export function configureApplicationDataSource(
