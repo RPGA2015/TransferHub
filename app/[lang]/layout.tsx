@@ -4,7 +4,7 @@ import { Geist } from "next/font/google";
 import "../globals.css";
 import { isLocale, locales } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/dictionaries";
-
+import { initializeApplicationDataSource } from "@/lib/services/productionDataService";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -28,6 +28,7 @@ export default async function RootLayout({
 }>) {
   const { lang } = await params;
   if (!isLocale(lang)) notFound();
+  initializeApplicationDataSource();
   return (
     <html
       lang={lang}
