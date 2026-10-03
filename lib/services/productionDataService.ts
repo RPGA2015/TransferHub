@@ -61,7 +61,9 @@ export function initializeApplicationDataSource(): void {
   const mode = getApplicationDataSourceModeFromEnvironment();
   configureApplicationDataSource(mode);
 }
-
+export function getApplicationDataSourceMode(): ApplicationDataSourceMode {
+  return getApplicationDataSourceModeFromEnvironment();
+}
 export function getApplicationCorridors() {
 return applicationDataSource.getCorridors();
 }
