@@ -35,6 +35,10 @@ export function getProductionDataSnapshot(): ProductionDataSnapshot {
 let applicationDataSource: ProductionDataSource =
  prototypeProductionDataSource;
 export type ApplicationDataSourceMode = "prototype";
+export type ApplicationDataSourceStatus = {
+  mode: ApplicationDataSourceMode;
+  isLive: boolean;
+};
 export function setApplicationDataSource(
   dataSource: ProductionDataSource,
 ): void {
@@ -64,6 +68,11 @@ export function initializeApplicationDataSource(): void {
 export function getApplicationDataSourceMode(): ApplicationDataSourceMode {
   return getApplicationDataSourceModeFromEnvironment();
 }
-export function getApplicationCorridors() {
+export function getApplicationDataSourceStatus(): ApplicationDataSourceStatus {
+  return {
+    mode: getApplicationDataSourceMode(),
+    isLive: false,
+  };
+}export function getApplicationCorridors() {
 return applicationDataSource.getCorridors();
 }
