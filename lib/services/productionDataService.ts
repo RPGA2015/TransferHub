@@ -42,12 +42,13 @@ export function setApplicationDataSource(
 }
 export function getApplicationDataSourceModeFromEnvironment():
   ApplicationDataSourceMode {
-  const mode = process.env.TRANSFERHUB_DATA_SOURCE;
+  const mode = process.env.TRANSFERHUB_DATA_SOURCE?.trim();
 
-  if (mode === "prototype") {
-    return mode;
-  }
+if (!mode || mode === "prototype") {
   return "prototype";
+}
+
+return "prototype";
 }
 export function configureApplicationDataSource(
   mode: ApplicationDataSourceMode,
