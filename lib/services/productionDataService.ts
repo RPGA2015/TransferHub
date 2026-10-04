@@ -32,17 +32,22 @@ export function getProductionDataSnapshot(): ProductionDataSnapshot {
     status: productionDataStatus,
     };
 }
-let applicationDataSource: ProductionDataSource =
- prototypeProductionDataSource;
 export type ApplicationDataSourceMode = "prototype";
+
+let applicationDataSource: ProductionDataSource =
+  prototypeProductionDataSource;
+
+let applicationDataSourceMode: ApplicationDataSourceMode = "prototype";
 export type ApplicationDataSourceStatus = {
   mode: ApplicationDataSourceMode;
   isLive: boolean;
 };
 export function setApplicationDataSource(
   dataSource: ProductionDataSource,
+  mode: ApplicationDataSourceMode,
 ): void {
   applicationDataSource = dataSource;
+  applicationDataSourceMode = mode;
 }
 export function getApplicationDataSourceModeFromEnvironment():
   ApplicationDataSourceMode {
@@ -58,15 +63,15 @@ export function configureApplicationDataSource(
   mode: ApplicationDataSourceMode,
 ): void {
   if (mode === "prototype") {
-    setApplicationDataSource(prototypeProductionDataSource);
-  }
+  setApplicationDataSource(prototypeProductionDataSource, mode);
+}
 }
 export function initializeApplicationDataSource(): void {
   const mode = getApplicationDataSourceModeFromEnvironment();
   configureApplicationDataSource(mode);
 }
 export function getApplicationDataSourceMode(): ApplicationDataSourceMode {
-  return getApplicationDataSourceModeFromEnvironment();
+  return applicationDataSourceMode;
 }
 export function getApplicationDataSourceStatus(): ApplicationDataSourceStatus {
   return {
