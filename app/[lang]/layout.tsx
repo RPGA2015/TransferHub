@@ -38,6 +38,7 @@ export default async function RootLayout({
       lang={lang}
       data-data-source-mode={dataSourceStatus.mode}
       data-data-source-semantics={dataSourceStatus.semantics}
+     data-data-source-live={dataSourceStatus.isLive}
       className={`${geistSans.variable} h-full antialiased`}
     >
       <body className="min-h-full font-sans">{children}</body>
