@@ -33,13 +33,14 @@ export function getProductionDataSnapshot(): ProductionDataSnapshot {
     };
 }
 export type ApplicationDataSourceMode = "prototype";
-
+export type ApplicationDataSourceSemantics = "illustrative";
 let applicationDataSource: ProductionDataSource =
   prototypeProductionDataSource;
 
 let applicationDataSourceMode: ApplicationDataSourceMode = "prototype";
 export type ApplicationDataSourceStatus = {
   mode: ApplicationDataSourceMode;
+  semantics: ApplicationDataSourceSemantics;
   isLive: boolean;
 };
 export function setApplicationDataSource(
@@ -76,6 +77,7 @@ export function getApplicationDataSourceMode(): ApplicationDataSourceMode {
 export function getApplicationDataSourceStatus(): ApplicationDataSourceStatus {
   return {
     mode: getApplicationDataSourceMode(),
+    semantics: "illustrative",
     isLive: false,
   };
 }export function getApplicationCorridors() {
