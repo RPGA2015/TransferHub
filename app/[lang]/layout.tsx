@@ -5,7 +5,7 @@ import "../globals.css";
 import { isLocale, locales } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import {
-  getApplicationDataSourceStatus,
+  getApplicationDataSourceMetadata,
   initializeApplicationDataSource,
 } from "@/lib/services/productionDataService";
 const geistSans = Geist({
@@ -32,13 +32,13 @@ export default async function RootLayout({
   const { lang } = await params;
   if (!isLocale(lang)) notFound();
   initializeApplicationDataSource();
-  const dataSourceStatus = getApplicationDataSourceStatus();
+  const dataSourceMetadata = getApplicationDataSourceMetadata();
   return (
     <html
       lang={lang}
-      data-data-source-mode={dataSourceStatus.mode}
-      data-data-source-semantics={dataSourceStatus.semantics}
-     data-data-source-live={dataSourceStatus.isLive}
+      data-data-source-mode={dataSourceMetadata.mode}
+      data-data-source-semantics={dataSourceMetadata.semantics}
+     data-data-source-live={dataSourceMetadata.isLive}
       className={`${geistSans.variable} h-full antialiased`}
     >
       <body className="min-h-full font-sans">{children}</body>
