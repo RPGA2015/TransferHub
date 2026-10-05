@@ -43,7 +43,14 @@ export type ApplicationDataSourceStatus = {
   semantics: ApplicationDataSourceSemantics;
   isLive: boolean;
 };
-export type ApplicationDataSourceMetadataSnapshot = Readonly<ApplicationDataSourceStatus>;
+export type ApplicationDataSourceMetadataContract = {
+  mode: ApplicationDataSourceMode;
+  semantics: ApplicationDataSourceSemantics;
+  isLive: boolean;
+};
+
+export type ApplicationDataSourceMetadataSnapshot =
+  Readonly<ApplicationDataSourceMetadataContract>;
 export function setApplicationDataSource(
   dataSource: ProductionDataSource,
   mode: ApplicationDataSourceMode,
