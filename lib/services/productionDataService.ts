@@ -43,7 +43,7 @@ export type ApplicationDataSourceStatus = {
   semantics: ApplicationDataSourceSemantics;
   isLive: boolean;
 };
-export type ApplicationDataSourceMetadata = ApplicationDataSourceStatus;
+export type ApplicationDataSourceMetadataSnapshot = Readonly<ApplicationDataSourceStatus>;
 export function setApplicationDataSource(
   dataSource: ProductionDataSource,
   mode: ApplicationDataSourceMode,
@@ -81,7 +81,7 @@ export function getApplicationDataSourceStatus(): ApplicationDataSourceStatus {
     semantics: "illustrative",
     isLive: false,
   };
-}export function getApplicationDataSourceMetadata(): ApplicationDataSourceMetadata {
+}export function getApplicationDataSourceMetadata(): ApplicationDataSourceMetadataSnapshot {
   return getApplicationDataSourceStatus();
 }export function getApplicationCorridors() {
 return applicationDataSource.getCorridors();
