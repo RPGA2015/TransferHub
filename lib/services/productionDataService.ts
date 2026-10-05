@@ -51,6 +51,13 @@ export type ApplicationDataSourceMetadataContract = {
 
 export type ApplicationDataSourceMetadataSnapshot =
   Readonly<ApplicationDataSourceMetadataContract>;
+  export function createApplicationDataSourceMetadataSnapshot(
+  metadata: ApplicationDataSourceMetadataContract,
+): ApplicationDataSourceMetadataSnapshot {
+  return {
+    ...metadata,
+  };
+}
 export function setApplicationDataSource(
   dataSource: ProductionDataSource,
   mode: ApplicationDataSourceMode,
@@ -89,7 +96,9 @@ export function getApplicationDataSourceStatus(): ApplicationDataSourceStatus {
     isLive: false,
   };
 }export function getApplicationDataSourceMetadata(): ApplicationDataSourceMetadataSnapshot {
-  return getApplicationDataSourceStatus();
+  return createApplicationDataSourceMetadataSnapshot(
+  getApplicationDataSourceStatus(),
+);
 }export function getApplicationCorridors() {
 return applicationDataSource.getCorridors();
 }
