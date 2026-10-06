@@ -86,16 +86,14 @@ export function initializeApplicationDataSource(): void {
   const mode = getApplicationDataSourceModeFromEnvironment();
   configureApplicationDataSource(mode);
 }
-export function getApplicationDataSourceMode(): ApplicationDataSourceMode {
-  return applicationDataSourceMode;
-}
 export function getApplicationDataSourceStatus(): ApplicationDataSourceStatus {
   return {
-    mode: getApplicationDataSourceMode(),
+    mode: applicationDataSourceMode,
     semantics: "illustrative",
     isLive: false,
   };
-}export function getApplicationDataSourceMetadata(): ApplicationDataSourceMetadataSnapshot {
+}
+export function getApplicationDataSourceMetadata(): ApplicationDataSourceMetadataSnapshot {
   return createApplicationDataSourceMetadataSnapshot(
   getApplicationDataSourceStatus(),
 );
