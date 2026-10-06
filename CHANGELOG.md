@@ -129,6 +129,8 @@
 - Split country definitions, corridor offers, and fictional provider identity metadata across `lib/data/`
 - Added a pure comparison service for corridor lookup, safe amount handling, recipient calculations, enrichment, filtering, immutable sorting, and visible-result counts
 - Removed `lib/illustrativeComparisonData.ts` after migrating all consumers, leaving no duplicate active data source or dead compatibility exports
+- Added an explicit application data-source boundary through `lib/services/productionDataService.ts`, separating application consumers from the current prototype data source and exposing source-mode and metadata status without introducing live provider connectivity
+- Added read-only production-data snapshot construction and metadata contracts so future authorized data sources can be introduced behind a defined boundary while the current provider, corridor, quote, and status values remain fictional and illustrative
 
 ### Verified
 
