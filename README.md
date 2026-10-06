@@ -1,6 +1,6 @@
 # TransferHub
 
-TransferHub is an early-stage money-transfer comparison prototype, initially focused on transfers to Haiti. Version 0.2.0 is in development and refines the illustrative comparison architecture introduced in v0.1.0. TransferHub does not currently initiate, process, or track transfers.
+TransferHub is an early-stage money-transfer comparison prototype, with the United States, Canada, and France as the current illustrative sending markets and Haiti and the Dominican Republic as the initial receiving markets. Version 0.2.0 is in development and builds on the illustrative comparison architecture introduced in v0.1.0. TransferHub does not currently initiate, process, or track transfers.
 
 All provider names, fees, rates, payout methods, delivery estimates, badges, and recipient amounts are fictional illustrative sample data. They are not live quotes, recommendations, endorsements, or evidence of provider relationships.
 
@@ -17,7 +17,7 @@ All provider names, fees, rates, payout methods, delivery estimates, badges, and
 
 ## v0.2.0 development status
 
-Milestones 2 and 3 separate transfer types, country definitions, fictional provider identities, corridor offers, pure comparison behavior, and currency formatting. Milestone 4 adds transparent derived metrics and deterministic ranking. Milestone 5 adds directional corridor support. Milestone 6A adds a data-driven Transfer Marketplace for discovering the ten current illustrative corridors. The visual design remains consistent. Every route and value is fictional and illustrative.
+Version 0.2.0 extends the original comparison prototype with multilingual public surfaces, browser-local workspace features, provider-context and transparency improvements, private development access controls, and a structured application data-source boundary. The current data architecture separates the application from the prototype data source through explicit service, metadata-contract, read-only snapshot, and snapshot-construction boundaries. The current provider, corridor, quote, and status values remain fictional and illustrative; no live provider integration or transactional money-transfer functionality is connected.
 
 ## Technology
 
@@ -36,7 +36,7 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). The marketplace is at [http://localhost:3000/marketplace](http://localhost:3000/marketplace), and the waitlist is at [http://localhost:3000/waitlist](http://localhost:3000/waitlist).
+Open [http://localhost:3000/en](http://localhost:3000/en). The English marketplace is at [http://localhost:3000/en/marketplace](http://localhost:3000/en/marketplace), the workspace is at [http://localhost:3000/en/workspace](http://localhost:3000/en/workspace), and the waitlist is at [http://localhost:3000/en/waitlist](http://localhost:3000/en/waitlist). Equivalent localized routes are available for Spanish (`/es`), French (`/fr`), and Haitian Creole (`/ht`).
 
 Useful commands:
 
@@ -54,7 +54,7 @@ app/                    App Router pages, metadata, and global styles
 components/             Comparison, provider-detail, and waitlist UI
 lib/types/transfer.ts   Canonical transfer-domain types
 lib/data/               Country, corridor, and fictional-provider data
-lib/services/           Pure comparison lookup, enrichment, filtering, and sorting
+lib/services/             Comparison services, provider enrichment, and application data-source boundaries
 lib/utils/              Shared en-US currency and exchange-rate formatting
 public/                 Static prototype assets
 docs/                   Project-health and release checklists
@@ -76,7 +76,8 @@ Supported sample corridors:
 - Dominican Republic → United States
 - Haiti → Canada
 - Dominican Republic → Canada
-
+- Haiti → France
+- Dominican Republic → France
 ### Directional corridors and country capabilities
 
 Corridors are explicit one-way records with an origin, destination, send currency, receive currency, and fictional provider offers. A reverse corridor is never generated or assumed: Canada → Haiti and Haiti → Canada are separate data records. An unsupported direction returns a safe empty comparison with the neutral message “This illustrative transfer corridor is not available yet.”
@@ -253,9 +254,13 @@ Before any public or transactional launch, TransferHub requires authorized and r
 
 The current prototype makes no claim of production security, regulatory approval, provider endorsement, guaranteed availability, or guaranteed results.
 
-## Proposed next phase
+## Current launch-readiness phase
 
-The next planned v0.2.0 milestone is transparent recommendation cards. Product and compliance requirements remain prerequisites to any transactional functionality. A future live-data design would also require an authorized provider-data contract with freshness and failure states; none is connected in this prototype.
+Phase 16 focuses on launch architecture readiness: verifying that the documented application structure, data-source boundaries, environment controls, public routes, prototype disclosures, and release assumptions match the current implementation.
+
+TransferHub remains a non-transactional comparison prototype. The current application data source is the prototype source, and provider, corridor, quote, and status values remain fictional and illustrative. No live provider integration, real-time quote source, transactional money-transfer functionality, or production user-account system is connected.
+
+Any future live-data or transactional release will require authorized provider-data integrations, explicit freshness and failure-state contracts, server-side validation, secure persistent storage, privacy and retention controls, authentication and authorization where required, monitoring, operational support, and appropriate legal and compliance review.
 
 ## Favorites Center
 
