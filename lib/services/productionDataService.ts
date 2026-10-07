@@ -4,13 +4,6 @@ import {
   type ProductionDataSource,
 } from "@/lib/services/productionDataSource";
 
-import {
-  productionCorridors,
-  productionProviders,
-  productionQuotes,
-  productionDataStatus,
-} from "@/lib/services/prototypeDataAdapter";
-
 import type {
   ProductionCorridor,
   ProductionProvider,
