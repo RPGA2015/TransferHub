@@ -1,3 +1,4 @@
+import { illustrativeCorridors } from "@/lib/data/corridors";
 import {
   prototypeProductionDataSource,
   type ProductionDataSource,
@@ -26,11 +27,11 @@ export type ProductionDataSnapshot = {
 
 export function getProductionDataSnapshot(): ProductionDataSnapshot {
   return {
-    corridors: productionCorridors,
-    providers: productionProviders,
-    quotes: productionQuotes,
-    status: productionDataStatus,
-    };
+    corridors: applicationDataSource.getCorridors(),
+    providers: applicationDataSource.getProviders(),
+    quotes: applicationDataSource.getQuotes(),
+    status: applicationDataSource.getStatus(),
+  };
 }
 export type ApplicationDataSourceMode = "prototype";
 export type ApplicationDataSourceSemantics = "illustrative";
@@ -98,5 +99,5 @@ export function getApplicationDataSourceMetadata(): ApplicationDataSourceMetadat
   getApplicationDataSourceStatus(),
 );
 }export function getApplicationCorridors() {
-return applicationDataSource.getCorridors();
+  return illustrativeCorridors;
 }
