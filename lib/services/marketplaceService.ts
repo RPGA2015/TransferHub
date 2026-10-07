@@ -11,9 +11,11 @@ function byMarketplaceOrder(a: Corridor, b: Corridor): number {
 }
 
 export function getMarketplaceCorridors(): Corridor[] {
- return [...getApplicationCorridors()].sort(byMarketplaceOrder);
+return [...getMarketplaceDataCorridors()].sort(byMarketplaceOrder);
 }
-
+export function getMarketplaceDataCorridors(): readonly Corridor[] {
+  return getApplicationCorridors();
+}
 export function normalizeMarketplaceSearchText(value: string): string {
   return value
     .replace(/[-\u2013\u2014\u2192/,]+/g, " ")
@@ -47,15 +49,15 @@ export function getCorridorPayoutMethods(corridor: Corridor): PayoutMethod[] {
   return [...new Set(corridor.offers.map(({ payoutMethod }) => payoutMethod))];
 }
 
-export function getFeaturedCorridors(corridors: readonly Corridor[] = getApplicationCorridors()): Corridor[] {
+export function getFeaturedCorridors(corridors: readonly Corridor[] = getMarketplaceDataCorridors()): Corridor[] {
   return corridors.filter(({ featured }) => featured).sort(byMarketplaceOrder);
 }
 
-export function getRecentlyAddedCorridors(corridors: readonly Corridor[] = getApplicationCorridors()): Corridor[] {
+export function getRecentlyAddedCorridors(corridors: readonly Corridor[] = getMarketplaceDataCorridors()): Corridor[] {
   return corridors.filter(({ recentlyAdded }) => recentlyAdded).sort(byMarketplaceOrder);
 }
 
-export function getMarketplaceRegions(corridors: readonly Corridor[] = getApplicationCorridors()): Region[] {
+export function getMarketplaceRegions(corridors: readonly Corridor[] = getMarketplaceDataCorridors()): Region[] {
   const regions = new Set<Region>();
   corridors.forEach((corridor) => {
     regions.add(getCountryDefinition(corridor.fromCountry).region);
@@ -64,7 +66,7 @@ export function getMarketplaceRegions(corridors: readonly Corridor[] = getApplic
   return [...regions].sort((a, b) => a.localeCompare(b, "en-US"));
 }
 
-export function getCorridorsByIds(corridorIds: readonly CorridorId[], corridors: readonly Corridor[] = getApplicationCorridors()): Corridor[] {
+export function getCorridorsByIds(corridorIds: readonly CorridorId[], corridors: readonly Corridor[] = getMarketplaceDataCorridors()): Corridor[] {
   const corridorsById = new Map(corridors.map((corridor) => [corridor.id, corridor]));
   return corridorIds.flatMap((id) => {
     const corridor = corridorsById.get(id);

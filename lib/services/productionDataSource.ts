@@ -1,4 +1,3 @@
-import { illustrativeCorridors } from "@/lib/data/corridors";
 import {
  productionCorridors,
   productionDataStatus,
@@ -6,7 +5,6 @@ import {
   productionQuotes,
 } from "@/lib/services/prototypeDataAdapter";
 
-import type { Corridor } from "@/lib/types/transfer";
 import type {
   ProductionDataStatus,
   ProductionProvider,
