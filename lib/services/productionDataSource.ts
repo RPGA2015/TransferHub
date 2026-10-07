@@ -1,5 +1,6 @@
 import { illustrativeCorridors } from "@/lib/data/corridors";
 import {
+ productionCorridors,
   productionDataStatus,
   productionProviders,
   productionQuotes,
@@ -10,19 +11,20 @@ import type {
   ProductionDataStatus,
   ProductionProvider,
   ProductionQuote,
+  ProductionCorridor,
 } from "@/lib/types/production";
 
 export type ProductionDataSource = {
-  getCorridors(): readonly Corridor[];
+  getCorridors(): readonly ProductionCorridor[];
 getProviders(): readonly ProductionProvider[];
 getQuotes(): readonly ProductionQuote[];
 getStatus(): ProductionDataStatus;
 };
 
 export const prototypeProductionDataSource: ProductionDataSource = {
-  getCorridors() {
-    return illustrativeCorridors;
-  },
+ getCorridors() {
+  return productionCorridors;
+},
   getProviders() {
   return productionProviders;
 },
