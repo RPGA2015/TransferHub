@@ -27,10 +27,11 @@ if (!privateAccessEnabled) {
 }
 
   if (
-    pathname.startsWith("/_next") ||
-    pathname === "/favicon.ico" ||
-    pathname === "/api/access"
-  ) {
+  pathname.startsWith("/_next") ||
+  pathname === "/favicon.ico" ||
+  pathname === "/api/access" ||
+  pathname === "/api/waitlist"
+) {
     return NextResponse.next();
   }
 
