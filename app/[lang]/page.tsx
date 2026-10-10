@@ -46,7 +46,7 @@ export default async function Home({ params, searchParams }: HomeProps) {
 
       <section id="home" className="hero-grid relative bg-[#06152e] pb-24 pt-36 sm:pt-40 lg:pb-32 lg:pt-48">
         <div className="hero-glow absolute inset-0" aria-hidden="true" />
-        <div className="relative mx-auto grid max-w-7xl items-center gap-16 px-5 sm:px-8 lg:grid-cols-[0.92fr_1.08fr]">
+     <div className="relative mx-auto grid max-w-7xl items-center gap-16 px-5 sm:px-8">
           <div className="text-center lg:text-left">
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-300/20 bg-blue-400/10 px-4 py-2 text-xs font-semibold tracking-wide text-blue-100"><span className="h-2 w-2 rounded-full bg-emerald-400" />{home.hero.eyebrow}</div>
             <h1 className="text-balance text-5xl font-bold tracking-[-0.04em] text-white sm:text-6xl lg:text-7xl">{home.hero.titleStart}<br/><span className="text-gradient">{home.hero.titleEmphasis}</span></h1>
