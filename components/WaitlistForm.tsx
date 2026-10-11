@@ -6,37 +6,8 @@ import { translate } from "@/lib/i18n/dictionaries";
 import { getCountryLabel } from "@/lib/i18n/labels";
 import type { Dictionary } from "@/lib/i18n/types";
 import type { Country } from "@/lib/types/transfer";
-
-const STORAGE_KEY = "transferhub_waitlist_v1";
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
 type FieldErrors = Partial<Record<"email" | "consent" | "form", string>>;
-
-type WaitlistEntry = {
-  id: string;
-  email: string;
-  firstName: string;
-  country: string;
-  consent: true;
-  createdAt: string;
-};
-
-function createId() {
-  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
-    return crypto.randomUUID();
-  }
-
-  return `waitlist_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
-}
-
-function readEntries(): WaitlistEntry[] {
-  const stored = window.localStorage.getItem(STORAGE_KEY);
-  if (!stored) return [];
-
-  const parsed: unknown = JSON.parse(stored);
-  return Array.isArray(parsed) ? (parsed as WaitlistEntry[]) : [];
-}
-
 export default function WaitlistForm({ locale, dictionary }: { locale: Locale; dictionary: Dictionary }) {
   const copy = dictionary.waitlist;
   const [errors, setErrors] = useState<FieldErrors>({});
@@ -73,28 +44,39 @@ export default function WaitlistForm({ locale, dictionary }: { locale: Locale; d
     setResult(null);
 
     try {
-      await new Promise((resolve) => window.setTimeout(resolve, 300));
-      const entries = readEntries();
-      const duplicate = entries.some((entry) => entry.email.toLowerCase() === email.toLowerCase());
-
-      setSubmittedEmail(email);
-      if (duplicate) {
-        setResult("duplicate");
-      } else {
-        const entry: WaitlistEntry = {
-          id: createId(),
+     
+      const response = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
           email,
           firstName,
           country,
-          consent: true,
-          createdAt: new Date().toISOString(),
-        };
+          locale,
+          consent,
+        }),
+      });
 
-        // Development/testing only: replace localStorage with secure server-side
-        // database storage before public launch. Never use this as production storage.
-        window.localStorage.setItem(STORAGE_KEY, JSON.stringify([...entries, entry]));
-        setResult("new");
+      if (!response.ok) {
+        throw new Error("Waitlist registration failed.");
       }
+
+      const data: unknown = await response.json();
+
+      if (
+        !data ||
+        typeof data !== "object" ||
+        !("result" in data) ||
+        (data.result !== "new" && data.result !== "duplicate")
+      ) {
+        throw new Error("Unexpected registration response.");
+      }
+
+      setSubmittedEmail(email);
+      setResult(data.result);
+
     } catch {
       setErrors({ form: copy.storageError });
     } finally {
