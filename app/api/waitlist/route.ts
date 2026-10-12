@@ -1,9 +1,31 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { Ratelimit } from "@upstash/ratelimit";
+import { Redis } from "@upstash/redis";
 
-export async function POST(request: NextRequest) {
+  const redisUrl = process.env.UPSTASH_REDIS_REST_URL;
+const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN;
+
+const ratelimit =
+  redisUrl && redisToken
+    ? new Ratelimit({
+        redis: new Redis({
+          url: redisUrl,
+          token: redisToken,
+        }),
+        limiter: Ratelimit.slidingWindow(5, "10 m"),
+        prefix: "transferhub:waitlist",
+      })
+    : null;
+    export async function POST(request: NextRequest) {
   try {
+        if (!ratelimit) {
+      return NextResponse.json(
+        { error: "Registration is temporarily unavailable." },
+        { status: 503 }
+      );
+    }
     const body: unknown = await request.json();
 
     if (!body || typeof body !== "object" || Array.isArray(body)) {
@@ -42,7 +64,34 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+    const forwardedFor = request.headers.get("x-vercel-forwarded-for");
+    const ip = forwardedFor?.split(",")[0]?.trim();
 
+    if (!ip) {
+      return NextResponse.json(
+        { error: "Unable to verify request origin." },
+        { status: 503 }
+      );
+    }
+        let allowed: boolean;
+
+    try {
+      const result = await ratelimit.limit(ip);
+      allowed = result.success;
+    } catch (error) {
+      console.error("Waitlist rate limiter unavailable:", error);
+      return NextResponse.json(
+        { error: "Registration is temporarily unavailable." },
+        { status: 503 }
+      );
+    }
+
+    if (!allowed) {
+      return NextResponse.json(
+        { error: "Too many registration attempts. Please try again later." },
+        { status: 429 }
+      );
+    }
     const url = process.env.SUPABASE_URL;
     const secretKey = process.env.SUPABASE_SECRET_KEY;
 
