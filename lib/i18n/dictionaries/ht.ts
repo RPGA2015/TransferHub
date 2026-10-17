@@ -57,7 +57,7 @@ sortTo: "Peyi destinasyon",sortPinned: "Epingle yo an premye",sortRecent: "Dèny
   waitlist: { ...en.waitlist, nav: "Navigasyon lis datant", eyebrow: "NOUVÈL SOU AKSÈ BONÈ", title: "Se pou ou pami premye moun ki konnen.", intro: "Antre nan lis TransferHub la pou resevwa nouvèl sou pwodwi a detanzantan.",
      localOnly: "Vèsyon devlopman : enskripsyon sou lis datant lan voye nan baz done nou an. Ou pa bezwen bay okenn enfòmasyon sou peyiman.", email: "Adrès imèl", emailHint: "N ap sèvi avè l sèlman pou nouvèl pwodwi detanzantan.", firstName: "Prenon", optional: "si ou vle", firstNamePlaceholder: "Prenon ou", country: "Peyi kote ou rete", selectCountry: "Chwazi yon peyi", other: "Lòt", consent: "Mwen dakò resevwa nouvèl TransferHub detanzantan pa imèl. Mwen ka dezabòne pita.", submit: "Antre nan lis la", submitting: "N ap enskri ou…", noPayment: "Nou pa mande enfòmasyon peman. Enskripsyon an pa kreye yon kont finansye.", emailRequired: "Antre adrès imèl ou.", emailInvalid: "Antre yon adrès imèl ki valab, tankou non@example.com.", consentRequired: "Ou dwe dakò resevwa nouvèl pou antre nan lis la.",
      storageError: "Nou pa t kapab finalize enskripsyon w sou lis datant lan. Tanpri eseye ankò nan yon ti moman.",
-newEyebrow: "OU NAN LIS LA", duplicateEyebrow: "OU TE DEJA ENSKRI", thanks: "Mèsi paske ou antre nan TransferHub.", already: "Ou deja nan lis datant lan.", 
+newEyebrow: "OU NAN LIS LA",duplicateEyebrow: "OU TE DEJA ENSKRI", thanks: "Mèsi paske ou antre nan TransferHub.", already: "Ou deja nan lis datant lan.", 
 anotherEmail: "Sèvi ak yon lòt imèl",
 registered: "{email} deja enskri. Ou pa bezwen fè anyen ankò.",
 noPaymentRequired: "Nou pa mande enfòmasyon peman.",

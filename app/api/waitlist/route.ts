@@ -64,8 +64,12 @@ const ratelimit =
         { status: 400 }
       );
     }
-    const forwardedFor = request.headers.get("x-vercel-forwarded-for");
-    const ip = forwardedFor?.split(",")[0]?.trim();
+   const forwardedFor = request.headers.get("x-vercel-forwarded-for");
+
+const ip =
+  process.env.NODE_ENV === "development"
+    ? "local-development"
+    : forwardedFor?.split(",")[0]?.trim();
 
     if (!ip) {
       return NextResponse.json(
@@ -114,6 +118,7 @@ const ratelimit =
         country: country || null,
         locale,
         consent,
+        consented_at: new Date().toISOString(),
       });
 
     if (error) {
