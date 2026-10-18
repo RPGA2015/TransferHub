@@ -142,11 +142,14 @@ const ip =
     }
 
     try {
-  const { error: emailError } = await resend.emails.send({
-    from: "TransferHub <waitlist@transferhub.info>",
-    to: [email],
-    subject: "Welcome to the TransferHub Waitlist!",
-    text: `Hello${firstName ? ` ${firstName}` : ""}!
+ 
+const displayName = firstName || "there";
+
+const { error: emailError } = await resend.emails.send({
+  from: "TransferHub <waitlist@transferhub.info>",
+  to: [email],
+  subject: "Welcome to the TransferHub Waitlist!",
+  text: `Hello ${displayName}!
 
 Thank you for joining the TransferHub waitlist.
 
@@ -156,7 +159,69 @@ We'll keep you informed as TransferHub gets closer to launch.
 
 The TransferHub Team
 https://transferhub.info`,
-  });
+  html: `
+    <!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Welcome to TransferHub</title>
+      </head>
+      <body style="margin:0;padding:24px 12px;background-color:#f3f6fa;font-family:Arial,Helvetica,sans-serif;color:#14213d;">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:600px;margin:0 auto;background-color:#ffffff;border-radius:12px;overflow:hidden;">
+          <tr>
+            <td style="background-color:#0b1f44;padding:32px 24px;text-align:center;">
+              <h1 style="margin:0;color:#ffffff;font-size:30px;">TransferHub</h1>
+              <p style="margin:12px 0 0;color:#b9d7cc;font-size:15px;">
+                One App. Every Transfer.
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:36px 28px;">
+              <h2 style="margin:0 0 20px;color:#0b1f44;font-size:24px;">
+                You're on the list!
+              </h2>
+              <p style="font-size:16px;line-height:1.7;">
+                Hello,
+              </p>
+              <p style="font-size:16px;line-height:1.7;">
+                Thank you for joining the TransferHub waitlist.
+              </p>
+              <p style="font-size:16px;line-height:1.7;">
+                We're building a simpler way to compare international
+                money transfer services.
+              </p>
+              <p style="font-size:16px;line-height:1.7;">
+                We'll keep you informed as we get closer to launch.
+              </p>
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:28px 0;">
+                <tr>
+                  <td style="background-color:#008f68;border-radius:8px;">
+                    <a href="https://transferhub.info"
+                       style="display:inline-block;padding:14px 24px;color:#ffffff;text-decoration:none;font-size:15px;font-weight:bold;">
+                      Explore TransferHub
+                    </a>
+                  </td>
+                </tr>
+              </table>
+              <p style="font-size:15px;line-height:1.6;">
+                The TransferHub Team
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td style="background-color:#eef5f2;padding:20px 24px;text-align:center;">
+              <p style="margin:0;color:#526277;font-size:12px;line-height:1.6;">
+                TransferHub — Making international transfer comparisons simpler.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </body>
+    </html>
+  `,
+});
 
   if (emailError) {
     console.error("Waitlist confirmation email failed:", emailError);
