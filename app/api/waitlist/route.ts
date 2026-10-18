@@ -3,10 +3,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
-
+import { Resend } from "resend";
   const redisUrl = process.env.UPSTASH_REDIS_REST_URL;
 const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN;
-
+const resend = new Resend(process.env.RESEND_API_KEY);
 const ratelimit =
   redisUrl && redisToken
     ? new Ratelimit({
@@ -141,11 +141,35 @@ const ip =
       );
     }
 
-    return NextResponse.json(
-      { result: "new" },
-      { status: 201 }
-    );
-  } catch {
+    try {
+  const { error: emailError } = await resend.emails.send({
+    from: "TransferHub <waitlist@transferhub.info>",
+    to: [email],
+    subject: "Welcome to the TransferHub Waitlist!",
+    text: `Hello${firstName ? ` ${firstName}` : ""}!
+
+Thank you for joining the TransferHub waitlist.
+
+We're building a simpler way to compare international money transfer services.
+
+We'll keep you informed as TransferHub gets closer to launch.
+
+The TransferHub Team
+https://transferhub.info`,
+  });
+
+  if (emailError) {
+    console.error("Waitlist confirmation email failed:", emailError);
+  }
+} catch (emailError) {
+  console.error("Waitlist email delivery error:", emailError);
+}
+return NextResponse.json(
+  { result: "new" },
+  { status: 201 }
+);
+}
+  catch {
     return NextResponse.json(
       { error: "Unable to process registration." },
       { status: 400 }
