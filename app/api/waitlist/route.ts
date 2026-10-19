@@ -233,11 +233,11 @@ return NextResponse.json(
   { result: "new" },
   { status: 201 }
 );
-}
-  catch {
-    return NextResponse.json(
-      { error: "Unable to process registration." },
-      { status: 400 }
-    );
+  } catch (error) {
+  console.error("Unexpected waitlist registration error:", error);
+  return NextResponse.json(
+    { error: "Unable to process registration." },
+    { status: 500 }
+  );
   }
-}
+    }
