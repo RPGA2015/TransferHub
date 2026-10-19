@@ -128,12 +128,8 @@ const ip =
           { status: 200 }
         );
       }
-
-      console.error("Waitlist database error:", {
+console.error("Waitlist database operation failed:", {
   code: error.code,
-  message: error.message,
-  details: error.details,
-  hint: error.hint,
 });
       return NextResponse.json(
         { error: "Registration failed." },
@@ -224,17 +220,17 @@ https://transferhub.info`,
 });
 
   if (emailError) {
-    console.error("Waitlist confirmation email failed:", emailError);
+    console.error("Waitlist confirmation email failed.");
   }
 } catch (emailError) {
-  console.error("Waitlist email delivery error:", emailError);
+  console.error("Waitlist email delivery failed.");
 }
 return NextResponse.json(
   { result: "new" },
   { status: 201 }
 );
   } catch (error) {
-  console.error("Unexpected waitlist registration error:", error);
+  console.error("Unexpected waitlist registration failure.");
   return NextResponse.json(
     { error: "Unable to process registration." },
     { status: 500 }
