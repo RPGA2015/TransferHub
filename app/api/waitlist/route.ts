@@ -26,7 +26,16 @@ const ratelimit =
         { status: 503 }
       );
     }
-    const body: unknown = await request.json();
+    let body: unknown;
+
+try {
+  body = await request.json();
+} catch {
+  return NextResponse.json(
+    { error: "Invalid JSON request body." },
+    { status: 400 }
+  );
+}
 
     if (!body || typeof body !== "object" || Array.isArray(body)) {
       return NextResponse.json(
