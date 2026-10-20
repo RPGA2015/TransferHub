@@ -30,7 +30,11 @@ export default function CorridorCard({ locale, dictionary, corridor, workspace }
       </div>
       <h3 className="mt-4 flex min-w-0 items-center gap-2 text-lg font-bold text-slate-950"><span>{getCountryLabel(corridor.fromCountry, locale)}</span><span className="shrink-0 text-blue-500" aria-hidden="true">→</span><span>{getCountryLabel(corridor.toCountry, locale)}</span></h3>
       <p className="mt-2 text-sm font-semibold text-slate-500">{corridor.sendCurrency} → {corridor.receiveCurrency}</p>
-      <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-amber-700">
+      <p
+  role="note"
+  aria-label={dictionary.marketplace.corridorDataLabel}
+  className="mt-2 text-xs font-semibold uppercase tracking-wide text-amber-700"
+>
   {dictionary.marketplace.corridorDataLabel}
 </p>
       <dl className="mt-5 grid gap-4 text-sm">
