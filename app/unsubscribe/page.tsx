@@ -4,42 +4,44 @@
 import { useEffect, useRef, useState } from "react";
 
 export default function UnsubscribePage() {
-  const [status, setStatus] = useState("processing");
-  const requestStarted = useRef(false);
-  useEffect(() => {
-  if (requestStarted.current) return;
-  requestStarted.current = true;
+ const [status, setStatus] = useState("ready");
+const [token, setToken] = useState<string | null>(null);
 
-  const token = new URLSearchParams(
-      window.location.search
-    ).get("token");
+useEffect(() => {
+  const urlToken = new URLSearchParams(
+    window.location.search
+  ).get("token");
 
-    if (!token) {
-      setStatus("invalid");
-      return;
-    }
+  if (!urlToken || !/^[a-f0-9]{64}$/i.test(urlToken)) {
+    setStatus("invalid");
+    return;
+  }
 
-    async function unsubscribe() {
-      try {
-        const response = await fetch(
-          `/api/unsubscribe?token=${encodeURIComponent(token!)}`,
-          { method: "POST" }
-        );
+  setToken(urlToken);
+}, []);
 
-        const result = await response.json();
+async function unsubscribe() {
+  if (!token || status !== "ready") return;
 
-        setStatus(
-          response.ok && result.success
-            ? "success"
-            : "error"
-        );
-      } catch {
-        setStatus("error");
-      }
-    }
+  setStatus("processing");
 
-    void unsubscribe();
-  }, []);
+  try {
+    const response = await fetch(
+      `/api/unsubscribe?token=${encodeURIComponent(token)}`,
+      { method: "POST" }
+    );
+
+    const result = await response.json();
+
+    setStatus(
+      response.ok && result.success
+        ? "success"
+        : "error"
+    );
+  } catch {
+    setStatus("error");
+  }
+}
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-slate-950 px-6">
@@ -51,7 +53,21 @@ export default function UnsubscribePage() {
         <h1 className="mb-4 text-2xl font-bold text-slate-900">
           Email Preferences
         </h1>
+{status === "ready" && token && (
+  <div>
+    <p className="mb-6 text-slate-600">
+      Are you sure you want to unsubscribe from TransferHub updates?
+    </p>
 
+    <button
+      type="button"
+      onClick={() => void unsubscribe()}
+      className="rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-700"
+    >
+      Confirm Unsubscribe
+    </button>
+  </div>
+)}
         {status === "processing" && (
           <p>Processing your unsubscribe request...</p>
         )}
