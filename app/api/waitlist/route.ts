@@ -1,4 +1,4 @@
-
+import { randomBytes, createHash } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { Ratelimit } from "@upstash/ratelimit";
@@ -119,7 +119,7 @@ const ip =
       auth: { persistSession: false, autoRefreshToken: false },
     });
 
-    const { error } = await supabase
+    const { data: signup, error } = await supabase
       .from("waitlist_signups")
       .insert({
         email,
@@ -128,7 +128,9 @@ const ip =
         locale,
         consent,
         consented_at: new Date().toISOString(),
-      });
+        })
+  .select("id")
+  .single();
 
     if (error) {
       if (error.code === "23505") {
@@ -145,22 +147,53 @@ console.error("Waitlist database operation failed:", {
         { status: 500 }
       );
     }
+if (!signup?.id) {
+  console.error("Waitlist signup ID was not returned.");
 
+  return NextResponse.json(
+    { error: "Registration could not be verified." },
+    { status: 500 }
+  );
+}
     try {
- 
+const unsubscribeToken = randomBytes(32).toString("hex");
+const unsubscribeTokenHash = createHash("sha256")
+  .update(unsubscribeToken, "utf8")
+  .digest("hex");
+  const unsubscribeUrl =
+  `https://transferhub.info/unsubscribe?token=${encodeURIComponent(unsubscribeToken)}`;
+  const { error: tokenError } = await supabase
+  .from("waitlist_unsubscribe_tokens")
+  .insert({
+    signup_id: signup.id,
+    token_hash: unsubscribeTokenHash,
+   expires_at: null,
+  });
+
+if (tokenError) {
+  console.error("Unable to save unsubscribe token:", tokenError.code);
+
+  return NextResponse.json(
+    { error: "Unable to complete registration setup." },
+    { status: 500 }
+  );
+}
 const displayName = firstName || "there";
 
 const { error: emailError } = await resend.emails.send({
   from: "TransferHub <waitlist@transferhub.info>",
   to: [email],
   subject: "Welcome to the TransferHub Waitlist!",
-  text: `Hello ${displayName}!
+ text: `Hello ${displayName}!
 
 Thank you for joining the TransferHub waitlist.
 
 We're building a simpler way to compare international money transfer services.
 
 We'll keep you informed as TransferHub gets closer to launch.
+
+To unsubscribe from TransferHub updates, visit:
+${unsubscribeUrl}
 
 The TransferHub Team
 https://transferhub.info`,
@@ -213,6 +246,12 @@ https://transferhub.info`,
               <p style="font-size:15px;line-height:1.6;">
                 The TransferHub Team
               </p>
+              <p style="font-size:13px;line-height:1.6;margin-top:20px;color:#526277;">
+  Don't want to receive TransferHub updates?
+  <a href="${unsubscribeUrl}" style="color:#008f68;text-decoration:underline;">
+    Unsubscribe here
+  </a>
+</p>
             </td>
           </tr>
           <tr>
