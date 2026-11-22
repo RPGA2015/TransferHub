@@ -61,7 +61,16 @@ try {
     const consent = data.consent === true;
 
     if (
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ||
+   !email.includes("@") ||
+email.indexOf("@") !== email.lastIndexOf("@") ||
+email.startsWith("@") ||
+email.includes("..") ||
+email.split("@")[0].startsWith(".") ||
+email.split("@")[0].endsWith(".") ||
+email.split("@")[1]?.startsWith(".") ||
+email.split("@")[1]?.endsWith(".") ||
+!email.split("@")[1]?.includes(".") ||
+/\s/u.test(email) ||
       email.length > 254 ||
       firstName.length > 100 ||
       country.length > 100 ||
